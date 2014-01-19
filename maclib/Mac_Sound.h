@@ -199,7 +199,7 @@ printf("Freeing Wave id %hu at hash page %d/%d\n",(upper<<8)|lower,upper,lower);
 		va_list ap;
 
 		va_start(ap, fmt);
-		vsprintf(errbuf, fmt, ap);
+		vsnprintf(errbuf, sizeof(errbuf), fmt, ap);
 		va_end(ap);
 		errstr = errbuf;
 	}

@@ -92,7 +92,7 @@ protected:
 		va_list ap;
 
 		va_start(ap, fmt);
-		vsprintf(errbuf, fmt, ap);
+		vsnprintf(errbuf, sizeof(errbuf), fmt, ap);
 		va_end(ap);
 		errstr = errbuf;
         }
@@ -878,7 +878,7 @@ private:
 		if ( entry->text ) {
 			Fontserv->FreeText(entry->text);
 		}
-		sprintf(buf, "%d", *entry->variable);
+		snprintf(buf, sizeof(buf), "%d", *entry->variable);
 
 		if ( entry->hilite ) {
 			clear = Fg;
