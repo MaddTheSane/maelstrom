@@ -1,0 +1,4 @@
+2014-01-20  Emery Hemingway  <emery@vfemail.net>
+
+        * *: The ChangeLog is auto-generated when releasing. If you
+        are seeing this, use 'git log' for a detailed list of changes.
