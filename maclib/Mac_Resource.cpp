@@ -29,10 +29,6 @@
 Note: Most of the info in this file came from "Inside Macintosh"
 */
 
-#include <stdlib.h>
-#include <string.h>
-
-#include "SDL_types.h"
 #include "bitesex.h"
 #include "Mac_Resource.h"
 
@@ -419,23 +415,19 @@ Mac_Resource:: NumResources(const char *res_type)
 	return(0);
 }
 
-Uint16 *
-Mac_Resource:: ResourceIDs(const char *res_type)
+std::vector<short unsigned int> Mac_Resource::ResourceIDs(const char *res_type)
 {
 	int i, n;
-	Uint16 *ids;
-
 	for ( i=0; i<num_types; ++i ) {
 		if ( strncmp(res_type, Resources[i].type, 4) == 0 ) {
-			ids = new Uint16[Resources[i].count+1];
+			std::vector<short unsigned int> ids(Resources[i].count);
 			for ( n=0; n<Resources[i].count; ++n )
 				ids[n] = Resources[i].list[n].id;
-			ids[n] = 0xFFFF;
-			return(ids);
+			return ids;
 		}
 	}
 	error("Couldn't find resources of type '%s'", res_type);
-	return(NULL);
+	return std::vector<short unsigned int>{};
 }
 
 char *

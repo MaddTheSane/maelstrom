@@ -1,3 +1,4 @@
+AM_CXXFLAGS = -std=c++11 $(SDL_CFLAGS)
 
 noinst_LIBRARIES = libSDLscreen.a
 

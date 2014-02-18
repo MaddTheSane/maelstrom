@@ -1,3 +1,4 @@
+#include "../sounds.h"
 
 /* Here we define all of the strange and wonderous objects in the game */
 

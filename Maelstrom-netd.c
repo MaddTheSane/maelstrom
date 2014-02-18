@@ -20,7 +20,7 @@
          the same.  Otherwise we crash.
 */
 
-#include "protocol.h"
+#include "netlogic/protocol.h"
 
 #define MAX_CONNECTIONS		64
 #define UNCONNECTED		0

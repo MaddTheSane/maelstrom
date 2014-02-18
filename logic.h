@@ -1,7 +1,7 @@
 
 /* Game Logic interface routines and variables */
 
-#include "netlogic.h"
+#include "netlogic/netlogic.h"
 
 /* From logic.cpp */
 extern void LogicUsage(void);

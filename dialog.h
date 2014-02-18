@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#include "SDL_FrameBuf.h"
-#include "Mac_FontServ.h"
+#include "screenlib/SDL_FrameBuf.h"
+#include "maclib/Mac_FontServ.h"
 
 /*  This is a class set for Macintosh-like dialogue boxes. :) */
 /*  Sorta complex... */

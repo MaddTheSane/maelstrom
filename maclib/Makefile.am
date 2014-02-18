@@ -1,7 +1,10 @@
+AM_CXXFLAGS = -std=c++11 $(SDL_CFLAGS) $(SDL_MIXER_CFLAGS)
+AM_LDFLAGS  = $(SDL_LIBS) $(SDL_MIXER_LIBS)
 
 noinst_LIBRARIES = libSDLmac.a
 
 libSDLmac_a_SOURCES =		\
+	../Maelstrom_Globals.h	\
 	Mac_Compat.h		\
 	Mac_FontServ.cpp	\
 	Mac_FontServ.h		\

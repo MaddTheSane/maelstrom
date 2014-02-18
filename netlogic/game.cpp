@@ -1,10 +1,11 @@
 
-#include "Maelstrom_Globals.h"
+#include "../Maelstrom_Globals.h"
+#include "../sounds.h"
 #include "object.h"
 #include "player.h"
 #include "netplay.h"
 #include "make.h"
-#include "load.h"
+#include "../load.h"
 
 
 #ifdef MOVIE_SUPPORT

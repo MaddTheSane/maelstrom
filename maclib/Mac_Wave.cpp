@@ -29,6 +29,7 @@
 #include "SDL_endian.h"
 #include "SDL_rwops.h"
 #include "Mac_Wave.h"
+#include <SDL_mixer.h>
 
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
 #define wavesex32(x)	\
@@ -114,7 +115,7 @@ Wave:: Load(const char *wavefile, Uint16 desired_rate)
 
 	/* Load the WAVE file */
 	if ( SDL_LoadWAV(wavefile, &spec, &samples, &sound_datalen) == NULL ) {
-		error("%s", SDL_GetError());
+		error(SDL_GetError());
 		return(-1);
 	}
 	/* Copy malloc()'d data to new'd data */
@@ -568,4 +569,17 @@ Wave:: Save(char *wavefile)
 		return(-1);
 	}
 	return(0);
+}
+
+/**
+ * Returns a pointer that must be freed with Mix_FreeChunk.
+ */
+Mix_Chunk *Wave::Chunk()
+{
+	Mix_Chunk *c = Mix_QuickLoad_RAW(sound_data, sound_datalen);
+	if ( c == NULL ) {
+		printf(Mix_GetError());
+		throw Mix_GetError();
+	}
+	return c;
 }

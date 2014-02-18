@@ -6,7 +6,7 @@
 #include "SDL_net.h"
 #include "SDL_endian.h"
 
-#include "Maelstrom_Globals.h"
+#include "../Maelstrom_Globals.h"
 #include "netplay.h"
 #include "protocol.h"
 

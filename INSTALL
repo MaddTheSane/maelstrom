@@ -1,9 +1,20 @@
 
 To build and install the game, get the Simple DirectMedia Layer
-library from http://www.devolution.com/~slouken/SDL/ and install
+library from http://libsdl.org and install
 it.  Then run:
 	./configure; make; make install
 
 If you are building with Visual C++, unpack VisualC.zip and open
 the VC++ project file found in the new "VisualC" directory.
 
+If you are porting Maelstrom to a new platform or build system, the
+following options may be passed to the preprocessor.
+
+* DATADIR  default search directory for game data files. Defaults to './'.
+
+* SAMPLING_RATE  audio playback sampling rate, game audio is stored at 11025Hz,
+                 and resampled when loaded at runtime.  Defaults to 11025.
+
+* AUDIO_BUFFER_SIZE  size of audio buffers, increasing buffer size increases latency.
+                     For mono audio at 11025Hz a size of 256 is recommended;
+		      increase linearly. Defaults to 256.

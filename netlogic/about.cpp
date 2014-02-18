@@ -1,7 +1,8 @@
 
-#include "Maelstrom_Globals.h"
+#include "../Maelstrom_Globals.h"
 #include "object.h"
-#include "load.h"
+#include "../load.h"
+#include "../sounds.h"
 
 #define	ICON_V_OFF	14
 

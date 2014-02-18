@@ -15,6 +15,7 @@
 #include "load.h"
 #include "fastrand.h"
 #include "checksum.h"
+#include "sounds.h"
 
 /* External functions used in this file */
 extern int DoInitializations(Uint32 video_flags);		/* init.cc */
@@ -174,7 +175,6 @@ int main(int argc, char *argv[])
 
 	/* Normal variables */
 	SDL_Event event;
-	LibPath::SetExePath(argv[0]);
 
 #ifndef __WIN95__
 	/* The first thing we do is calculate our checksum */

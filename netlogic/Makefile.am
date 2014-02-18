@@ -1,7 +1,10 @@
+AM_CXXFLAGS = -std=c++11 $(SDL_CFLAGS)
 
 noinst_LIBRARIES = liblogic.a
 
 liblogic_a_SOURCES =		\
+	../Maelstrom_Globals.h	\
+	../sounds.h		\
 	about.cpp		\
 	blit.cpp		\
 	game.cpp		\

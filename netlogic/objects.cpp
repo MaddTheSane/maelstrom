@@ -1,7 +1,7 @@
 
 /* Here we define all of the strange and wonderous objects in the game */
 
-#include "Maelstrom_Globals.h"
+#include "../Maelstrom_Globals.h"
 #include "netplay.h"
 #include "object.h"
 #include "player.h"

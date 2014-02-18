@@ -22,266 +22,112 @@
     slouken@devolution.com
 */
 
-#include <signal.h>
-
+#include "../sounds.h"
 #include "Mac_Sound.h"
-#include "Mac_Compat.h"
+#include "Mac_Wave.h"
 
-static int bogus_running = 0;
-
-extern "C" {
-static int BogusAudioThread(void *data)
-{
-	SDL_AudioSpec *spec;
-	void (*fill)(void *userdata, Uint8 *stream, int len);
-	Uint32 then;
-	Uint32 playticks;
-	Sint32 ticksleft;
-	Uint8 *stream;
-
-#ifdef NSIG
-	/* Clear out any signal handlers */
-	for ( int i = 0; i<NSIG; ++i )
-		signal(i, SIG_DFL);
-#else
-	signal(SIGINT, SIG_DFL);
-	signal(SIGSEGV, SIG_DFL);
-	signal(SIGTERM, SIG_DFL);
+/* covert SNDs and play back at this rate */
+#ifndef SAMPLING_RATE
+#define SAMPLING_RATE 11025
 #endif
 
-	/* Get ready to roll.. */
-	spec = (SDL_AudioSpec *)data;
-	if ( spec->callback == NULL ) {
-		for ( ; ; )
-			Delay(60*60*60);	/* Delay 1 hour */
-	}
-	fill = spec->callback;
-	playticks = ((Uint32)spec->samples*1000)/spec->freq;
-	/* Fill in the spec */
-	spec->size = (spec->format&0xFF)/8;
-	spec->size *= spec->channels;
-	spec->size *= spec->samples;
-	stream = new Uint8[spec->size];
+/* use buffers of this size, affects latency */
+#ifndef AUDIO_BUFFER_SIZE
+#define AUDIO_BUFFER_SIZE 256
+#endif
 
-	while ( bogus_running ) {
-		then = SDL_GetTicks();
+/* 4 sound mixing channels. */
+#define NUM_CHANNELS 4
 
-		/* Fill buffer */
-		if ( fill )
-			(*fill)(spec->userdata, stream, spec->size);
+/* Thrust channel (zero indexed), thrusting is always played here. */
+#define THRUST_CHANNEL 3
 
-		/* Calculate time left, and sleep */
-		ticksleft = playticks-(SDL_GetTicks()-then);
-		if ( ticksleft > 0 )
-			SDL_Delay(ticksleft);
-	}
-	delete[] stream;
-
-	return(0);
-}
-
-static void FillAudio(void *udata, Uint8 *stream, int len)
-{
-	Sound *sound = (Sound *)udata;
-	
-	Sound::FillAudioU8(sound, stream, len);
-}
-/* extern "C" */
-};
 
 Sound:: Sound(const char *soundfile, Uint8 vol)
+	:chunks(36), priorities(NUM_CHANNELS)
 {
-	Wave         *wave;
-	Mac_Resource *soundres;
-	int           i, p;
-	Uint16       *ids;
-	Mac_ResData  *snd;
-
-	/* Initialize variables */
-	volume  = 0;
-	playing = 0;
-	bogus_audio = NULL;
-	InitHash();
-	errstr = NULL;
+	#ifdef DEBUG
+	printf("Mix_OpenAudio with sampling rate of %d and buffer size of %d\n", SAMPLING_RATE, AUDIO_BUFFER_SIZE);
+	#endif
 
 	/* Load the sounds from the resource files */
-	soundres = new Mac_Resource(soundfile);
-	if ( soundres->Error() ) {
-		error("%s", soundres->Error());
-		return;
+	Mac_Resource soundres(soundfile);
+	if (Mix_OpenAudio(SAMPLING_RATE, AUDIO_U8, 1, AUDIO_BUFFER_SIZE) == -1) {
+		throw Mix_GetError();
 	}
-	if ( soundres->NumResources("snd ") == 0 ) {
-		error("No sound resources in '%s'", soundfile);
-		return;
-	}
-	ids = soundres->ResourceIDs("snd ");
-	wave = NULL;
-	for ( i=0; ids[i] != 0xFFFF; ++i ) {
-		snd = soundres->Resource("snd ", ids[i]);
-		if ( snd == NULL ) {
-			error("%s", soundres->Error());
-			delete soundres;
-			return;
-		}
-		wave = new Wave(snd, DSP_FREQUENCY);
-		if ( wave->Error() ) {
-			error("%s", wave->Error());
-			delete wave;
-			delete soundres;
-			return;
-		}
-		Hash(ids[i], wave);
-	}
-	delete soundres;
-	spec = wave->Spec();
-	/* Allow ~ 1/30 second time-lag in audio buffer -- samples is x^2  */
-	spec->samples = (wave->Frequency()*wave->SampleSize())/30;
-	for ( p = 0; spec->samples > 1; ++p )
-		spec->samples /= 2;
-	++p;
-	for ( i = 0; i < p; ++i )
-		spec->samples *= 2;
-	spec->callback = FillAudio;
-	spec->userdata = (void *)this;
+	Mix_AllocateChannels(NUM_CHANNELS);
 
-	/* Empty the channels and start the music :-) */
-	HaltSound();
-	if ( vol == 0 ) {
-		bogus_running = 1;
-		bogus_audio = SDL_CreateThread(BogusAudioThread, spec);
-	} else {
-		Volume(vol);
+	for ( auto id : soundres.ResourceIDs("snd ") ) {
+		Mac_ResData *snd = soundres.Resource("snd ", id);
+		if ( snd == NULL )
+			throw "soundres was NULL";
+
+		Wave* wave = new Wave(snd, SAMPLING_RATE);
+		if ( wave->Error() ) {
+			printf(wave->Error());
+			continue;
+		}
+
+		if ( Mix_Chunk *chunk = wave->Chunk() )
+			chunks[id-100] = chunk;
+		/* drop the  ^ hundred so ids are in the range of 0-36 */
 	}
+
+	Mix_Volume(-1, vol*16);
 }
 
 Sound:: ~Sound()
 {
-	if ( playing )
-		SDL_CloseAudio();
-	else
-	if ( bogus_audio ) {
-		bogus_running = 0;
-		SDL_WaitThread(bogus_audio, NULL);
-		bogus_audio = NULL;
+	Mix_HaltChannel(-1);
+	for ( Mix_Chunk *c : chunks) {
+		if ( c == nullptr )
+			continue;
+		Mix_FreeChunk(c);
 	}
-	FreeHash();
+	Mix_CloseAudio();
 }
 
-Uint8
-Sound:: Volume(Uint8 vol)
+int Sound::PlaySound(Uint16 sndID, Uint8 priority)
 {
-	Uint8 active;
+	Mix_Chunk *chunk = chunks[sndID];
+	if ( chunk == nullptr )
+		return -1;
+	int i;
+	/* find an empty channel */
+	for ( i=0; i<NUM_CHANNELS; ++i ) {
+		if ( Mix_Playing(i) )
+			continue;
 
-	active = playing;
-	if ( (volume == 0) && (vol > 0) ) {
-		/* Kill bogus sound thread */
-		if ( bogus_audio ) {
-			bogus_running = 0;
-			SDL_WaitThread(bogus_audio, NULL);
-			bogus_audio = NULL;
-		}
-
-		/* Try to open the audio */
-		if ( SDL_OpenAudio(spec, NULL) < 0 )
-			vol = 0;		/* Fake sound */
-		active = 1;
-		SDL_PauseAudio(0);		/* Go! */
+		priorities[i] = priority;
+		return Mix_PlayChannel(i, chunk, 0);
 	}
-	if ( vol > MAX_VOLUME )
-		vol = MAX_VOLUME;
-	volume = vol;
 
-	if ( active && (volume == 0) ) {
-		if ( playing )
-			SDL_CloseAudio();
-		active = 0;
-
-		/* Run bogus sound thread */
-		bogus_running = 1;
-		bogus_audio = SDL_CreateThread(BogusAudioThread, spec);
-		if ( bogus_audio == NULL ) {
-			/* Oh well... :-) */
+	/* or stop a currently playing one */
+	for ( i=0; i<NUM_CHANNELS; ++i ) {
+		if ( priorities[i] < priority ) {
+			Mix_HaltChannel(i);
+			priorities[i] = priority;
+			return Mix_PlayChannel(i, chunk, 0);
 		}
 	}
-	playing = active;
-	return(volume);
+	return -1;
 }
 
-int
-Sound:: PlaySound(Uint16 sndID, Uint8 priority, Uint8 channel,
-					void (*callback)(Uint8 channel))
+int Sound::PlayThruster()
 {
-	Wave *wave;
+	if ( Mix_Playing(THRUST_CHANNEL) ) {
+		if ( priorities[THRUST_CHANNEL] > 1 )
+			return -1;
 
-	if ( priority <= Priority(channel) )
-		return(-1);
-
-	wave = Hash(sndID);
-	if ( wave == NULL )
-		return(-1);
-
-	channels[channel].ID = sndID;
-	channels[channel].priority = priority;
-	channels[channel].len = wave->DataLeft();
-	channels[channel].src = wave->Data();
-	channels[channel].callback = callback;
-#ifdef DEBUG_SOUND
-printf("Playing sound %hu on channel %d\n", sndID, channel);
-#endif
-	return(0);
+		Mix_HaltChannel(THRUST_CHANNEL);
+		priorities[THRUST_CHANNEL] = 1;
+	}
+	return Mix_PlayChannel(THRUST_CHANNEL, chunks[gThrusterSound], -1);
 }
 
-/* This has to be a very fast routine, otherwise sound will lag and crackle */
-void
-Sound:: FillAudioU8(Sound *sound, Uint8 *stream, int len)
-{
-	int i, s;
-
-	/* Mix in each of the channels, assuming 8-bit unsigned audio data */
-	while ( len-- ) {
-		s = 0;
-		for ( i=0; i<NUM_CHANNELS; ++i ) {
-			if ( sound->channels[i].len > 0 ) {
-				/*
-				  Possible race condition:
-				  If the channel is halted here,
-					len = 0 then we do '--len'
-				  len = -1, but that's okay.
-				*/
-				--sound->channels[i].len;
-				s += *(sound->channels[i].src)-0x80;
-				++sound->channels[i].src;
-				/*
-				  Possible race condition:
-				  If a sound is played here,
-					len > 0, then we do 'if len <= 0'
-				  We never call back on channel.. bad.
-				*/
-				if ( sound->channels[i].len <= 0 ) {
-#ifdef DEBUG_SOUND
-printf("Channel %d finished\n", i);
-#endif
-					/* This is critical */
-					void (*callback)(Uint8);
-					callback = sound->channels[i].callback;
-					if ( callback )
-						(*callback)(i);
-				}
-			}
-		}
-		/* handle volume */
-		s = (s*sound->volume)/MAX_VOLUME;
-
-		/* convert to 8-bit unsigned */
-		s += 0x80;
-
-		/* clip */
-		if ( s > 0xFE )	/* 0xFF causes static on some audio systems */
-			*stream++ = 0xFE;
-		else
-		if ( s < 0x00 )
-			*stream++ = 0x00;
-		else
-			*stream++ = (Uint8)s;
-	}
+void Sound::HaltThruster() {
+	/* This might stop other sounds than thrust,
+	 * but if it does there is probably alot of stuff going on anyway.
+	 */
+	Mix_HaltChannel(THRUST_CHANNEL); 
 }

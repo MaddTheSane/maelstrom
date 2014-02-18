@@ -24,10 +24,11 @@
 
 /* A Macintosh sound resource converter */
 
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 
 #include "Mac_Wave.h"
+#include <vector>
 
 static Wave wave;
 
@@ -36,7 +37,8 @@ int main(int argc, char *argv[])
 	Mac_Resource *macx;
 	Mac_ResData  *snd;
 	char wavname[128];
-	Uint16 *ids, rate;
+	Uint16 rate;
+	std::vector<short unsigned int> ids;
 	int i;
 
 	rate = 0;
@@ -69,20 +71,18 @@ int main(int argc, char *argv[])
 
 	/* If a specific resource is requested, save it alone */
 	if ( argv[2] ) {
-		ids = new Uint16[2];
-		ids[0] = atoi(argv[2]);
-		ids[1] = 0xFFFF;
+		ids = {atoi(argv[2])};
 	} else
 		ids = macx->ResourceIDs("snd ");
 
-	for ( i=0; ids[i] != 0xFFFF; ++i ) {
-		snd = macx->Resource("snd ", ids[i]);
+	for ( auto id : ids ) {
+		snd = macx->Resource("snd ", id);
 		if ( snd == NULL ) {
 			fprintf(stderr, "Warning: %s\n", macx->Error());
 			continue;
 		}
 		wave.Load(snd, rate);
-		snprintf(wavname, sizeof(wavname), "snd_%d.wav", ids[i]);
+		snprintf(wavname, sizeof(wavname), "snd_%d.wav", id);
 		wave.Save(wavname);
 	}
 	delete macx;

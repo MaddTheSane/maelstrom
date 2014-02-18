@@ -73,17 +73,13 @@ static FILE *OpenData(char *mode, char **fname)
 	char *home;
 	FILE *data;
 
-	if ( (home=getenv("HOME")) == NULL ) {
-		if ( strcmp(CUR_DIR, DIR_SEP) != 0 ) {
-			home = CUR_DIR;
-		} else {
-			home="";
-		}
-	}
+	if ( (home=getenv("HOME")) == NULL )
+		home = ".";
+
 	if ( fname ) {
 		*fname = datafile;
 	}
-	snprintf(datafile, sizeof(datafile), "%s"DIR_SEP"%s", home, MAELSTROM_DATA);
+	snprintf(datafile, sizeof(datafile), "%s/%s", home, MAELSTROM_DATA);
 	if ( (data=fopen(datafile, mode)) == NULL )
 		return(NULL);
 	return(data);

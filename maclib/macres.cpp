@@ -33,7 +33,6 @@ int main(int argc, char *argv[])
 {
 	Mac_Resource *res;
 	char      **types;
-	Uint16     *ids;
 	int         i, j;
 
 	if ( ! argv[1] ) {
@@ -50,7 +49,7 @@ int main(int argc, char *argv[])
 	
 	types = res->Types();
 	for ( i=0; types[i]; ++i ) {
-		ids = res->ResourceIDs(types[i]);
+		auto ids = res->ResourceIDs(types[i]);
 		printf("Resource set: type = '%s', contains %hd resources\n",
 					types[i], res->NumResources(types[i]));
 		for ( j=0; ids[j] < 0xFFFF; ++j ) {
@@ -69,7 +68,6 @@ int main(int argc, char *argv[])
             			}
 			}
 		}
-		delete[]  ids;
 	}
 	delete[] types;
 	delete res;

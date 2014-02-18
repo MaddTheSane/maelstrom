@@ -1,6 +1,4 @@
 
-#define library(X)	(X)
-
 #ifdef COMPUTE_VELTABLE
 #include <math.h>
 #endif
@@ -11,6 +9,7 @@
 #include "load.h"
 #include "colortable.h"
 #include "fastrand.h"
+#include "sounds.h"
 
 
 // Global variables set in this file...
@@ -717,7 +716,7 @@ extern "C" void CleanUp(void)
 /* -- Perform some initializations and report failure if we choke */
 int DoInitializations(Uint32 video_flags)
 {
-	LibPath library;
+	DataDir data_dir;
 	int i;
 	SDL_Surface *icon;
 
@@ -753,21 +752,17 @@ int DoInitializations(Uint32 video_flags)
 #endif
 
 	/* Load the Font Server */
-	fontserv = new FontServ(library.Path("Maelstrom Fonts"));
+	fontserv = new FontServ(data_dir.FullPath("Maelstrom Fonts"));
 	if ( fontserv->Error() ) {
 		error("Fatal: %s\n", fontserv->Error());
 		return(-1);
 	}
 
 	/* Load the Sound Server and initialize sound */
-	sound = new Sound(library.Path("Maelstrom Sounds"), gSoundLevel);
-	if ( sound->Error() ) {
-		error("Fatal: %s\n", sound->Error());
-		return(-1);
-	}
+	sound = new Sound(data_dir.FullPath("Maelstrom Sounds"), gSoundLevel);
 
 	/* Load the Maelstrom icon */
-	icon = SDL_LoadBMP(library.Path("icon.bmp"));
+	icon = SDL_LoadBMP(data_dir.FullPath("icon.bmp"));
 	if ( icon == NULL ) {
 		error("Fatal: Couldn't load icon: %s\n", SDL_GetError());
 		return(-1);
@@ -820,7 +815,7 @@ int DoInitializations(Uint32 video_flags)
 
 	/* -- Load in our sprites and other needed resources */
 	{
-		Mac_Resource spriteres(library.Path("Maelstrom Sprites"));
+		Mac_Resource spriteres(data_dir.FullPath("Maelstrom Sprites"));
 
 		if ( spriteres.Error() ) {
 			error("%s\n", spriteres.Error());

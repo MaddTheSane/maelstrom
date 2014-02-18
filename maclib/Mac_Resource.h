@@ -32,8 +32,7 @@
 Note: Most of the info in this file came from "Inside Macintosh"
 */
 
-#include <stdio.h>
-#include <stdarg.h>
+#include <vector>
 
 /* The actual resources in the resource fork */
 typedef struct {
@@ -54,7 +53,7 @@ public:
 	Uint16  NumResources(const char *res_type);
 
 	/* Create a 0xFFFF terminated list of resource ids for a type */
-	Uint16 *ResourceIDs(const char *res_type);
+	std::vector<short unsigned int> ResourceIDs(const char *res_type);
 
 	/* Return a resource of a certain type and id.  These resources
 	   are deleted automatically when Mac_Resource object is deleted.

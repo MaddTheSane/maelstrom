@@ -1,5 +1,5 @@
 
-#include "Maelstrom_Globals.h"
+#include "../Maelstrom_Globals.h"
 #include "object.h"
 #include "player.h"
 #include "globals.h"

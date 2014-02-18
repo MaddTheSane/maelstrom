@@ -1,24 +1,10 @@
 
-#include "Maelstrom_Globals.h"
+#include "../Maelstrom_Globals.h"
 #include "netplay.h"
 #include "object.h"
 #include "player.h"
 #include "globals.h"
 #include "objects.h"
-
-
-/* ----------------------------------------------------------------- */
-/* -- The thrust sound callback */
-
-static void ThrustCallback(Uint8 theChannel)
-{
-#ifdef DEBUG
-error("Thrust called back on channel %hu\n", theChannel);
-#endif
-	/* -- Check the control key */
-	if ( gPlayers[gOurPlayer]->IsThrusting() )
-		sound->PlaySound(gThrusterSound,1,theChannel,ThrustCallback);
-}	/* -- ThrustCallback */
 
 
 /* ----------------------------------------------------------------- */
@@ -386,8 +372,7 @@ printf("\n");
 		/* Thrust speeds us up! :)  */
 		if ( Thrusting ) {
 			if ( ! WasThrusting ) {
-				sound->PlaySound(gThrusterSound,
-							1, 3, ThrustCallback);
+				sound->PlayThruster();
 				WasThrusting = 1;
 			}
 
@@ -511,8 +496,7 @@ Player::HandleKeys(void)
 				switch(inbuf[++i]) {
 					case THRUST_KEY:
 						Thrusting = 0;
-						if ( sound->Playing(gThrusterSound) )
-							sound->HaltSound(3);
+						sound->HaltThruster();
 						break;
 					case RIGHT_KEY:
 						Rotating &= ~0x01;

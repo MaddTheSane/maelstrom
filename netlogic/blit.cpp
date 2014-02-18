@@ -7,7 +7,8 @@
                object->Move() is called EVERY timestep!
 */
 
-#include "Maelstrom_Globals.h"
+#include "../Maelstrom_Globals.h"
+#include "../sounds.h"
 #include "netplay.h"
 #include "object.h"
 #include "player.h"

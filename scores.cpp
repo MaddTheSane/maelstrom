@@ -7,7 +7,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #endif
-#include <stdio.h>
+#include <cstdio>
 
 #include "SDL_endian.h"
 
@@ -15,7 +15,12 @@
 #include "load.h"
 #include "dialog.h"
 
+#ifndef STATEDIR
+#define STATEDIR "./"
+#endif
+
 #define MAELSTROM_SCORES	"Maelstrom-Scores"
+
 #define NUM_SCORES		10		// Do not change this!
 
 /* Everyone can write to scores file if defined to 0 */
@@ -29,7 +34,6 @@ Scores hScores[NUM_SCORES];
 
 void LoadScores(void)
 {
-	LibPath path;
 	SDL_RWops *scores_src;
 	int i;
 
@@ -44,7 +48,7 @@ void LoadScores(void)
 	}
 	memset(&hScores, 0, sizeof(hScores));
 
-	scores_src = SDL_RWFromFile(path.Path(MAELSTROM_SCORES), "rb");
+	scores_src = SDL_RWFromFile(STATEDIR "/" MAELSTROM_SCORES, "rb");
 	if ( scores_src != NULL ) {
 		for ( i=0; i<NUM_SCORES; ++i ) {
 			SDL_RWread(scores_src, hScores[i].name,
@@ -58,7 +62,6 @@ void LoadScores(void)
 
 void SaveScores(void)
 {
-	LibPath path;
 	SDL_RWops *scores_src;
 	int i;
 #ifdef unix
@@ -72,7 +75,7 @@ void SaveScores(void)
 #ifdef unix
 	omask=umask(SCORES_PERMMASK);
 #endif
-	scores_src = SDL_RWFromFile(path.Path(MAELSTROM_SCORES), "wb");
+	scores_src = SDL_RWFromFile(STATEDIR "/" MAELSTROM_SCORES, "wb");
 	if ( scores_src != NULL ) {
 		for ( i=0; i<NUM_SCORES; ++i ) {
 			SDL_RWwrite(scores_src, hScores[i].name,
@@ -82,8 +85,7 @@ void SaveScores(void)
 		}
 		SDL_RWclose(scores_src);
 	} else {
-		error("Warning: Couldn't save scores to %s\n",
-						path.Path(MAELSTROM_SCORES));
+		error("Warning: Couldn't save scores to " STATEDIR "/" MAELSTROM_SCORES "\n");
 	}
 #ifdef unix
 	umask(omask);

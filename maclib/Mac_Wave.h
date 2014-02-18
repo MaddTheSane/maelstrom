@@ -24,10 +24,9 @@
 
 /* A WAVE class that can load itself from WAVE files or Mac 'snd ' resources */
 
-#include <stdio.h>
-#include <stdarg.h>
 #include "SDL_audio.h"
 #include "Mac_Resource.h"
+#include <SDL_mixer.h>
 
 class Wave {
 
@@ -81,10 +80,14 @@ public:
 	int Stereo(void) {
 		return(spec.channels/2);
 	}
+	int Channels(void) { return spec.channels; }
 
 	char *Error(void) {
 		return(errstr);
 	}
+
+	/* Return a SDL Mixer chunk */
+	Mix_Chunk *Chunk();
 
 private:
 	void Init(void);

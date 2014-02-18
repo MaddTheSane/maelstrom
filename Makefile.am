@@ -1,4 +1,8 @@
+DATADIR = $(datadir)/maelstrom
 
+AM_CPPFLAGS = -DDATADIR=\"$(DATADIR)\" -DSTATEDIR=\"$(localstatedir)\"
+AM_CXXFLAGS = -std=c++11 $(SDL_CFLAGS) $(SDL_NET_CFLAGS)
+AM_LDFLAGS  =  $(SDL_LIBS) $(SDL_NET_LIBS) $(SDL_MIXER_LIBS)
 
 bin_PROGRAMS = Maelstrom Maelstrom-netd
 
@@ -27,18 +31,16 @@ Maelstrom_SOURCES =		\
 	public_key.h		\
 	rect.cpp		\
 	rect.h			\
+	sounds.h		\
 	scores.cpp		\
 	scores.h
 
-LOGIC = netlogic
-
 Maelstrom_LDADD = 			\
-	$(LOGIC)/liblogic.a		\
+	netlogic/liblogic.a		\
 	screenlib/libSDLscreen.a	\
-	maclib/libSDLmac.a		\
-	@MATHLIB@ @INETLIB@ @ICONOBJ@
+	maclib/libSDLmac.a
 
-SUBDIRS = $(LOGIC) screenlib maclib
+SUBDIRS = netlogic screenlib maclib
 
 EXTRA_DIST =			\
 	autogen.sh		\
@@ -64,22 +66,30 @@ EXTRA_DIST =			\
 DIST_SUBDIRS = $(SUBDIRS) Images Docs
 
 # Special install rule for the game
-install:
-	make install_gamedata target=@GAME_INSTALLDIR@
+install: install_bin install_gamedata install_scores install_gamedocs
+
+install_bin:
+	install Maelstrom Maelstrom-netd $(bindir)
 
 install_gamedata:
-	sh mkinstalldirs $(target)/
-	cp -rv Images			\
-	       Maelstrom_Fonts		\
-	       Maelstrom_Sounds		\
-	       Maelstrom_Sprites	\
-	       Maelstrom-Scores		\
-	       icon.bmp icon.xpm	$(target)/
-	chmod 666 $(target)/Maelstrom-Scores
+	install -d $(DATADIR)
+	install \
+		Maelstrom_Fonts		\
+		Maelstrom_Sounds	\
+		Maelstrom_Sprites	\
+		icon.bmp icon.xpm	\
+	$(DATADIR)
+
+	install -d $(DATADIR)/Images/
+	install Images/* $(DATADIR)/Images/
+
+install_scores:
+	install -d $(localstatedir)
+	test    -e $(localstatedir)/Maelstrom-Scores || install -m 666 Maelstrom-Scores $(localstatedir)
 
 install_gamedocs:
-	sh mkinstalldirs $(target)/
-	cp -rv README* COPYING* Docs*	$(target)/
+	install -d $(docdir)
+	install README* COPYING* Docs/* $(docdir)
 
 # Rule to build tar-gzipped distribution package
 $(PACKAGE)-$(VERSION).tar.gz: dist

@@ -41,7 +41,7 @@
 #include <stdarg.h>
 
 #include "Mac_Resource.h"
-#include "SDL_FrameBuf.h"
+#include "../screenlib/SDL_FrameBuf.h"
 
 /* Different styles supported by the font server */
 #define STYLE_NORM	0x00

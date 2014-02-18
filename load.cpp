@@ -1,16 +1,34 @@
 
-#include <stdio.h>
-#include <string.h>
-
 #include "SDL_endian.h"
 
 #include "load.h"
 #include "myerror.h"
-#include "bitesex.h"
+
+/* autotools should set this */
+#ifndef DATADIR
+#define DATADIR "./"
+#endif
 
 
-/* For data loading */
-char *LibPath::exepath = NULL;
+DataDir::DataDir()
+{
+	/*
+	char *env = getenv("MAELSTROM_DATA");
+	if ( env != NULL )
+		path += env;
+	else
+	*/
+	path = DATADIR;
+	path += '/';
+	len = path.size();
+}
+
+const char *DataDir::FullPath(std::string filename)
+{
+	path.resize(len);
+	path += filename;
+	return path.c_str();
+}
 
 SDL_Surface *Load_Icon(char **xpm)
 {
@@ -77,12 +95,12 @@ SDL_Surface *Load_Icon(char **xpm)
 SDL_Surface *Load_Title(FrameBuf *screen, int title_id)
 {
 	char file[256];
-	LibPath path;
+	DataDir data_dir;
 	SDL_Surface *bmp, *title;
 	
 	/* Open the title file -- we know its colormap is our global one */
-	snprintf(file, sizeof(file), "Images"DIR_SEP"Maelstrom_Titles#%d.bmp", title_id);
-	bmp = SDL_LoadBMP(path.Path(file));
+	snprintf(file, sizeof(file), "Images/Maelstrom_Titles#%d.bmp", title_id);
+	bmp = SDL_LoadBMP(data_dir.FullPath(file));
 	if ( bmp == NULL ) {
 		return(NULL);
 	}
@@ -96,17 +114,17 @@ SDL_Surface *Load_Title(FrameBuf *screen, int title_id)
 SDL_Surface *GetCIcon(FrameBuf *screen, short cicn_id)
 {
 	char file[256];
-	LibPath path;
+	DataDir data_dir;
 	SDL_Surface *cicn;
 	SDL_RWops *cicn_src;
 	Uint8 *pixels, *mask;
 	Uint16 w, h;
 	
 	/* Open the cicn sprite file.. */
-	snprintf(file, sizeof(file), "Images"DIR_SEP"Maelstrom_Icon#%hd.cicn", cicn_id);
-	if ( (cicn_src=SDL_RWFromFile(path.Path(file), "r")) == NULL ) {
+	snprintf(file, sizeof(file), "Images/Maelstrom_Icon#%hd.cicn", cicn_id);
+	if ( (cicn_src=SDL_RWFromFile(data_dir.FullPath(file), "r")) == NULL ) {
 		error("GetCIcon(%hd): Can't open CICN %s: ",
-					cicn_id, path.Path(file));
+					cicn_id, data_dir.FullPath(file));
 		return(NULL);
 	}
 
