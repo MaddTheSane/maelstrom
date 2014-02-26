@@ -27,6 +27,20 @@
 
 class Sound {
 private:
+        enum {
+                /* 4 sound mixing channels, thrust is mixed on the last channel. */
+                MIXER_CHANNELS = 4, THRUST_CHANNEL = 3,
+
+                /* Sound specs */
+                OUTPUT_RATE = 11025,
+                OUTPUT_FORMAT = AUDIO_U8,
+                OUTPUT_CHANNELS = 1,
+                OUTPUT_CHUNK_SIZE = 256,
+                /* increase the buffer size linearly with the size of the audio,
+                 * (double the rate or channels, double the buffer).
+                 */
+        };
+
 	std::vector<Mix_Chunk*> chunks;
 	std::vector<unsigned short int> priorities;
 

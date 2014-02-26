@@ -22,53 +22,41 @@
     slouken@devolution.com
 */
 
-#include "../sounds.h"
 #include "Mac_Sound.h"
 #include "Mac_Wave.h"
+#include "../sounds.h"
 
-/* covert SNDs and play back at this rate */
-#ifndef SAMPLING_RATE
-#define SAMPLING_RATE 11025
-#endif
-
-/* use buffers of this size, affects latency */
-#ifndef AUDIO_BUFFER_SIZE
-#define AUDIO_BUFFER_SIZE 256
-#endif
-
-/* 4 sound mixing channels. */
-#define NUM_CHANNELS 4
-
-/* Thrust channel (zero indexed), thrusting is always played here. */
-#define THRUST_CHANNEL 3
+#include <iostream>
+#include <string>
 
 
-Sound:: Sound(const char *soundfile, Uint8 vol)
-	:chunks(36), priorities(NUM_CHANNELS)
+Sound::Sound(const char *soundfile, Uint8 vol)
+	:chunks(36), priorities(MIXER_CHANNELS)
 {
-	#ifdef DEBUG
-	printf("Mix_OpenAudio with sampling rate of %d and buffer size of %d\n", SAMPLING_RATE, AUDIO_BUFFER_SIZE);
-	#endif
+#ifdef DEBUG
+	std::cerr << "Mix_OpenAudio with sampling rate of " <<  OUTPUT_RATE << std::endl;
+#endif
 
 	/* Load the sounds from the resource files */
 	Mac_Resource soundres(soundfile);
-	if (Mix_OpenAudio(SAMPLING_RATE, AUDIO_U8, 1, AUDIO_BUFFER_SIZE) == -1) {
+	if (Mix_OpenAudio(OUTPUT_RATE, OUTPUT_FORMAT, OUTPUT_CHANNELS, OUTPUT_CHUNK_SIZE) == -1) {
 		throw Mix_GetError();
 	}
-	Mix_AllocateChannels(NUM_CHANNELS);
+	Mix_AllocateChannels(MIXER_CHANNELS);
 
+	Wave wave;
 	for ( auto id : soundres.ResourceIDs("snd ") ) {
 		Mac_ResData *snd = soundres.Resource("snd ", id);
 		if ( snd == NULL )
 			throw "soundres was NULL";
 
-		Wave* wave = new Wave(snd, SAMPLING_RATE);
-		if ( wave->Error() ) {
-			printf(wave->Error());
+		wave.Load(snd, OUTPUT_FORMAT, OUTPUT_CHANNELS, OUTPUT_RATE);
+		if ( wave.Error() ) {
+			throw std::string(wave.Error());
 			continue;
 		}
 
-		if ( Mix_Chunk *chunk = wave->Chunk() )
+		if ( Mix_Chunk *chunk = wave.Chunk() )
 			chunks[id-100] = chunk;
 		/* drop the  ^ hundred so ids are in the range of 0-36 */
 	}
@@ -76,7 +64,7 @@ Sound:: Sound(const char *soundfile, Uint8 vol)
 	Mix_Volume(-1, vol*16);
 }
 
-Sound:: ~Sound()
+Sound::~Sound()
 {
 	Mix_HaltChannel(-1);
 	for ( Mix_Chunk *c : chunks) {
@@ -94,7 +82,7 @@ int Sound::PlaySound(Uint16 sndID, Uint8 priority)
 		return -1;
 	int i;
 	/* find an empty channel */
-	for ( i=0; i<NUM_CHANNELS; ++i ) {
+	for ( i=0; i<MIXER_CHANNELS; ++i ) {
 		if ( Mix_Playing(i) )
 			continue;
 
@@ -103,7 +91,7 @@ int Sound::PlaySound(Uint16 sndID, Uint8 priority)
 	}
 
 	/* or stop a currently playing one */
-	for ( i=0; i<NUM_CHANNELS; ++i ) {
+	for ( i=0; i<MIXER_CHANNELS; ++i ) {
 		if ( priorities[i] < priority ) {
 			Mix_HaltChannel(i);
 			priorities[i] = priority;

@@ -24,12 +24,17 @@
 
 /* Microsoft WAVE file loading routines */
 
-#include <stdlib.h>
-#include <string.h>
-#include "SDL_endian.h"
-#include "SDL_rwops.h"
+
 #include "Mac_Wave.h"
+
+#include <SDL_endian.h>
+#include <SDL_rwops.h>
 #include <SDL_mixer.h>
+
+#include <cstdlib>
+#include <cstring>
+#include <iostream>
+#include <string.h>
 
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
 #define wavesex32(x)	\
@@ -104,8 +109,7 @@ Wave:: Free(void) {
 	}
 }
 
-int
-Wave:: Load(const char *wavefile, Uint16 desired_rate)
+int Wave::Load(const char *wavefile, uint16_t format, uint8_t channels, uint32_t desired_rate)
 {
 	Uint8 *samples;
 
@@ -123,41 +127,11 @@ Wave:: Load(const char *wavefile, Uint16 desired_rate)
 	memcpy(sound_data, samples, sound_datalen);
 	SDL_FreeWAV(samples);
 
-	/* Set the desired sample frequency */
-	Frequency(desired_rate);
-
-	/* Rewind and go! */
-	Rewind();
 	return(0);
 }
 
-Uint32
-Wave:: Frequency(Uint16 desired_rate)
-{
-	if ( (desired_rate > 0) && (desired_rate != spec.freq) ) {
-		Uint8 *samples;
-		Uint32 datalen, samplesize;
-
-		samples = sound_data;
-		samplesize = SampleSize();
-		datalen = ConvertRate(spec.freq, desired_rate,
-				&samples, sound_datalen/samplesize, samplesize);
-		if ( samples != sound_data ) {
-			/* Create new sound data */
-			delete[] sound_data; 
-			sound_data = samples;
-			sound_datalen = datalen*samplesize;
-
-			/* Adjust the format */
-			spec.freq = desired_rate;
-		}
-	}
-	return(spec.freq);
-}
-
 /* Most of this information came from the "Inside Macintosh" book series */
-int
-Wave:: Load(Mac_ResData *snd, Uint16 desired_rate)
+int Wave::Load(Mac_ResData *snd, uint16_t format, uint8_t channels, uint32_t desired_rate)
 {
 	Uint8 *data;
 	Uint8 *samples;
@@ -266,6 +240,7 @@ Wave:: Load(Mac_ResData *snd, Uint16 desired_rate)
 		switch ( sample_rate ) {
 			case rate11khz:
 			case rate11khz2:
+			  //std::cerr << "11khz" << std::endl;
 				/* Assuming 8-bit mono samples */
 				if ( desired_rate == 0 )
 					desired_rate = 11025;
@@ -274,6 +249,7 @@ Wave:: Load(Mac_ResData *snd, Uint16 desired_rate)
 						&samples, num_samples, 1);
 				break;
 			case rate22khz:
+				//std::cerr << "22khz" << std::endl;
 				/* Assuming 8-bit mono samples */
 				if ( desired_rate == 0 )
 					desired_rate = 22050;
@@ -283,6 +259,7 @@ Wave:: Load(Mac_ResData *snd, Uint16 desired_rate)
 				break;
 			case rate44khz:
 			default:
+				//std::cerr << "44khz"<< std::endl;
 				if ( desired_rate == 0 ) {
 					desired_rate = (sample_rate>>16);
 					break;
@@ -292,7 +269,8 @@ Wave:: Load(Mac_ResData *snd, Uint16 desired_rate)
 						&samples, num_samples, 1);
 				break;
 		}
-		sample_rate = desired_rate;
+		//sample_rate = desired_rate;
+		sample_rate >>= 16;
 
 		/* Fill in the audio spec */
 		spec.freq = sample_rate;
@@ -311,8 +289,37 @@ Wave:: Load(Mac_ResData *snd, Uint16 desired_rate)
 			sound_data = samples;
 		}
 	}
-	Rewind();
+
+	if ( spec.freq != desired_rate ||
+	     spec.format != format ||
+	     spec.channels != channels ) {
+		Convert(format, channels, desired_rate);
+	}
+
 	return(0);
+}
+
+void Wave::Convert(uint16_t format, uint8_t channels, uint32_t rate)
+{
+	SDL_AudioCVT cvt;
+	if ( SDL_BuildAudioCVT(&cvt,
+			       spec.format, spec.channels, spec.freq,
+			       format, channels, rate) == -1 )
+		throw Mac_Wave_Error("failed to build audio converter");
+
+	cvt.buf = new Uint8[sound_datalen * cvt.len_mult];
+	cvt.len = sound_datalen;
+	memcpy(cvt.buf, sound_data, sound_datalen);
+
+	SDL_ConvertAudio(&cvt);
+
+	delete[] sound_data;
+	sound_data = cvt.buf;
+	sound_datalen = cvt.len * cvt.len_ratio;
+
+	spec.freq = rate;
+	spec.format = format;
+	spec.channels = channels;
 }
 
 #define SLOW_CONVERT
@@ -572,13 +579,17 @@ Wave:: Save(char *wavefile)
 }
 
 /**
- * Returns a pointer that must be freed with Mix_FreeChunk.
+ * Returns a copy of wave data as a chunk; chunk must be freed with Mix_FreeChunk.
  */
 Mix_Chunk *Wave::Chunk()
 {
-	Mix_Chunk *c = Mix_QuickLoad_RAW(sound_data, sound_datalen);
+	uint8_t *buf;
+	buf = new uint8_t[sound_datalen];
+	std::memcpy(buf, sound_data, sound_datalen);
+
+	Mix_Chunk *c = Mix_QuickLoad_RAW(buf, sound_datalen);
 	if ( c == NULL ) {
-		printf(Mix_GetError());
+		delete[] buf;
 		throw Mix_GetError();
 	}
 	return c;

@@ -28,67 +28,15 @@
 #include "Mac_Resource.h"
 #include <SDL_mixer.h>
 
+#include <string>
+#include <stdexcept>
+#include <iostream>
+
+struct Mac_Wave_Error : public std::runtime_error {
+	Mac_Wave_Error(const std::string& p) :runtime_error(p) {}
+};
+
 class Wave {
-
-public:
-	Wave() {
-		Init();
-	}
-	Wave(char *wavefile, Uint16 desired_rate = 0) {
-		Init();
-		Load(wavefile, desired_rate);
-	}
-	Wave(Mac_ResData *snd, Uint16 desired_rate = 0) {
-		Init();
-		Load(snd, desired_rate);
-	}
-	~Wave() {
-		Free();
-	}
-
-	/* Load WAVE resources, converting to the desired sample rate */
-	int Load(const char *wavefile, Uint16 desired_rate = 0);
-	int Load(Mac_ResData *snd, Uint16 desired_rate = 0);
-	int Save(char *wavefile);
-
-	void Rewind(void) {
-		soundptr = sound_data;
-		soundlen = sound_datalen;
-	}
-	void Forward(Uint32 distance) {
-		soundlen -= distance;
-		soundptr += distance;
-	}
-	Uint32 DataLeft(void) {
-		return(soundlen > 0 ? soundlen : 0);
-	}
-	Uint8 *Data(void) {
-		if ( soundlen > 0 )
-			return(soundptr);
-		return(NULL);
-	}
-	SDL_AudioSpec *Spec(void) {
-		return(&spec);
-	}
-	Uint32 Frequency(Uint16 desired_rate = 0);
-	Uint16 SampleSize(void) {
-		return(((spec.format&0xFF)/8)*spec.channels);
-	}
-	int BitsPerSample(void) {
-		return(spec.format&0xFF);
-	}
-	int Stereo(void) {
-		return(spec.channels/2);
-	}
-	int Channels(void) { return spec.channels; }
-
-	char *Error(void) {
-		return(errstr);
-	}
-
-	/* Return a SDL Mixer chunk */
-	Mix_Chunk *Chunk();
-
 private:
 	void Init(void);
 	void Free(void);
@@ -98,14 +46,11 @@ private:
 	Uint8 *sound_data;
 	Uint32 sound_datalen;
 
-	/* Current position of the WAVE file */
-	Uint8 *soundptr;
-	Sint32 soundlen;
-
 	/* Utility functions */
-	Uint32 ConvertRate(Uint16 rate_in, Uint16 rate_out, 
-			Uint8 **samples, Uint32 n_samples, Uint8 s_size);
-	
+	Uint32 ConvertRate(Uint16 rate_in, Uint16 rate_out,
+			   Uint8 **samples, Uint32 n_samples, Uint8 s_size);
+	void Convert(uint16_t format, uint8_t channels, uint32_t rate);
+
 	/* Useful for getting error feedback */
 	void error(char *fmt, ...) {
 		va_list ap;
@@ -117,4 +62,28 @@ private:
 	}
 	char *errstr;
 	char  errbuf[BUFSIZ];
+
+public:
+	Wave() {
+		Init();
+	}
+	~Wave() {
+		Free();
+	}
+
+	/* Load WAVE resources, converting to the desired sample rate */
+	int Load(const char *wavefile, uint16_t format, uint8_t channels, uint32_t rate);
+	int Load(Mac_ResData *snd, uint16_t format, uint8_t channels, uint32_t rate);
+	int Save(char *wavefile);
+
+	int Stereo(void)          { return(spec.channels/2); }
+	int Channels(void)        { return spec.channels; }
+	int BitsPerSample(void)   { return(spec.format&0xFF); }
+	Uint16 SampleSize(void)   { return(((spec.format&0xFF)/8)*spec.channels); }
+	SDL_AudioSpec *Spec(void) { return(&spec); }
+
+	char *Error(void) { return(errstr); }
+
+	/* Return a SDL Mixer chunk */
+	Mix_Chunk *Chunk();
 };
