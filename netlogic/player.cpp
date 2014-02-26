@@ -597,6 +597,7 @@ Player::HitSound(void)
 void 
 Player::ExplodeSound(void)
 {
+	sound->HaltThruster();
 	sound->PlaySound(gShipHitSound, 3);
 }
 
