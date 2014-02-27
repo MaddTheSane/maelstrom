@@ -1,6 +1,6 @@
-DATADIR = $(datadir)/maelstrom
+GAMEDATADIR = $(datadir)/maelstrom
 
-AM_CPPFLAGS = -DDATADIR=\"$(DATADIR)\" -DSTATEDIR=\"$(localstatedir)\"
+AM_CPPFLAGS = -DDATADIR=\"$(GAMEDATADIR)\" -DSTATEDIR=\"$(localstatedir)\"
 AM_CXXFLAGS = -std=c++11 $(SDL_CFLAGS) $(SDL_NET_CFLAGS)
 AM_LDFLAGS  =  $(SDL_LIBS) $(SDL_NET_LIBS) $(SDL_MIXER_LIBS)
 
@@ -28,10 +28,12 @@ Maelstrom_SOURCES =		\
 	myerror.h		\
 	netscore.cpp		\
 	netscore.h		\
+	path.h			\
 	public_key.h		\
 	rect.cpp		\
 	rect.h			\
-	sounds.h		\
+	sound.h			\
+	sound.cpp		\
 	scores.cpp		\
 	scores.h
 
@@ -56,7 +58,7 @@ EXTRA_DIST =			\
 	COPYING.GPL		\
 	Images			\
 	Maelstrom_Fonts		\
-	Maelstrom_Sounds	\
+	sounds/*.ogg		\
 	Maelstrom_Sprites	\
 	Maelstrom-Scores	\
 	ico_o			\
@@ -72,16 +74,16 @@ install_bin:
 	install Maelstrom Maelstrom-netd $(bindir)
 
 install_gamedata:
-	install -d $(DATADIR)
+	install -d $(GAMEDATADIR)
 	install \
 		Maelstrom_Fonts		\
-		Maelstrom_Sounds	\
 		Maelstrom_Sprites	\
 		icon.bmp icon.xpm	\
-	$(DATADIR)
+		sounds/*.ogg		\
+			$(GAMEDATADIR)
 
-	install -d $(DATADIR)/Images/
-	install Images/* $(DATADIR)/Images/
+	install -d $(GAMEDATADIR)/Images/
+	install Images/* $(GAMEDATADIR)/Images/
 
 install_scores:
 	install -d $(localstatedir)

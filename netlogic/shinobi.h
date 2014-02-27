@@ -20,7 +20,7 @@ public:
 		numshots = 0;
 
 		gEnemySprite = this;
-		sound->PlaySound(gEnemyAppears, 4);
+		sound->PlaySound(Sound::EnemyAppears, 4);
 	}
 	~Shinobi() {
 		for ( int i=0; i<MAX_SHOTS; ++i )
@@ -196,10 +196,10 @@ public:
 	}
 
 	virtual void HitSound(void) {
-		sound->PlaySound(gBonk, 3);
+		sound->PlaySound(Sound::Bonk, 3);
 	}
 	virtual void ExplodeSound(void) {
-		sound->PlaySound(gExplosionSound, 3);
+		sound->PlaySound(Sound::ExplosionSound, 3);
 	}
 
 private:

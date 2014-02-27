@@ -8,7 +8,7 @@
 */
 
 #include "../Maelstrom_Globals.h"
-#include "../sounds.h"
+#include "../sound.h"
 #include "netplay.h"
 #include "object.h"
 #include "player.h"
@@ -35,14 +35,14 @@ int RunFrame(void)
 
 	/* Play the boom sounds */
 	if ( --gNextBoom == 0 ) {
-		if ( gBoomPhase ) {
-			sound->PlaySound(gBoom1, 0);
-			gBoomPhase = 0;
-		} else {
-			sound->PlaySound(gBoom2, 0);
-			gBoomPhase = 1;
-		}
-		gNextBoom = gBoomDelay;
+	  if ( gBoomPhase ) {
+		  sound->PlaySound(Sound::Boom1, 0);
+		  gBoomPhase = 0;
+	  } else {
+		  sound->PlaySound(Sound::Boom2, 0);
+		  gBoomPhase = 1;
+	  }
+	  gNextBoom = gBoomDelay;
 	}
 
 	/* UnBlit all of the sprites and players */

@@ -3,7 +3,6 @@
 
 #include "screenlib/SDL_FrameBuf.h"
 #include "maclib/Mac_FontServ.h"
-#include "maclib/Mac_Sound.h"
 #include "maclib/Mac_Compat.h"
 
 #include "Maelstrom.h"
@@ -13,6 +12,7 @@
 #include "logic.h"
 #include "scores.h"
 #include "controls.h"
+#include "sound.h"
 
 
 // The Font Server :)

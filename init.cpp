@@ -9,7 +9,7 @@
 #include "load.h"
 #include "colortable.h"
 #include "fastrand.h"
-#include "sounds.h"
+#include "sound.h"
 
 
 // Global variables set in this file...
@@ -709,6 +709,7 @@ extern "C" void CleanUp(void)
 		screen = NULL;
 	}
 	SaveControls();
+	Mix_Quit();
 	SDL_Quit();
 }
 
@@ -732,6 +733,12 @@ int DoInitializations(Uint32 video_flags)
 			return(-1);
 		}
 	}
+
+	if ( Mix_Init(MIX_INIT_OGG) < MIX_INIT_OGG ) {
+		error("Couldn't initialize Ogg Vorbis support in SDL Mixer");
+		return -1;
+	}
+
 	atexit(CleanUp);
 	signal(SIGSEGV, exit);
 
@@ -759,7 +766,7 @@ int DoInitializations(Uint32 video_flags)
 	}
 
 	/* Load the Sound Server and initialize sound */
-	sound = new Sound(data_dir.FullPath("Maelstrom Sounds"), gSoundLevel);
+	sound = new Sound(gSoundLevel);
 
 	/* Load the Maelstrom icon */
 	icon = SDL_LoadBMP(data_dir.FullPath("icon.bmp"));
@@ -810,7 +817,7 @@ int DoInitializations(Uint32 video_flags)
 	/* -- Throw up our intro screen */
 	screen->Fade();
 	DoIntroScreen();
-	sound->PlaySound(gPrizeAppears, 1);
+	sound->PlaySound(Sound::PrizeAppears, 1);
 	screen->Fade();
 
 	/* -- Load in our sprites and other needed resources */

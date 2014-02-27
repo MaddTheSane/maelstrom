@@ -1,4 +1,4 @@
-#include "../sounds.h"
+#include "../sound.h"
 
 /* Here we define all of the strange and wonderous objects in the game */
 
@@ -44,12 +44,12 @@ public:
 				break;
 			case 6:
 				/* -- Put 'em on ICE */
-				sound->PlaySound(gFreezeSound, 4);
+				sound->PlaySound(Sound::FreezeSound, 4);
 				gFreezeTime = FREEZE_DURATION;
 				break;
 			case 7:
 				/* Blow up everything */
-				sound->PlaySound(gNovaBoom, 5);
+				sound->PlaySound(Sound::NovaBoom, 5);
 				OBJ_LOOP(i, gNumSprites) {
 					if ( gSprites[i] == this )
 						continue;
@@ -63,7 +63,7 @@ public:
 				gShakeTime = SHAKE_DURATION;
 				break;
 		}
-		sound->PlaySound(gGotPrize, 4);
+		sound->PlaySound(Sound::GotPrize, 4);
 		return(1);
 	}
 
@@ -76,7 +76,7 @@ public:
 	}
 
 	void ExplodeSound(void) {
-		sound->PlaySound(gIdiotSound, 4);
+		sound->PlaySound(Sound::IdiotSound, 4);
 	}
 };
 
@@ -89,14 +89,14 @@ public:
 
 	int BeenShot(Object *ship, Shot *shot) {
 		ship->Multiplier(multiplier);
-		sound->PlaySound(gMultShotSound, 4);
+		sound->PlaySound(Sound::MultShotSound, 4);
 		return(1);
 	}
 	int BeenDamaged(int damage) {
 		return(0);
 	}
 	int BeenTimedOut(void) {
-		sound->PlaySound(gMultiplierGone, 4);
+		sound->PlaySound(Sound::MultiplierGone, 4);
 		return(-1);
 	}
 	void Shake(int shakiness) { }
@@ -115,7 +115,7 @@ public:
 	int BeenTimedOut(void) {
 		if ( ! Exploding ) {
 			int i;
-			sound->PlaySound(gNovaBoom, 5);
+			sound->PlaySound(Sound::NovaBoom, 5);
 			OBJ_LOOP(i, gNumSprites) {
 				if ( gSprites[i] == this )
 					continue;
@@ -143,7 +143,7 @@ public:
 
 		/* Increment the ship's bonus. :) */
 		ship->IncrBonus(bonus);
-		sound->PlaySound(gBonusShot, 4);
+		sound->PlaySound(Sound::BonusShot, 4);
 
 		/* Display point bonus */
 		shootable = 0;
@@ -161,7 +161,7 @@ public:
 	}
 	int BeenTimedOut(void) {
 		if ( bonus )
-			sound->PlaySound(gMultiplierGone, 4);
+			sound->PlaySound(Sound::MultiplierGone, 4);
 		return(-1);
 	}
 	void Shake(int shakiness) { }
@@ -191,7 +191,7 @@ public:
 
 	int BeenRunOver(Object *ship) {
 		ship->IncrLives(1);
-		sound->PlaySound(gSavedShipSound, 4);
+		sound->PlaySound(Sound::SavedShipSound, 4);
 		return(1);
 	}
 
@@ -259,7 +259,7 @@ public:
 	}
 
 	void ExplodeSound(void) {
-		sound->PlaySound(gShipHitSound, 5);
+		sound->PlaySound(Sound::ShipHitSound, 5);
 	}
 };
 
@@ -514,7 +514,7 @@ public:
 
 			/* Turn into an Asteroid */
 			case 0:
-				sound->PlaySound(gFunk, 4);
+				sound->PlaySound(Sound::Funk, 4);
 				newsprite = gNumSprites;
 				gSprites[newsprite] = new LargeRock(x, y,
 							xvec, yvec, phasetime);
@@ -526,7 +526,7 @@ public:
 
 			/* Turn into a homing mine */
 			case 2:
-				sound->PlaySound(gHomingAppears, 4);
+				sound->PlaySound(Sound::HomingAppears, 4);
 				newsprite = gNumSprites;
 				gSprites[newsprite] =
 					new Homing(x, y, xvec, yvec);

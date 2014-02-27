@@ -1,6 +1,6 @@
 
 #include "../Maelstrom_Globals.h"
-#include "../sounds.h"
+#include "../sound.h"
 #include "object.h"
 #include "player.h"
 #include "netplay.h"
@@ -374,7 +374,7 @@ void DrawStatus(Bool first, Bool ForceDraw)
 				gPlayers[i]->IncrLives(1);
 				lastLife[i] = (Score / NEW_LIFE) * NEW_LIFE;
 				if ( i == gOurPlayer )
-					sound->PlaySound(gNewLife, 5);
+					sound->PlaySound(Sound::NewLife, 5);
 			}
 		}
 	
@@ -761,7 +761,7 @@ static void DoGameOver(void)
 	screen->Update();
 
 	/* -- Play the game over sound */
-	sound->PlaySound(gGameOver, 5);
+	sound->PlaySound(Sound::GameOver, 5);
 	screen->Fade();
 
 	while( sound->Playing() )
@@ -781,7 +781,7 @@ static void DoGameOver(void)
 
 	if ((which != -1) && (gStartLevel == 1) && (gStartLives == 3) &&
 					(gNumPlayers == 1) && !gDeathMatch ) {
-		sound->PlaySound(gBonusShot, 5);
+		sound->PlaySound(Sound::BonusShot, 5);
 		for ( i = 8; i >= which ; --i ) {
 			hScores[i + 1].score = hScores[i].score;
 			hScores[i + 1].wave = hScores[i].wave;
@@ -825,16 +825,16 @@ static void DoGameOver(void)
 					case 127:
 					case '\b':
 						if ( chars_in_handle ) {
-							sound->PlaySound(gExplosionSound, 5);
+							sound->PlaySound(Sound::ExplosionSound, 5);
 							--chars_in_handle;
 						}
 						break;
 					default:
 						if ( chars_in_handle < 15 ) {
-							sound->PlaySound(gShotSound, 5);
+							sound->PlaySound(Sound::ShotSound, 5);
 							handle[chars_in_handle++] = (char)key;
 						} else
-							sound->PlaySound(gBonk, 5);
+							sound->PlaySound(Sound::Bonk, 5);
 						break;
 				}
 				screen->FillRect(x, 300-newyork_height+2,
@@ -857,7 +857,7 @@ static void DoGameOver(void)
 		strcpy(hScores[which].name, handle);
 
 		sound->HaltSound();
-		sound->PlaySound(gGotPrize, 6);
+		sound->PlaySound(Sound::GotPrize, 6);
 		if ( gNetScores )	// All time high!
 			RegisterHighScore(hScores[which]);
 		else
@@ -890,7 +890,7 @@ static void DoBonus(void)
 
 	/* -- Now do the bonus */
 	sound->HaltSound();
-	sound->PlaySound(gRiff, 6);
+	sound->PlaySound(Sound::Riff, 6);
 
 	/* Fade out */
 	screen->Fade();
@@ -943,7 +943,7 @@ static void DoBonus(void)
 			x += 75;
 			OurShip->MultBonus();
 			Delay(SOUND_DELAY);
-			sound->PlaySound(gMultiplier, 5);
+			sound->PlaySound(Sound::Multiplier, 5);
 			sprite = gMult[OurShip->GetBonusMult()-2]->sprite[0];
 			screen->QueueBlit(xs+34, 180, sprite);
 			screen->Update();
@@ -951,7 +951,7 @@ static void DoBonus(void)
 		}
 	}
 	Delay(SOUND_DELAY);
-	sound->PlaySound(gFunk, 5);
+	sound->PlaySound(Sound::Funk, 5);
 
 	snprintf(numbuf, sizeof(numbuf), "%-5.1d", OurShip->GetBonus());
 	bonus_width = DrawText(x, 200, numbuf, geneva, STYLE_BOLD,
@@ -965,11 +965,11 @@ static void DoBonus(void)
 	/* -- Praise them or taunt them as the case may be */
 	if (OurShip->GetBonus() == 0) {
 		Delay(SOUND_DELAY);
-		sound->PlaySound(gNoBonus, 5);
+		sound->PlaySound(Sound::NoBonus, 5);
 	}
 	if (OurShip->GetBonus() > 10000) {
 		Delay(SOUND_DELAY);
-		sound->PlaySound(gPrettyGood, 5);
+		sound->PlaySound(Sound::PrettyGood, 5);
 	}
 	while ( sound->Playing() )
 		Delay(SOUND_DELAY);
@@ -988,7 +988,7 @@ static void DoBonus(void)
 			while ( sound->Playing() )
 				Delay(SOUND_DELAY);
 
-			sound->PlaySound(gBonk, 5);
+			sound->PlaySound(Sound::Bonk, 5);
 			if ( OurShip->GetBonus() >= 500 ) {
 				OurShip->IncrScore(500);
 				OurShip->IncrBonus(-500);

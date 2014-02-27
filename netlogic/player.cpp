@@ -150,7 +150,7 @@ Player::BeenShot(Object *ship, Shot *shot)
 	if ( AutoShield || (ShieldOn && (ShieldLevel > 0)) )
 		return(0);
 	if ( (special & LUCKY_IRISH) && (FastRandom(LUCK_ODDS) == 0) ) {
-		sound->PlaySound(gLuckySound, 4);
+		sound->PlaySound(Sound::LuckySound, 4);
 		return(0);
 	}
 	return(Object::BeenShot(ship, shot));
@@ -166,7 +166,7 @@ Player::BeenRunOver(Object *ship) {
 	if ( ship->IsPlayer() )		/* Players phase through eachother */
 		return(0);
 	if ( (special & LUCKY_IRISH) && (FastRandom(LUCK_ODDS) == 0) ) {
-		sound->PlaySound(gLuckySound, 4);
+		sound->PlaySound(Sound::LuckySound, 4);
 		return(0);
 	}
 	return(Object::BeenRunOver(ship));
@@ -181,7 +181,7 @@ Player::BeenDamaged(int damage)
 	if ( AutoShield || (ShieldOn && (ShieldLevel > 0)) )
 		return(0);
 	if ( (special & LUCKY_IRISH) && (FastRandom(LUCK_ODDS) == 0) ) {
-		sound->PlaySound(gLuckySound, 4);
+		sound->PlaySound(Sound::LuckySound, 4);
 		return(0);
 	}
 	return(Object::BeenDamaged(damage));
@@ -391,7 +391,7 @@ printf("\n");
 
 				/* Make a single bullet */
 				MakeShot(0);
-				sound->PlaySound(gShotSound, 2);
+				sound->PlaySound(Sound::ShotSound, 2);
 
 				if ( special & TRIPLE_FIRE ) {
 					/* Followed by two more.. */
@@ -419,12 +419,12 @@ printf("\n");
 		} else if ( ShieldOn ) {
 			if ( ShieldLevel > 0 ) {
 				if ( ! WasShielded ) {
-					sound->PlaySound(gShieldOnSound, 1);
+					sound->PlaySound(Sound::ShieldOnSound, 1);
 					WasShielded = 1;
 				}
 				--ShieldLevel;
 			} else {
-				sound->PlaySound(gNoShieldSound, 2);
+				sound->PlaySound(Sound::NoShieldSound, 2);
 			}
 		} else
 			WasShielded = 0;
@@ -451,7 +451,7 @@ Player::HandleKeys(void)
 						if ( gPaused > 0 ) {
 							--gPaused;
 						} else {
-							sound->PlaySound(gPauseSound, 5);
+							sound->PlaySound(Sound::PauseSound, 5);
 							++gPaused;
 						}
 					}
@@ -480,7 +480,7 @@ Player::HandleKeys(void)
 						if ( gPaused > 0 ) {
 							--gPaused;
 						} else {
-							sound->PlaySound(gPauseSound, 5);
+							sound->PlaySound(Sound::PauseSound, 5);
 							++gPaused;
 						}
 						break;
@@ -592,13 +592,13 @@ Player::UnBlitSprite(void)
 void 
 Player::HitSound(void)
 {
-	sound->PlaySound(gSteelHit, 3);
+	sound->PlaySound(Sound::SteelHit, 3);
 }
 void 
 Player::ExplodeSound(void)
 {
 	sound->HaltThruster();
-	sound->PlaySound(gShipHitSound, 3);
+	sound->PlaySound(Sound::ShipHitSound, 3);
 }
 
 void

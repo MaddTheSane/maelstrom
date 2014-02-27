@@ -15,7 +15,7 @@
 #include "load.h"
 #include "fastrand.h"
 #include "checksum.h"
-#include "sounds.h"
+#include "sound.h"
 
 /* External functions used in this file */
 extern int DoInitializations(Uint32 video_flags);		/* init.cc */
@@ -43,13 +43,13 @@ static void RunDoAbout(void)
 {
 	gNoDelay = 0;
 	Delay(SOUND_DELAY);
-	sound->PlaySound(gNovaAppears, 5);
+	sound->PlaySound(Sound::NovaAppears, 5);
 	DoAbout();
 }
 static void RunConfigureControls(void)
 {
 	Delay(SOUND_DELAY);
-	sound->PlaySound(gHomingAppears, 5);
+	sound->PlaySound(Sound::HomingAppears, 5);
 	ConfigureControls();
 }
 static void RunPlayGame(void)
@@ -57,7 +57,7 @@ static void RunPlayGame(void)
 	gStartLives = 3;
 	gStartLevel = 1;
 	gNoDelay = 0;
-	sound->PlaySound(gNewLife, 5);
+	sound->PlaySound(Sound::NewLife, 5);
 	Delay(SOUND_DELAY);
 	NewGame();
 	Message(NULL);		/* Clear any messages */
@@ -65,7 +65,7 @@ static void RunPlayGame(void)
 static void RunQuitGame(void)
 {
 	Delay(SOUND_DELAY);
-	sound->PlaySound(gMultiplierGone, 5);
+	sound->PlaySound(Sound::MultiplierGone, 5);
 	while ( sound->Playing() )
 		Delay(SOUND_DELAY);
 	gRunning = false;
@@ -74,7 +74,7 @@ static void IncrementSound(void)
 {
 	if ( gSoundLevel < 8 ) {
 		sound->Volume(++gSoundLevel);
-		sound->PlaySound(gNewLife, 5);
+		sound->PlaySound(Sound::NewLife, 5);
 
 		/* -- Draw the new sound level */
 		DrawSoundLevel();
@@ -84,7 +84,7 @@ static void DecrementSound(void)
 {
 	if ( gSoundLevel > 0 ) {
 		sound->Volume(--gSoundLevel);
-		sound->PlaySound(gNewLife, 5);
+		sound->PlaySound(Sound::NewLife, 5);
 
 		/* -- Draw the new sound level */
 		DrawSoundLevel();
@@ -97,7 +97,7 @@ static void SetSoundLevel(int volume)
 
 	/* Set the new sound level! */
 	gSoundLevel = volume;
-	sound->PlaySound(gNewLife, 5);
+	sound->PlaySound(Sound::NewLife, 5);
 
 	/* -- Draw the new sound level */
 	DrawSoundLevel();
@@ -106,12 +106,12 @@ static void SetSoundLevel(int volume)
 static void RunZapScores(void)
 {
 	Delay(SOUND_DELAY);
-	sound->PlaySound(gMultShotSound, 5);
+	sound->PlaySound(Sound::MultShotSound, 5);
 	if ( ZapHighScores() ) {
 		/* Fade the screen and redisplay scores */
 		screen->Fade();
 		Delay(SOUND_DELAY);
-		sound->PlaySound(gExplosionSound, 5);
+		sound->PlaySound(Sound::ExplosionSound, 5);
 		gUpdateBuffer = true;
 	}
 }
@@ -282,7 +282,7 @@ int main(int argc, char *argv[])
 	}
 
 	gRunning = true;
-	sound->PlaySound(gNovaBoom, 5);
+	sound->PlaySound(Sound::NovaBoom, 5);
 	screen->Fade();		/* Fade-out */
 	Delay(SOUND_DELAY);
 	gUpdateBuffer = true;
@@ -326,11 +326,11 @@ int main(int argc, char *argv[])
 				/* -- Start the game */
 				case SDLK_l:
 					Delay(SOUND_DELAY);
-					sound->PlaySound(gLuckySound, 5);
+					sound->PlaySound(Sound::LuckySound, 5);
 					gStartLevel = GetStartLevel();
 					if ( gStartLevel > 0 ) {
 						Delay(SOUND_DELAY);
-						sound->PlaySound(gNewLife, 5);
+						sound->PlaySound(Sound::NewLife, 5);
 						Delay(SOUND_DELAY);
 						NewGame();
 					}
@@ -359,7 +359,7 @@ int main(int argc, char *argv[])
 				/* -- Give 'em a little taste of the peppers */
 				case SDLK_x:
 					Delay(SOUND_DELAY);
-					sound->PlaySound(gEnemyAppears, 5);
+					sound->PlaySound(Sound::EnemyAppears, 5);
 					ShowDawn();
 					break;
 
@@ -386,7 +386,7 @@ int main(int argc, char *argv[])
 				// Dink! :-)
 				default:
 					Delay(SOUND_DELAY);
-					sound->PlaySound(gSteelHit, 5);
+					sound->PlaySound(Sound::SteelHit, 5);
 					break;
 			}
 		} else

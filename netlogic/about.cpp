@@ -2,7 +2,7 @@
 #include "../Maelstrom_Globals.h"
 #include "object.h"
 #include "../load.h"
-#include "../sounds.h"
+#include "../sound.h"
 
 #define	ICON_V_OFF	14
 
@@ -51,15 +51,15 @@ void DoAbout(void)
 				drawscreen = true;
 			
 				if ( next_screen ) {
-					sound_to_play = gExplosionSound;
+					sound_to_play = Sound::ExplosionSound;
 				} else {
 					done = true;
-					sound_to_play = gMultiplierGone;
+					sound_to_play = Sound::MultiplierGone;
 				}
 				
 				if ( ++idOn > 135 ) {
 					done = true;
-					sound_to_play = gPrettyGood;
+					sound_to_play = Sound::PrettyGood;
 				}
 				Delay(SOUND_DELAY);
 				sound->PlaySound(sound_to_play, 5);

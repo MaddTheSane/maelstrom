@@ -1,6 +1,6 @@
 
 #include "../Maelstrom_Globals.h"
-#include "../sounds.h"
+#include "../sound.h"
 #include "object.h"
 
 
@@ -106,12 +106,12 @@ Object::UnBlitSprite(void)
 void 
 Object::HitSound(void)
 {
-	sound->PlaySound(gSteelHit, 3);
+	sound->PlaySound(Sound::SteelHit, 3);
 }
 void 
 Object::ExplodeSound(void)
 {
-	sound->PlaySound(gExplosionSound, 3);
+	sound->PlaySound(Sound::ExplosionSound, 3);
 }
 
 /* The objects!! */
