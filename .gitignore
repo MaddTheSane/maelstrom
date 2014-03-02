@@ -1,3 +1,5 @@
+Maelstrom
+Maelstrom-netd
 maelstrom-*.tar.gz
 Maelstrom.spec
 *Makefile.in
@@ -19,3 +21,4 @@ missing
 *.deps
 *.o
 *.a
+

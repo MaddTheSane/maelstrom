@@ -23,7 +23,6 @@
 #include "path.h"
 
 #include <stdint.h>
-#include <iostream>
 #include <string>
 
 
@@ -36,18 +35,17 @@ Sound::Sound(uint8_t vol)
 	}
 	Mix_AllocateChannels(MIXER_CHANNELS);
 
-	char *filename = new char[256];	
+	std::string filename;
 	Mix_Chunk *chunk;
 	for ( auto i=0; i < 34; ++i ) {
-		snprintf(filename, 256, DATADIR "/%02d.ogg", i);
-
-		chunk = Mix_LoadWAV(filename);
+		filename = DATADIR "/sounds/" + filenames[i] + ".ogg";
+		chunk = Mix_LoadWAV(filename.c_str());
 		if (chunk == NULL)
 			throw Sound_Error(Mix_GetError());
 
 		chunks[i] = chunk;
 	}
-	delete[] filename;
+	//delete[] filename;
 	Mix_Volume(-1, vol*16);
 }
 

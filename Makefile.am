@@ -79,11 +79,13 @@ install_gamedata:
 		Maelstrom_Fonts		\
 		Maelstrom_Sprites	\
 		icon.bmp icon.xpm	\
-		sounds/*.ogg		\
 			$(GAMEDATADIR)
 
 	install -d $(GAMEDATADIR)/Images/
 	install Images/* $(GAMEDATADIR)/Images/
+
+	install -d $(GAMEDATADIR)/sounds
+	install sounds/* $(GAMEDATADIR)/sounds
 
 install_scores:
 	install -d $(localstatedir)

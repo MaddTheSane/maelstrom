@@ -1,7 +1,7 @@
 
 /* Maelstrom version... */
 #ifndef VERSION
-#define VERSION "3.0.6"
+#define VERSION "4.0.3"
 #endif
 #define	VERSION_STRING		VERSION ".N"
 

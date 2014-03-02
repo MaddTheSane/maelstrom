@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT([Maelstrom],[4.0.2])
+AC_INIT([Maelstrom],[4.0.3])
 AC_CONFIG_SRCDIR([main.cpp])
 
 dnl Detect the canonical target build environment
