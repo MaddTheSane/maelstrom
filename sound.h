@@ -26,6 +26,7 @@
 #include <vector>
 #include <stdexcept>
 
+namespace Maelstrom {
 
 struct Sound_Error : public std::runtime_error {
         Sound_Error(const std::string& p) :runtime_error(p) {}
@@ -160,5 +161,7 @@ public:
 	 */
 	void HaltThruster();
 };
+
+}
 
 #endif /* SOUND_H_ */

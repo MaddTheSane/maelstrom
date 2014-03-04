@@ -4,6 +4,8 @@ AM_CPPFLAGS = -DDATADIR=\"$(GAMEDATADIR)\" -DSTATEDIR=\"$(localstatedir)\"
 AM_CXXFLAGS = -std=c++11 $(SDL_CFLAGS) $(SDL_NET_CFLAGS)
 AM_LDFLAGS  =  $(SDL_LIBS) $(SDL_NET_LIBS) $(SDL_MIXER_LIBS)
 
+SUBDIRS = netlogic screenlib maclib
+
 bin_PROGRAMS = Maelstrom Maelstrom-netd
 
 Maelstrom_SOURCES =		\
@@ -26,8 +28,6 @@ Maelstrom_SOURCES =		\
 	main.cpp		\
 	myerror.cpp		\
 	myerror.h		\
-	netscore.cpp		\
-	netscore.h		\
 	path.h			\
 	public_key.h		\
 	rect.cpp		\
@@ -41,8 +41,6 @@ Maelstrom_LDADD = 			\
 	netlogic/liblogic.a		\
 	screenlib/libSDLscreen.a	\
 	maclib/libSDLmac.a
-
-SUBDIRS = netlogic screenlib maclib
 
 EXTRA_DIST =			\
 	autogen.sh		\

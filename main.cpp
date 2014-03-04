@@ -43,13 +43,13 @@ static void RunDoAbout(void)
 {
 	gNoDelay = 0;
 	Delay(SOUND_DELAY);
-	sound->PlaySound(Sound::NovaAppears, 5);
+	sound->PlaySound(Maelstrom::Sound::NovaAppears, 5);
 	Maelstrom::DoAbout();
 }
 static void RunConfigureControls(void)
 {
 	Delay(SOUND_DELAY);
-	sound->PlaySound(Sound::HomingAppears, 5);
+	sound->PlaySound(Maelstrom::Sound::HomingAppears, 5);
 	ConfigureControls();
 }
 static void RunPlayGame(void)
@@ -57,7 +57,7 @@ static void RunPlayGame(void)
 	gStartLives = 3;
 	gStartLevel = 1;
 	gNoDelay = 0;
-	sound->PlaySound(Sound::NewLife, 5);
+	sound->PlaySound(Maelstrom::Sound::NewLife, 5);
 	Delay(SOUND_DELAY);
 	Maelstrom::NewGame();
 	Message(NULL);		/* Clear any messages */
@@ -65,7 +65,7 @@ static void RunPlayGame(void)
 static void RunQuitGame(void)
 {
 	Delay(SOUND_DELAY);
-	sound->PlaySound(Sound::MultiplierGone, 5);
+	sound->PlaySound(Maelstrom::Sound::MultiplierGone, 5);
 	while ( sound->Playing() )
 		Delay(SOUND_DELAY);
 	gRunning = false;
@@ -74,7 +74,7 @@ static void IncrementSound(void)
 {
 	if ( gSoundLevel < 8 ) {
 		sound->Volume(++gSoundLevel);
-		sound->PlaySound(Sound::NewLife, 5);
+		sound->PlaySound(Maelstrom::Sound::NewLife, 5);
 
 		/* -- Draw the new sound level */
 		DrawSoundLevel();
@@ -84,7 +84,7 @@ static void DecrementSound(void)
 {
 	if ( gSoundLevel > 0 ) {
 		sound->Volume(--gSoundLevel);
-		sound->PlaySound(Sound::NewLife, 5);
+		sound->PlaySound(Maelstrom::Sound::NewLife, 5);
 
 		/* -- Draw the new sound level */
 		DrawSoundLevel();
@@ -97,7 +97,7 @@ static void SetSoundLevel(int volume)
 
 	/* Set the new sound level! */
 	gSoundLevel = volume;
-	sound->PlaySound(Sound::NewLife, 5);
+	sound->PlaySound(Maelstrom::Sound::NewLife, 5);
 
 	/* -- Draw the new sound level */
 	DrawSoundLevel();
@@ -106,12 +106,12 @@ static void SetSoundLevel(int volume)
 static void RunZapScores(void)
 {
 	Delay(SOUND_DELAY);
-	sound->PlaySound(Sound::MultShotSound, 5);
+	sound->PlaySound(Maelstrom::Sound::MultShotSound, 5);
 	if ( ZapHighScores() ) {
 		/* Fade the screen and redisplay scores */
 		screen->Fade();
 		Delay(SOUND_DELAY);
-		sound->PlaySound(Sound::ExplosionSound, 5);
+		sound->PlaySound(Maelstrom::Sound::ExplosionSound, 5);
 		gUpdateBuffer = true;
 	}
 }
@@ -150,14 +150,13 @@ static void RunSpeedTest(void)
 static char *progname;
 void PrintUsage(void)
 {
-	error("\nUsage: %s [-netscores] -printscores\n", progname);
+	error("\nUsage: %s -printscores\n", progname);
 	error("or\n");
 	error("Usage: %s <options>\n\n", progname);
 	error("Where <options> can be any of:\n\n"
 "	-fullscreen		# Run Maelstrom in full-screen mode\n"
 "	-gamma [0-8]		# Set the gamma correction\n"
 "	-volume [0-8]		# Set the sound volume\n"
-"	-netscores		# Use the world-wide network score server\n"
 	);
 	Maelstrom::LogicUsage();
 	error("\n");
@@ -246,8 +245,6 @@ int main(int argc, char *argv[])
 #endif /* CHECKSUM_DEBUG */
 		else if ( strcmp(argv[1], "-printscores") == 0 )
 			doprinthigh = 1;
-		else if ( strcmp(argv[1], "-netscores") == 0 )
-			gNetScores = 1;
 		else if ( strcmp(argv[1], "-speedtest") == 0 )
 			speedtest = 1;
 		else if ( Maelstrom::LogicParseArgs(&argv, &argc) == 0 ) {
@@ -282,7 +279,7 @@ int main(int argc, char *argv[])
 	}
 
 	gRunning = true;
-	sound->PlaySound(Sound::NovaBoom, 5);
+	sound->PlaySound(Maelstrom::Sound::NovaBoom, 5);
 	screen->Fade();		/* Fade-out */
 	Delay(SOUND_DELAY);
 	gUpdateBuffer = true;
@@ -326,11 +323,11 @@ int main(int argc, char *argv[])
 				/* -- Start the game */
 				case SDLK_l:
 					Delay(SOUND_DELAY);
-					sound->PlaySound(Sound::LuckySound, 5);
+					sound->PlaySound(Maelstrom::Sound::LuckySound, 5);
 					gStartLevel = GetStartLevel();
 					if ( gStartLevel > 0 ) {
 						Delay(SOUND_DELAY);
-						sound->PlaySound(Sound::NewLife, 5);
+						sound->PlaySound(Maelstrom::Sound::NewLife, 5);
 						Delay(SOUND_DELAY);
 						Maelstrom::NewGame();
 					}
@@ -359,7 +356,7 @@ int main(int argc, char *argv[])
 				/* -- Give 'em a little taste of the peppers */
 				case SDLK_x:
 					Delay(SOUND_DELAY);
-					sound->PlaySound(Sound::EnemyAppears, 5);
+					sound->PlaySound(Maelstrom::Sound::EnemyAppears, 5);
 					ShowDawn();
 					break;
 
@@ -386,7 +383,7 @@ int main(int argc, char *argv[])
 				// Dink! :-)
 				default:
 					Delay(SOUND_DELAY);
-					sound->PlaySound(Sound::SteelHit, 5);
+					sound->PlaySound(Maelstrom::Sound::SteelHit, 5);
 					break;
 			}
 		} else

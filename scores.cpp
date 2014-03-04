@@ -29,7 +29,6 @@
 #define CLR_DIALOG_WIDTH	281
 #define CLR_DIALOG_HEIGHT	111
 
-Bool gNetScores = 0;
 Scores hScores[NUM_SCORES];
 
 void LoadScores(void)
@@ -37,15 +36,6 @@ void LoadScores(void)
 	SDL_RWops *scores_src;
 	int i;
 
-	/* Try to load network scores, if we can */
-	if ( gNetScores ) {
-		if ( NetLoadScores() == 0 )
-			return;
-		else {
-			mesg("Using local score file\n\n");
-			gNetScores = 0;
-		}
-	}
 	memset(&hScores, 0, sizeof(hScores));
 
 	scores_src = SDL_RWFromFile(STATEDIR "/" MAELSTROM_SCORES, "rb");
@@ -66,13 +56,6 @@ void SaveScores(void)
 	int i;
 #ifdef unix
 	int omask;
-#endif
-
-	/* Don't save network scores */
-	if ( gNetScores )
-		return;
-
-#ifdef unix
 	omask=umask(SCORES_PERMMASK);
 #endif
 	scores_src = SDL_RWFromFile(STATEDIR "/" MAELSTROM_SCORES, "wb");

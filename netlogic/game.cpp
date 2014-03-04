@@ -860,10 +860,7 @@ static void DoGameOver(void)
 
 		sound->HaltSound();
 		sound->PlaySound(Sound::GotPrize, 6);
-		if ( gNetScores )	// All time high!
-			RegisterHighScore(hScores[which]);
-		else
-			SaveScores();
+		SaveScores();
 	} else
 	if ( gNumPlayers > 1 )	/* Let them watch their ranking */
 		SDL_Delay(3000);

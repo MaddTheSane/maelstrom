@@ -5,7 +5,7 @@ namespace Maelstrom {
 
 /* Maelstrom version... */
 #ifndef VERSION
-#define VERSION "4.0.3"
+#error "VERSION not defined"
 #endif
 #define	VERSION_STRING		VERSION ".N"
 

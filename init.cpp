@@ -13,7 +13,7 @@
 
 
 // Global variables set in this file...
-Sound    *sound = NULL;
+Maelstrom::Sound *sound = NULL;
 FontServ *fontserv = NULL;
 FrameBuf *screen = NULL;
 
@@ -766,7 +766,7 @@ int DoInitializations(Uint32 video_flags)
 	}
 
 	/* Load the Sound Server and initialize sound */
-	sound = new Sound(gSoundLevel);
+	sound = new Maelstrom::Sound(gSoundLevel);
 
 	/* Load the Maelstrom icon */
 	icon = SDL_LoadBMP(data_dir.FullPath("icon.bmp"));
@@ -817,7 +817,7 @@ int DoInitializations(Uint32 video_flags)
 	/* -- Throw up our intro screen */
 	screen->Fade();
 	DoIntroScreen();
-	sound->PlaySound(Sound::PrizeAppears, 1);
+	sound->PlaySound(Maelstrom::Sound::PrizeAppears, 1);
 	screen->Fade();
 
 	/* -- Load in our sprites and other needed resources */

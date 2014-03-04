@@ -19,7 +19,7 @@
 extern FontServ *fontserv;
 
 // The Sound Server *grin*
-extern Sound *sound;
+extern Maelstrom::Sound *sound;
 
 // The SCREEN!! :)
 extern FrameBuf *screen;
@@ -37,10 +37,6 @@ extern void   Message(char *message);
 
 // Functions from init.cc
 extern void  SetStar(int which);
-
-// Functions from netscore.cc
-extern void  RegisterHighScore(Scores high);
-extern int   NetLoadScores(void);
 
 // External variables...
 // in main.cc : 
@@ -73,8 +69,6 @@ extern int	gStartLevel;
 // in init.cc : 
 extern Uint32	gLastDrawn;
 extern int	gNumSprites;
-// in scores.cc :
-extern Bool	gNetScores;
 
 /* -- The blit'ers we use */
 extern BlitPtr	gRock1R, gRock2R, gRock3R, gDamagedShip;

@@ -25,6 +25,7 @@
 #include <stdint.h>
 #include <string>
 
+namespace Maelstrom {
 
 Sound::Sound(uint8_t vol)
 	:chunks(34), priorities(MIXER_CHANNELS)
@@ -103,4 +104,6 @@ void Sound::HaltThruster() {
 	 * but if it does there is probably alot of stuff going on anyway.
 	 */
 	Mix_HaltChannel(THRUST_CHANNEL); 
+}
+
 }
