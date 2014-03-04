@@ -1,3 +1,4 @@
+namespace Maelstrom {
 
 /* Da da da dum, the ENEMY */
 
@@ -271,3 +272,4 @@ public:
 	}
 };
 
+}

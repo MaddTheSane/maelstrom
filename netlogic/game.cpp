@@ -6,7 +6,9 @@
 #include "netplay.h"
 #include "make.h"
 #include "../load.h"
+#include "make.h"
 
+namespace Maelstrom {
 
 #ifdef MOVIE_SUPPORT
 extern int gMovie;
@@ -1048,3 +1050,4 @@ static void TwinkleStars(void)
 	screen->FocusFG();
 }	/* -- TwinkleStars */
 
+}

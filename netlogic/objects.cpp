@@ -8,6 +8,7 @@
 #include "globals.h"
 #include "objects.h"
 
+namespace Maelstrom {
 
 Prize::Prize(int X, int Y, int xVel, int yVel) :
 			Object(X, Y, xVel, yVel, gPrize, 2)
@@ -142,3 +143,4 @@ error("Created a steel asteroid!\n");
 #endif
 }
 
+}

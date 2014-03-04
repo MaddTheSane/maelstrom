@@ -260,8 +260,8 @@ static void InitShots(void)
 	int xx = 30;
 
 	/* Load the shot images */
-	gPlayerShot = screen->LoadImage(SHOT_SIZE,SHOT_SIZE,gPlayerShotColors);
-	gEnemyShot = screen->LoadImage(SHOT_SIZE, SHOT_SIZE, gEnemyShotColors);
+	Maelstrom::gPlayerShot = screen->LoadImage(SHOT_SIZE,SHOT_SIZE, Maelstrom::gPlayerShotColors);
+	Maelstrom::gEnemyShot = screen->LoadImage(SHOT_SIZE, SHOT_SIZE, Maelstrom::gEnemyShotColors);
 
 	/* Now setup the shot origin table */
 
@@ -695,7 +695,7 @@ static void BuildVelocityTable(void)
 */
 extern "C" void CleanUp(void)
 {
-	HaltLogic();
+	Maelstrom::HaltLogic();
 	if ( fontserv ) {
 		delete fontserv;
 		fontserv = NULL;
@@ -1026,7 +1026,7 @@ int InitSprites(void)
 	gLastDrawn = 0L;
 
 	/* Initialize player sprites */
-	return(InitPlayerSprites());
+	return Maelstrom::InitPlayerSprites();
 }	/* -- InitSprites */
 
 

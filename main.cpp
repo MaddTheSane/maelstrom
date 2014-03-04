@@ -44,7 +44,7 @@ static void RunDoAbout(void)
 	gNoDelay = 0;
 	Delay(SOUND_DELAY);
 	sound->PlaySound(Sound::NovaAppears, 5);
-	DoAbout();
+	Maelstrom::DoAbout();
 }
 static void RunConfigureControls(void)
 {
@@ -59,7 +59,7 @@ static void RunPlayGame(void)
 	gNoDelay = 0;
 	sound->PlaySound(Sound::NewLife, 5);
 	Delay(SOUND_DELAY);
-	NewGame();
+	Maelstrom::NewGame();
 	Message(NULL);		/* Clear any messages */
 }
 static void RunQuitGame(void)
@@ -159,7 +159,7 @@ void PrintUsage(void)
 "	-volume [0-8]		# Set the sound volume\n"
 "	-netscores		# Use the world-wide network score server\n"
 	);
-	LogicUsage();
+	Maelstrom::LogicUsage();
 	error("\n");
 	exit(1);
 }
@@ -187,7 +187,7 @@ int main(int argc, char *argv[])
 	LoadControls();
 
 	/* Initialize game logic data structures */
-	if ( InitLogicData() < 0 ) {
+	if ( Maelstrom::InitLogicData() < 0 ) {
 		exit(1);
 	}
 
@@ -250,7 +250,7 @@ int main(int argc, char *argv[])
 			gNetScores = 1;
 		else if ( strcmp(argv[1], "-speedtest") == 0 )
 			speedtest = 1;
-		else if ( LogicParseArgs(&argv, &argc) == 0 ) {
+		else if ( Maelstrom::LogicParseArgs(&argv, &argc) == 0 ) {
 			/* LogicParseArgs() took care of everything */;
 		} else if ( strcmp(argv[1], "-version") == 0 ) {
 			error("%s", Version);
@@ -267,7 +267,7 @@ int main(int argc, char *argv[])
 	}
 
 	/* Make sure we have a valid player list (netlogic) */
-	if ( InitLogic() < 0 )
+	if ( Maelstrom::InitLogic() < 0 )
 		exit(1);
 
 	/* Initialize everything. :) */
@@ -332,7 +332,7 @@ int main(int argc, char *argv[])
 						Delay(SOUND_DELAY);
 						sound->PlaySound(Sound::NewLife, 5);
 						Delay(SOUND_DELAY);
-						NewGame();
+						Maelstrom::NewGame();
 					}
 					break;
 
@@ -560,7 +560,7 @@ void DrawMainScreen(void)
 
 	DrawText(xOff+5, botDiv+46+(10*18)+3, "Last Score: ", 
 					bigfont, STYLE_NORM, 0xFF, 0xFF, 0xFF);
-	snprintf(buffer, sizeof(buffer), "%d", GetScore());
+	snprintf(buffer, sizeof(buffer), "%d", Maelstrom::GetScore());
 	sw = fontserv->TextWidth("Last Score: ", bigfont, STYLE_NORM);
 	DrawText(xOff+5+sw, botDiv+46+(index*18)+3, buffer, 
 					bigfont, STYLE_NORM, 0xFF, 0xFF, 0xFF);

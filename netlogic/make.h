@@ -1,3 +1,4 @@
+namespace Maelstrom {
 
 // Functions from make.cc
 extern	void	MakeLargeRock(int x, int y);
@@ -11,3 +12,4 @@ extern	void	MakeNova(void);
 extern	void	MakeDamagedShip(void);
 extern	void	MakeEnemy(void);
 
+}

@@ -1,6 +1,8 @@
 
 #include "protocol.h"
 
+namespace Maelstrom {
+
 /* Special features of the player */
 #define MACHINE_GUNS	0x01
 #define AIR_BRAKES	0x02
@@ -158,3 +160,5 @@ private:
 /* The Players!! */
 extern Player *gPlayers[MAX_PLAYERS];
 extern Uint8   gPlayerColors[MAX_PLAYERS][3];
+
+}

@@ -6,6 +6,7 @@
 #include "globals.h"
 #include "objects.h"
 
+namespace Maelstrom {
 
 /* ----------------------------------------------------------------- */
 /* -- The Player class */
@@ -685,3 +686,5 @@ Uint8 gPlayerColors[MAX_PLAYERS][3] = {
 
 /* The players!! */
 Player *gPlayers[MAX_PLAYERS];
+
+}

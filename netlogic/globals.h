@@ -1,5 +1,9 @@
+#include "object.h"
+
 /* ----------------------------------------------------------------- */
 /* -- Special logic module variables */
+
+namespace Maelstrom {
 
 // in game.cc :
 extern int	gDisplayed;
@@ -27,3 +31,4 @@ extern int	gWave;
 extern Object  *gEnemySprite;
 extern int	gWhenEnemy;
 
+}

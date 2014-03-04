@@ -4,6 +4,8 @@ noinst_LIBRARIES = liblogic.a
 
 liblogic_a_SOURCES =		\
 	../Maelstrom_Globals.h	\
+	../load.h		\
+	../sound.h		\
 	about.cpp		\
 	blit.cpp		\
 	game.cpp		\

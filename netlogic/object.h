@@ -2,6 +2,9 @@
 #ifndef _object_h
 #define _object_h
 
+#include "netlogic.h"
+
+namespace Maelstrom {
 
 /* The screen object class */
 class Object {
@@ -285,5 +288,7 @@ protected:
 
 /* The Objects!! */
 extern Object *gSprites[MAX_SPRITES];
+
+}
 
 #endif /* _object_h */

@@ -3,6 +3,8 @@
 
 #include "netlogic/netlogic.h"
 
+namespace Maelstrom {
+
 /* From logic.cpp */
 extern void LogicUsage(void);
 extern int  InitLogicData(void);
@@ -26,3 +28,4 @@ extern SDL_Surface *gPlayerShot;
 extern Uint8 gEnemyShotColors[];
 extern SDL_Surface *gEnemyShot;
 
+}

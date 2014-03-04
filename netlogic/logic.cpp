@@ -5,6 +5,8 @@
 #include "globals.h"
 #include "netplay.h"
 
+namespace Maelstrom {
+
 /* Extra options specific to this logic module */
 void LogicUsage(void)
 {
@@ -116,3 +118,4 @@ int GetScore(void)
 	return(OurShip->GetScore());
 }
 
+}

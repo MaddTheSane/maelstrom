@@ -1,5 +1,7 @@
 #include "../sound.h"
 
+namespace Maelstrom {
+
 /* Here we define all of the strange and wonderous objects in the game */
 
 
@@ -538,3 +540,5 @@ public:
 		return(0);
 	}
 };
+
+}

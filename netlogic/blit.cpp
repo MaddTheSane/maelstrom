@@ -14,6 +14,8 @@
 #include "player.h"
 #include "globals.h"
 
+namespace Maelstrom {
+
 /* Returns the number of players left in the game */
 int RunFrame(void)
 {
@@ -163,4 +165,6 @@ printf("\n");
 		gLastDrawn = ticks;
 	}
 	return(PlayersLeft);
+}
+
 }

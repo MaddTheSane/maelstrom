@@ -1,3 +1,7 @@
+#ifndef NETLOGIC_H
+#define NETLOGIC_H
+
+namespace Maelstrom {
 
 /* Maelstrom version... */
 #ifndef VERSION
@@ -46,3 +50,6 @@ typedef struct {
 	} Shot;
 typedef Shot *ShotPtr;
 
+}
+
+#endif /* NETLOGIC_H */

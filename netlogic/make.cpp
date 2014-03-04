@@ -7,6 +7,7 @@
 #include "objects.h"
 #include "shinobi.h"
 
+namespace Maelstrom {
 
 /* ----------------------------------------------------------------- */
 /* -- Make an enemy Shenobi fighter! */
@@ -370,3 +371,4 @@ void MakeSteelRoid(int x, int y)
 	gSprites[newsprite] = new SteelRoid(x, y, xVel, yVel);
 }	/* -- MakeSteelRoid */
 
+}

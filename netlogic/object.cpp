@@ -3,6 +3,7 @@
 #include "../sound.h"
 #include "object.h"
 
+namespace Maelstrom {
 
 /* The screen object class */
 
@@ -116,3 +117,5 @@ Object::ExplodeSound(void)
 
 /* The objects!! */
 Object *gSprites[MAX_SPRITES];
+
+}

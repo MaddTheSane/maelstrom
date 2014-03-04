@@ -4,6 +4,8 @@
 #include "../load.h"
 #include "../sound.h"
 
+namespace Maelstrom {
+
 #define	ICON_V_OFF	14
 
 #define KEYPRESS(X)	(X.type == SDL_KEYDOWN)
@@ -203,3 +205,5 @@ void DoAbout(void)
 	screen->Fade();
 	gUpdateBuffer = true;
 }	/* -- DoAbout */
+
+}
