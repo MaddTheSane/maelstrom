@@ -45,19 +45,19 @@ esac
 AC_SUBST(MATHLIB)
 AC_SUBST(INETLIB)
 
-dnl Check for SDL
-SDL_VERSION=1.2.0
-AM_PATH_SDL($SDL_VERSION,
+dnl Check for SDL2
+SDL2_VERSION=2.0.0
+AM_PATH_SDL($SDL2_VERSION,
             :,
-            AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
+            AC_MSG_ERROR([*** SDL version $SDL2_VERSION not found!])
 )
-CFLAGS="$CFLAGS $SDL_CFLAGS"
-LIBS="$LIBS $SDL_LIBS"
+CFLAGS="$CFLAGS $SDL2_CFLAGS"
+LIBS="$LIBS $SDL2_LIBS"
 
-dnl Check for SDL_net
-AC_CHECK_LIB(SDL_net, SDLNet_Init, have_SDL_net=yes)
+dnl Check for SDL2_net
+AC_CHECK_LIB(SDL2_net, SDLNet_Init, have_SDL_net=yes)
 if test x$have_SDL_net = xyes; then
-    LIBS="$LIBS -lSDL_net"
+    LIBS="$LIBS -lSDL2_net"
 else
     AC_MSG_ERROR([*** Can't find the SDL_net library
 The SDL_net library can be found at:
