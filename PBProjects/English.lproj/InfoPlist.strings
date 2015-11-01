@@ -1,0 +1,6 @@
+﻿/* Localized versions of Info.plist keys */
+
+CFBundleName = "Maelstrom";
+CFBundleShortVersionString = "Maelstrom version 3.0.6";
+CFBundleGetInfoString = "Maelstrom version 3.0.6";
+NSHumanReadableCopyright = "";

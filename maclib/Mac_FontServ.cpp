@@ -34,7 +34,7 @@
 #include "Mac_FontServ.h"
 
 #define copy_short(S, D)	memcpy(&S, D, 2); D += 2;
-#define copy_long(L, D)		memcpy(&L, D, 4); D += 4;
+#define copy_int(L, D)		memcpy(&L, D, 4); D += 4;
 
 /* The structure of the Macintosh 'FOND' resource */
 struct Font_entry {
@@ -127,11 +127,11 @@ FontServ:: NewFont(const char *fontname, int ptsize)
 	copy_short(Fond.MaxDescent, data);
 	copy_short(Fond.MaxLead, data);
 	copy_short(Fond.MaxWidth, data);
-	copy_long(Fond.WidthOff, data);
-	copy_long(Fond.KernOff, data);
-	copy_long(Fond.StyleOff, data);
+	copy_int(Fond.WidthOff, data);
+	copy_int(Fond.KernOff, data);
+	copy_int(Fond.StyleOff, data);
 	memcpy(Fond.StyleProp, data, 18); data += 18;
-	copy_long(Fond.Intl_info, data);
+	copy_int(Fond.Intl_info, data);
 	copy_short(Fond.Version, data);
 	copy_short(Fond.num_fonts, data);
 	bytesex16(Fond.num_fonts);
@@ -387,7 +387,7 @@ FontServ:: TextImage(const char *text, MFont *font, Uint8 style,
 	}
 
 	/* Map the image and return */
-	SDL_SetColorKey(image, SDL_SRCCOLORKEY, 0);
+	SDL_SetColorKey(image, 1/*SDL_SRCCOLORKEY*/, 0);
 	image->format->palette->colors[0] = background;
 	image->format->palette->colors[1] = foreground;
 	++text_allocated;
@@ -413,6 +413,7 @@ FontServ:: InvertText(SDL_Surface *text)
 	/* Swap background and foreground colors */
 	colors[0] = text->format->palette->colors[1];
 	colors[1] = text->format->palette->colors[0];
-	SDL_SetColors(text, colors, 0, 2);
+	SDL_SetPaletteColors(text->format->palette, colors, 0, 2);
+	//SDL_SetColors(text, colors, 0, 2);
 	return(0);
 }

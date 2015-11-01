@@ -1,4 +1,4 @@
-AM_CXXFLAGS = -std=c++11 $(SDL_CFLAGS)
+AM_CXXFLAGS = -std=c++11 $(SDL2_CFLAGS)
 
 noinst_LIBRARIES = liblogic.a
 

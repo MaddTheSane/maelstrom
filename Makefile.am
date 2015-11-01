@@ -1,8 +1,8 @@
 GAMEDATADIR = $(datadir)/maelstrom
 
 AM_CPPFLAGS = -DDATADIR=\"$(GAMEDATADIR)\" -DSTATEDIR=\"$(localstatedir)\"
-AM_CXXFLAGS = -std=c++11 $(SDL_CFLAGS) $(SDL_NET_CFLAGS)
-AM_LDFLAGS  =  $(SDL_LIBS) $(SDL_NET_LIBS) $(SDL_MIXER_LIBS)
+AM_CXXFLAGS = -std=c++11 $(SDL2_CFLAGS) $(SDL2_NET_CFLAGS)
+AM_LDFLAGS  =  $(SDL2_LIBS) $(SDL2_NET_LIBS) $(SDL2_MIXER_LIBS)
 
 SUBDIRS = netlogic screenlib maclib
 
@@ -46,6 +46,7 @@ EXTRA_DIST =			\
 	autogen.sh		\
 	VisualC.zip		\
 	PBProjects.tar.gz	\
+	PBProjects	\
 	MPWmake.sea.bin		\
 	AUTHORS			\
 	Changelog		\

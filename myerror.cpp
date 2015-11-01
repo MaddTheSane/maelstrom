@@ -8,9 +8,10 @@
 #include <stdarg.h>
 #include <string.h>
 #include <errno.h>
+#include "myerror.h"
 
 
-void error(char *fmt, ...)
+void error(const char *fmt, ...)
 {
 	char mesg[BUFSIZ];
 	va_list ap;
@@ -21,7 +22,7 @@ void error(char *fmt, ...)
 	va_end(ap);
 }
 
-void mesg(char *fmt, ...)
+void mesg(const char *fmt, ...)
 {
 	char mesg[BUFSIZ];
 	va_list ap;
@@ -32,7 +33,7 @@ void mesg(char *fmt, ...)
 	va_end(ap);
 }
 
-void myperror(char *msg)
+void myperror(const char *msg)
 {
 	char buffer[BUFSIZ];
 

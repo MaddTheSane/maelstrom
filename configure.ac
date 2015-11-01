@@ -18,9 +18,9 @@ AC_PROG_RANLIB
 AC_PROG_INSTALL
 
 dnl Check for SDL
-PKG_CHECK_MODULES([SDL], [sdl >= 1.2.0])
-PKG_CHECK_MODULES([SDL_NET], [SDL_net])
-PKG_CHECK_MODULES([SDL_MIXER], [SDL_mixer])
+PKG_CHECK_MODULES([SDL2], [sdl2])
+PKG_CHECK_MODULES([SDL2_NET], [SDL2_net])
+PKG_CHECK_MODULES([SDL2_MIXER], [SDL2_mixer])
 
 #dnl Check for RSA checksum authentication
 #AC_MSG_CHECKING(for RSA checksum authentication)

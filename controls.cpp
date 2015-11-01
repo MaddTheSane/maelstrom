@@ -8,6 +8,7 @@
 #include "Maelstrom_Globals.h"
 #include "load.h"
 #include "dialog.h"
+#include "controls.h"
 
 #define MAELSTROM_DATA	".Maelstrom-data"
 
@@ -30,9 +31,10 @@ Uint8 gGammaCorrect = 3;
 
 
 /* Map a keycode to a key name */
-void KeyName(SDLKey keycode, char *namebuf)
+void KeyName(SDL_Keycode keycode, char *namebuf)
 {
-	char *name, ch;
+	const char *name;
+	char ch;
 	int starting;
 
 	/* Get the name of the key */
@@ -67,10 +69,10 @@ void KeyName(SDLKey keycode, char *namebuf)
 	*namebuf = '\0';
 }
 
-static FILE *OpenData(char *mode, char **fname)
+static FILE *OpenData(const char *mode, char **fname)
 {
 	static char datafile[BUFSIZ];
-	char *home;
+	const char *home;
 	FILE *data;
 
 	if ( (home=getenv("HOME")) == NULL )
@@ -111,7 +113,8 @@ void LoadControls(void)
 
 void SaveControls(void)
 {
-	char  *datafile, *newmode;
+	char  *datafile;
+	const char *newmode;
 	FILE *data;
 
 	/* Don't clobber existing joystick data */
@@ -149,9 +152,9 @@ void SaveControls(void)
 
 Controls newcontrols;
 static struct {
-	char *label;
+	const char *label;
 	int  yoffset;
-	SDLKey *control;
+	SDL_Keycode *control;
 } checkboxes[] = {
 	{ "Fire",	0*BOX_HEIGHT+0*SP, &newcontrols.gFireControl },
 	{ "Thrust",	1*BOX_HEIGHT+1*SP, &newcontrols.gThrustControl },
@@ -177,7 +180,7 @@ static int Cancel_callback(void) {
 	valid = 0;
 	return(1);
 }
-static void BoxKeyPress(SDL_keysym key, int *doneflag)
+static void BoxKeyPress(SDL_Keysym key, int *doneflag)
 {
 	SDL_Color black = { 0x00, 0x00, 0x00, 0 };
 	SDL_Color white = { 0xFF, 0xFF, 0xFF, 0 };
@@ -190,7 +193,7 @@ static void BoxKeyPress(SDL_keysym key, int *doneflag)
 	/* Make sure the key isn't in use! */
 	for ( i=0; i<NUM_CTLS; ++i ) {
 		if ( key.sym == *checkboxes[i].control ) {
-			key.sym = (SDLKey)*checkboxes[currentbox].control;
+			key.sym = (SDL_Keycode)*checkboxes[currentbox].control;
 
 			/* Clear the current text */
 			fontserv->InvertText(keynames[currentbox]);
@@ -334,7 +337,7 @@ void ConfigureControls(void)
 
 static void HandleEvent(SDL_Event *event)
 {
-	SDLKey key;
+	SDL_Keycode key;
 
 	switch (event->type) {
 #ifdef SDL_INIT_JOYSTICK
@@ -491,7 +494,7 @@ int DropEvents(void)
 
 void ShowDawn(void)
 {
-	static char *D_text[6] = {
+	static const char *D_text[6] = {
 		"No eternal reward will forgive us",
 		"now",
 		    "for",
