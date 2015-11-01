@@ -2,6 +2,7 @@
 /* Here we go... */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <signal.h>
 #include <errno.h>
@@ -9,6 +10,7 @@
 #include <sys/time.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <netdb.h>
 #include <unistd.h>
 
@@ -48,7 +50,7 @@ void DisconnectPlayer(int which)
 		(void) free(players[which].packet);
 	close(players[which].sockfd);
 	players[which].state = UNCONNECTED;
-printf("Player on slot %d has been disconnected.\n", which);
+	printf("Player on slot %d has been disconnected.\n", which);
 }
 
 void SendError(int which, char *message)
@@ -64,7 +66,7 @@ void SendError(int which, char *message)
 	mesgbuf[0] = mesglen;
 	mesgbuf[1] = NET_ABORT;
 	strcpy((char *)&mesgbuf[2], message);
-printf("Sending error '%s' to player in slot %d\n", message, which);
+	printf("Sending error '%s' to player in slot %d\n", message, which);
 	(void) write(players[which].sockfd, mesgbuf, mesglen);
 
 	DisconnectPlayer(which);
@@ -108,7 +110,7 @@ void CheckNewGame(void)
 	int first, i;
 	int numplayers, players_on;
 	int positions[MAX_PLAYERS];
-
+	
 	/* Find the first player */
 	for ( i=0, first=(-1); i<MAX_CONNECTIONS; ++i ) {
 		if ( (players[i].state == ACTIVE) && (players[i].player == 0) )
@@ -116,7 +118,7 @@ void CheckNewGame(void)
 	}
 	if ( i == MAX_CONNECTIONS ) /* No first player... */
 		return;
-
+	
 	/* Now make sure everyone else agrees with the first player */
 	first = i;
 	numplayers = players[first].numplayers;
@@ -125,12 +127,12 @@ void CheckNewGame(void)
 			continue;
 		if ( players[i].numplayers != numplayers ) {
 			sprintf(buffer,
-				"There are %d, not %d players in this game",
+					"There are %d, not %d players in this game",
 					numplayers, players[i].numplayers);
 			SendError(i, (char *)buffer);
 		}
 	}
-
+	
 	/* Now see if there are enough players! */
 	for ( i=0, players_on=0; i<MAX_CONNECTIONS; ++i ) {
 		if ( players[i].state == ACTIVE ) {
@@ -139,32 +141,32 @@ void CheckNewGame(void)
 		}
 	}
 	/* We've rejected all duplicate players, and extra players,
-	   so players_on shouldn't be greater than numplayers.
+	 so players_on shouldn't be greater than numplayers.
 	 */
 	if ( players_on == numplayers ) {	/* Let's party!! */
 		char *ptr;
 		int   len;
-
-printf("Let's party!!\n");
+		
+		printf("Let's party!!\n");
 		len = (2+players[first].packetlen);
 		buffer[1] = NEW_GAME;
 		memcpy(&buffer[2], players[first].packet,
-						players[first].packetlen);
+			   players[first].packetlen);
 		ptr = (char *)&buffer[len];
 		for ( i=0; i<numplayers; ++i ) {
 			connection *player = &players[positions[i]];
-
+			
 			strcpy(ptr, (char *)inet_ntoa(player->raddr.sin_addr));
-printf("Setting up player %d at host %s and port ", i+1, ptr);
+			printf("Setting up player %d at host %s and port ", i+1, ptr);
 			len += strlen(ptr)+1;
 			ptr += strlen(ptr)+1;
 			sprintf(ptr, "%d", ntohs(player->raddr.sin_port));
-printf("%s\n", ptr);
+			printf("%s\n", ptr);
 			len += strlen(ptr)+1;
 			ptr += strlen(ptr)+1;
 		}
 		buffer[0] = len;
-
+		
 		for ( i=0; i<numplayers; ++i ) {
 			(void) write(players[positions[i]].sockfd, buffer, len);
 			DisconnectPlayer(positions[i]);
@@ -181,17 +183,17 @@ void I_Crashed(int sig)
 	exit(sig);
 }
 
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 	int netfd, i, slot;
 	struct sockaddr_in serv_addr;
-
+	
 	/******************************************************
 	 *
 	 * Phase 1: Initialization
 	 *
 	 ******************************************************/
-
+	
 	/* Create a socket */
 	if ( (netfd = socket(AF_INET, SOCK_STREAM, 0)) < 0 ) {
 		perror("Can't open stream socket");
@@ -210,26 +212,26 @@ main(int argc, char *argv[])
 		perror("listen() failed");
 		exit(3);
 	}
-
+	
 	/* Initialize player structures */
 	for ( i=0; i<MAX_CONNECTIONS; ++i )
 		players[i].state = UNCONNECTED;
-
+	
 	signal(SIGINT, I_Crashed);
 	signal(SIGSEGV, I_Crashed);
-
+	
 	
 	/******************************************************
 	 *
 	 * Phase 2: Wait for all players
 	 *
 	 ******************************************************/
-printf("Waiting for players...\n");
+	printf("Waiting for players...\n");
 	for ( ; ; ) {
 		fd_set fdset;
 		struct timeval tv;
 		int maxfd = 0;
-
+		
 		FD_ZERO(&fdset);
 		for ( i=0; i<MAX_CONNECTIONS; ++i ) {
 			if ( players[i].state != UNCONNECTED ) {
@@ -241,7 +243,7 @@ printf("Waiting for players...\n");
 		if ( maxfd < netfd )
 			maxfd = netfd;
 		FD_SET(netfd, &fdset);
-
+		
 		tv.tv_sec = 60;
 		tv.tv_usec = 0;
 		if ( select(maxfd+1, &fdset, NULL, NULL, &tv) <= 0 ) {
@@ -252,11 +254,11 @@ printf("Waiting for players...\n");
 			CheckPlayers();
 			continue;
 		}
-
+		
 		/* Check for new players first */
 		if ( FD_ISSET(netfd, &fdset) ) {
-			int sockfd, clilen;
-
+			socklen_t sockfd, clilen;
+			
 			for ( i=0; i<MAX_CONNECTIONS; ++i ) {
 				if ( players[i].state == UNCONNECTED )
 					break;
@@ -266,70 +268,70 @@ printf("Waiting for players...\n");
 				exit(3);
 			}
 			slot = i;
-
+			
 			clilen = sizeof(players[slot].raddr);
 			if ( (sockfd=accept(netfd, (struct sockaddr *)
-					&players[slot].raddr, &clilen)) < 0 ) {
+								&players[slot].raddr, &clilen)) < 0 ) {
 				perror("accept() error");
 				exit(3);
 			}
 			players[slot].timestamp = time(NULL);
 			players[slot].sockfd = sockfd;
 			players[slot].state = CONNECTED;
-printf("Connection received on port %d\n", i);
-
+			printf("Connection received on port %d\n", i);
+			
 			/* We continue so that we can get all players quickly */
 			continue;
 		}
-
+		
 		for ( i=0; i<MAX_CONNECTIONS; ++i ) {
 			unsigned char data[BUFSIZ];
-			unsigned long cliport;
+			unsigned int cliport;
 			int len, player;
 			int numplayers;
-
+			
 			if ( (players[i].state == UNCONNECTED) ||
-					! FD_ISSET(players[i].sockfd, &fdset) )
+				! FD_ISSET(players[i].sockfd, &fdset) )
 				continue;
-
+			
 			/* A player with active data! */
 			slot = i;
 			if ( (len=read(players[slot].sockfd, data, BUFSIZ))
-								<= 0 ) {
+				<= 0 ) {
 				/* Wierd.  Close connection */
 				DisconnectPlayer(slot);
 				continue;
 			}
-
+			
 			/* Are they cancelling a connection? */
 			if ( data[0] == NET_ABORT ) {
 				DisconnectPlayer(slot);
 				continue;
 			}
-
+			
 			if ( data[0] != NEW_GAME ) {
 				fprintf(stderr,
-					"Unknown client packet: 0x%.2x\n", 
-								data[0]);
+						"Unknown client packet: 0x%.2x\n",
+						data[0]);
 				DisconnectPlayer(slot);
 				continue;
 			}
-
+			
 			if ( len != NEW_PACKETLEN+4+1 ) {
 				fprintf(stderr,
-			"Short client packet! (len was %d, expected %d)\n", 
+						"Short client packet! (len was %d, expected %d)\n",
 						len, NEW_PACKETLEN+4+1);
 				SendError(slot, "Server received short packet");
 				continue;
 			}
-				
-
+			
+			
 			/* Yay!  Active connection! */
 			player = data[1];
 			/* Be wary, client sizeof(unsigned long) and our
-			   sizeof(unsigned long) may differ.  We assume
-			   sizeof(unsigned long) is 4.
-			*/
+			 sizeof(unsigned long) may differ.  We assume
+			 sizeof(unsigned long) is 4.
+			 */
 			memcpy(&cliport, &data[NEW_PACKETLEN], sizeof(cliport));
 			numplayers = data[NEW_PACKETLEN+4];
 			for ( i=0; i<MAX_CONNECTIONS; ++i ) {
@@ -341,32 +343,32 @@ printf("Connection received on port %d\n", i);
 			/* Is there already player N? */
 			if ( i != MAX_CONNECTIONS ) {
 				char message[BUFSIZ];
-
+				
 				sprintf(message, "Player %d is already on!",
-								player+1);
+						player+1);
 				SendError(slot, message);
 				continue;
 			}
-
+			
 			/* Set the player up */
 			players[slot].state = ACTIVE;
 			players[slot].player = player;
 			players[slot].numplayers = numplayers;
 			players[slot].packetlen = len-(2+4+1);
 			if ( (players[slot].packet = (unsigned char *)
-				malloc(players[slot].packetlen)) == NULL) {
+				  malloc(players[slot].packetlen)) == NULL) {
 				perror("Out of memory");
 				Fatal("Server ran out of memory");
 			}
 			memcpy(players[slot].packet, &data[2],
-						players[slot].packetlen);
+				   players[slot].packetlen);
 			/* This is important! */
-			players[slot].raddr.sin_port = 
-						htons((short)ntohl(cliport));
-printf("Player %d arrived on port %d\n", player+1, slot);
-printf("  the remote address is %s:%lu\n",
-	inet_ntoa(players[slot].raddr.sin_addr),
-	ntohs(players[slot].raddr.sin_port));
+			players[slot].raddr.sin_port =
+			htons((short)ntohl(cliport));
+			printf("Player %d arrived on port %d\n", player+1, slot);
+			printf("  the remote address is %s:%hu\n",
+				   inet_ntoa(players[slot].raddr.sin_addr),
+				   ntohs(players[slot].raddr.sin_port));
 		}
 		CheckNewGame();
 		CheckPlayers();

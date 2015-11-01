@@ -67,7 +67,7 @@ void cleanup () {
         ADD_ARG(buffer);
         ADD_ARG("-server");
         sprintf (buffer, "%d@%s", [ numberOfPlayers intValue ],
-            [ [ netAddress stringValue ] cString ]);
+            [ [ netAddress stringValue ] cStringUsingEncoding:NSASCIIStringEncoding ]);
         ADD_ARG(buffer);
         
         if ( [ playDeathmatch intValue ] == 1 ) {
@@ -137,7 +137,7 @@ void cleanup () {
 {
     char parentdir[MAXPATHLEN];
     char *c;
-        
+    
     strcpy ( parentdir, gArgv[0] );
     
     c = (char*) parentdir;
@@ -179,11 +179,11 @@ void cleanup () {
 #endif
 
 // main entry point to executible - should *not* be SDL_main!
-int main (int argc, char **argv) {
+int main (int argc, char **argv)
+{
     int i;
     for (i = 0; i < argc; i++)
         ADD_ARG (argv[i]);
         
-    NSApplicationMain (argc, argv);
-    return 0;
+    return NSApplicationMain (argc, (const char**)argv);
 }

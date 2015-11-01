@@ -848,8 +848,8 @@ FrameBuf:: AddDirtyRect(SDL_Rect *rect)
 			for ( i=0; i<dirtymaplen; ++i ) {
 				if ( dirtymap[i] != NULL ) {
 					dirtymap[i] = (SDL_Rect *)(
-					((int)dirtymap[i]-(int)updatelist) +
-								(int)newlist
+					((intptr_t)dirtymap[i]-(intptr_t)updatelist) +
+								(intptr_t)newlist
 					);
 				}
 			}
