@@ -803,13 +803,13 @@ static void DoGameOver(void)
 		chars_in_handle = 0;
 
 		while ( screen->PollEvent(&event) ) /* Loop, flushing events */;
-		SDL_EnableUNICODE(1);
+		//SDL_EnableUNICODE(1);
 		while ( !done ) {
 			screen->WaitEvent(&event);
 
 			/* -- Handle key down's (no UNICODE support) */
 			if ( event.type == SDL_KEYDOWN ) {
-				key = (Uint8)event.key.keysym.unicode;
+				key = (Uint8)event.key.keysym.sym;
 				switch ( key  ) {
 					case '\0':	// Ignore NUL char
 					case '\033':	// Ignore ESC char
@@ -845,7 +845,7 @@ static void DoGameOver(void)
 			}
 		}
 		delete newyork;
-		SDL_EnableUNICODE(0);
+		//SDL_EnableUNICODE(0);
 
 		/* In case the user just pressed <Return> */
 		handle[chars_in_handle] = '\0';

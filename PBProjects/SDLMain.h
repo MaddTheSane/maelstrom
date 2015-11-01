@@ -1,18 +1,18 @@
 #import <Cocoa/Cocoa.h>
 
 @interface SDLMain : NSObject <NSApplicationDelegate>
-{
-    IBOutlet NSTextField *fragCount;
-    IBOutlet NSButton *fullscreen;
-    IBOutlet NSButton *joinGame;
-    IBOutlet NSTextField *netAddress;
-    IBOutlet NSTextField *numberOfPlayers;
-    IBOutlet NSButton *playDeathmatch;
-    IBOutlet NSTextField *playerNumber;
-    IBOutlet NSButton *realtime;
-    IBOutlet NSWindow *window;
-    IBOutlet NSButton *worldScores;
-}
+
+@property (assign) IBOutlet NSTextField *fragCount;
+@property (assign) IBOutlet NSButton *fullscreen;
+@property (assign) IBOutlet NSButton *joinGame;
+@property (assign) IBOutlet NSTextField *netAddress;
+@property (assign) IBOutlet NSTextField *numberOfPlayers;
+@property (assign) IBOutlet NSButton *playDeathmatch;
+@property (assign) IBOutlet NSTextField *playerNumber;
+@property (assign) IBOutlet NSButton *realtime;
+@property (assign) IBOutlet NSWindow *window;
+@property (assign) IBOutlet NSButton *worldScores;
+
 - (IBAction)cancel:(id)sender;
 - (IBAction)quit:(id)sender;
 - (IBAction)startGame:(id)sender;

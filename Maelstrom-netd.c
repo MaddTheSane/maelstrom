@@ -106,7 +106,7 @@ void CheckPlayers(void)
 */
 void CheckNewGame(void)
 {
-	unsigned char buffer[BUFSIZ];
+	char buffer[BUFSIZ];
 	int first, i;
 	int numplayers, players_on;
 	int positions[MAX_PLAYERS];
@@ -257,7 +257,8 @@ int main(int argc, char *argv[])
 		
 		/* Check for new players first */
 		if ( FD_ISSET(netfd, &fdset) ) {
-			socklen_t sockfd, clilen;
+			socklen_t clilen;
+			int sockfd;
 			
 			for ( i=0; i<MAX_CONNECTIONS; ++i ) {
 				if ( players[i].state == UNCONNECTED )

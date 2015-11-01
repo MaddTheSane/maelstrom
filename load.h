@@ -88,7 +88,7 @@ public:
 	}
 
 	const char *Path(const char *filename) {
-		char *directory;
+		const char *directory;
 
 		directory = getenv("MAELSTROM_LIB");
 		if ( directory == NULL ) {
@@ -106,7 +106,7 @@ public:
 		if ( strcmp(directory, DIR_SEP) == 0 ) {
 			sprintf(path, DIR_SEP"%s", filename);
 		} else {
-			sprintf(path, "%s"DIR_SEP"%s", directory, filename);
+			sprintf(path, "%s" DIR_SEP"%s", directory, filename);
 		}
 		return(path);
 	}

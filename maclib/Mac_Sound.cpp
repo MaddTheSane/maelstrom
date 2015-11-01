@@ -148,7 +148,7 @@ Sound:: Sound(const char *soundfile, Uint8 vol)
 	HaltSound();
 	if ( vol == 0 ) {
 		bogus_running = 1;
-		bogus_audio = SDL_CreateThread(BogusAudioThread, spec);
+		bogus_audio = SDL_CreateThread(BogusAudioThread, "BogusAudioThread", spec);
 	} else {
 		Volume(vol);
 	}
@@ -198,7 +198,7 @@ Sound:: Volume(Uint8 vol)
 
 		/* Run bogus sound thread */
 		bogus_running = 1;
-		bogus_audio = SDL_CreateThread(BogusAudioThread, spec);
+		bogus_audio = SDL_CreateThread(BogusAudioThread, "BogusAudioThread", spec);
 		if ( bogus_audio == NULL ) {
 			/* Oh well... :-) */
 		}

@@ -1,4 +1,6 @@
 
+#ifndef __MAELSTROM_CONTROLS__
+#define __MAELSTROM_CONTROLS__
 // Functions from controls.cc
 #ifdef USE_JOYSTICK
 extern void	CalibrateJoystick(char *joystick);
@@ -22,12 +24,13 @@ extern void	ShowDawn(void);
 
 /* The controls structure */
 typedef struct {
-	SDLKey gPauseControl;
-	SDLKey gShieldControl;
-	SDLKey gThrustControl;
-	SDLKey gTurnRControl;
-	SDLKey gTurnLControl;
-	SDLKey gFireControl;
-	SDLKey gQuitControl;
+	SDL_Keycode gPauseControl;
+	SDL_Keycode gShieldControl;
+	SDL_Keycode gThrustControl;
+	SDL_Keycode gTurnRControl;
+	SDL_Keycode gTurnLControl;
+	SDL_Keycode gFireControl;
+	SDL_Keycode gQuitControl;
 } Controls;
 
+#endif

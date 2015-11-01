@@ -1,12 +1,12 @@
 //   SDLMain.m (for Maelstrom) - main entry point for our Cocoa-ized SDL app 
 //   By Darrell Walisser - dwaliss1@purdue.edu
 
-#include "SDL.h"
+#include <SDL.h>
 #import "SDLMain.h"
-#import <sys/param.h> // for MAXPATHLEN
-#import <sys/wait.h>  // for waitpid
-#import <unistd.h>
-#import <pthread.h>   // for tweaking thread scheduling
+#include <sys/param.h> // for MAXPATHLEN
+#include <sys/wait.h>  // for waitpid
+#include <unistd.h>
+#include <pthread.h>   // for tweaking thread scheduling
 
 #define THREAD_MAIN 0
 
@@ -27,6 +27,16 @@ void cleanup () {
 }
 
 @implementation SDLMain
+@synthesize fragCount;
+@synthesize fullscreen;
+@synthesize joinGame;
+@synthesize netAddress;
+@synthesize numberOfPlayers;
+@synthesize playDeathmatch;
+@synthesize playerNumber;
+@synthesize realtime;
+@synthesize window;
+@synthesize worldScores;
 
 - (IBAction)cancel:(id)sender
 {
@@ -112,14 +122,14 @@ void cleanup () {
     }
 }
 
-- (void) quit:(id)sender
+- (IBAction) quit:(id)sender
 {
-    	SDL_Event event;
+	SDL_Event event;
 	event.type = SDL_QUIT;
 	SDL_PushEvent(&event);
 }
 
-- (void) toggleFullscreen:(id)sender
+- (IBAction) toggleFullscreen:(id)sender
 {
     
 }

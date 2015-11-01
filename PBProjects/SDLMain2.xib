@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6249" systemVersion="14A386b" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9059" systemVersion="15B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6249"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9059"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication"/>
@@ -662,13 +662,14 @@
             <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="240" width="452" height="451"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1057"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <view key="contentView" id="se5-gp-TjO">
                 <rect key="frame" x="0.0" y="0.0" width="452" height="451"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="0u6-ca-dQa">
                         <rect key="frame" x="372" y="13" width="66" height="32"/>
+                        <animations/>
                         <buttonCell key="cell" type="push" title="Go!" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="Z9L-Gz-1FZ">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -676,20 +677,23 @@
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="MML-G3-S4I">
                         <rect key="frame" x="306" y="13" width="66" height="32"/>
+                        <animations/>
                         <buttonCell key="cell" type="push" title="Quit" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="13R-Lg-hih">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="yUh-6V-dGa">
-                        <rect key="frame" x="169" y="85" width="114" height="32"/>
+                        <rect key="frame" x="170" y="85" width="113" height="32"/>
+                        <animations/>
                         <buttonCell key="cell" type="push" title="Start Server" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="Smj-mL-pQ6">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
-                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="OaC-3q-fjU">
-                        <rect key="frame" x="116" y="70" width="220" height="14"/>
+                    <textField verticalHuggingPriority="750" preferredMaxLayoutWidth="216" translatesAutoresizingMaskIntoConstraints="NO" id="OaC-3q-fjU">
+                        <rect key="frame" x="117" y="70" width="218" height="14"/>
+                        <animations/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Server will quit when quitting Maelstrom." id="F01-6A-NVU">
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -701,6 +705,7 @@
                         <constraints>
                             <constraint firstAttribute="height" constant="1" id="Cpy-Mm-8Tu"/>
                         </constraints>
+                        <animations/>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <font key="titleFont" metaFont="system"/>
@@ -710,19 +715,22 @@
                         <constraints>
                             <constraint firstAttribute="height" constant="1" id="O3S-PJ-4Iw"/>
                         </constraints>
+                        <animations/>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <font key="titleFont" metaFont="system"/>
                     </box>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="L0a-qy-gfv">
-                        <rect key="frame" x="18" y="415" width="154" height="18"/>
+                        <rect key="frame" x="18" y="415" width="151" height="18"/>
+                        <animations/>
                         <buttonCell key="cell" type="check" title="Run Game Fullscreen" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="Qmt-b1-bMQ">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
-                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="4yK-YS-GtT">
-                        <rect key="frame" x="18" y="395" width="272" height="14"/>
+                    <textField verticalHuggingPriority="750" preferredMaxLayoutWidth="268" translatesAutoresizingMaskIntoConstraints="NO" id="4yK-YS-GtT">
+                        <rect key="frame" x="18" y="395" width="269" height="14"/>
+                        <animations/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="left" title="Running in fullscreen may not work on all systems." id="OYE-Me-A5e">
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -730,14 +738,16 @@
                         </textFieldCell>
                     </textField>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="ajo-xi-tiT">
-                        <rect key="frame" x="18" y="327" width="191" height="18"/>
+                        <rect key="frame" x="18" y="327" width="188" height="18"/>
+                        <animations/>
                         <buttonCell key="cell" type="check" title="Use World High Scores List" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="pfD-YJ-DwO">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
-                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="26N-fn-3YK">
-                        <rect key="frame" x="18" y="307" width="293" height="14"/>
+                    <textField verticalHuggingPriority="750" preferredMaxLayoutWidth="289" translatesAutoresizingMaskIntoConstraints="NO" id="26N-fn-3YK">
+                        <rect key="frame" x="18" y="307" width="292" height="14"/>
+                        <animations/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="left" title="You must be connected to the internet for this to work!" id="7DU-uZ-e6e">
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -745,14 +755,16 @@
                         </textFieldCell>
                     </textField>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="FGl-XA-S2R">
-                        <rect key="frame" x="18" y="371" width="186" height="18"/>
+                        <rect key="frame" x="18" y="371" width="182" height="18"/>
+                        <animations/>
                         <buttonCell key="cell" type="check" title="Use Real-Time Scheduling" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="s4w-Lq-c8Q">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
-                    <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PdG-DN-iIa">
-                        <rect key="frame" x="18" y="351" width="335" height="14"/>
+                    <textField verticalHuggingPriority="750" preferredMaxLayoutWidth="331" translatesAutoresizingMaskIntoConstraints="NO" id="PdG-DN-iIa">
+                        <rect key="frame" x="18" y="351" width="332" height="14"/>
+                        <animations/>
                         <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="left" title="Animation is smoother but other running apps might not like it." id="c6I-jp-SDQ">
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -789,6 +801,7 @@
                     <constraint firstItem="FGl-XA-S2R" firstAttribute="top" secondItem="4yK-YS-GtT" secondAttribute="bottom" constant="8" symbolic="YES" id="wa2-Xv-QDO"/>
                     <constraint firstItem="L0a-qy-gfv" firstAttribute="top" secondItem="se5-gp-TjO" secondAttribute="top" constant="20" symbolic="YES" id="xqE-WM-vf5"/>
                 </constraints>
+                <animations/>
             </view>
             <point key="canvasLocation" x="291" y="501.5"/>
         </window>

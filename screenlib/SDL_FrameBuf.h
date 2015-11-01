@@ -35,7 +35,7 @@
 #include <string.h>
 #include <stdarg.h>
 
-#include "SDL.h"
+#include <SDL.h>
 
 /* Macros to make sure we lock the screen if necessary (used internally!) */
 #define LOCK_IF_NEEDED()	{ if ( ! locked )  Lock(); }
@@ -48,6 +48,7 @@ typedef enum {
 
 class FrameBuf {
 
+	SDL_Window *window;
 public:
 	FrameBuf();
 	int Init(int width, int height, Uint32 video_flags,
@@ -56,7 +57,7 @@ public:
 
 	/* Setup routines */
 	/* Set the image palette -- 256 entries */
-	void SetPalette(SDL_Color *colors);
+	void SetPalette(const SDL_Color *colors);
 	/* Set the background color -- used by Clear() */
 	void   SetBackground(Uint8 r, Uint8 g, Uint8 b);
 	/* Map an RGB value to a color pixel */
@@ -72,7 +73,9 @@ public:
 		return(SDL_WaitEvent(event));
 	}
 	int ToggleFullScreen(void) {
-		return(SDL_WM_ToggleFullScreen(SDL_GetVideoSurface()));
+		return SDL_SetWindowFullscreen(window, 0);
+		//SDL_Surface *surf = SDL_GetWindowSurface(window);
+		//return(SDL_WM_ToggleFullScreen(SDL_GetVideoSurface()));
 	}
 
 	/* Locking blitting and update routines */
@@ -130,7 +133,7 @@ public:
 
 	/* Area copy/dump routines */
 	SDL_Surface *GrabArea(Uint16 x, Uint16 y, Uint16 w, Uint16 h);
-	int ScreenDump(char *prefix, Uint16 x, Uint16 y, Uint16 w, Uint16 h);
+	int ScreenDump(const char *prefix, Uint16 x, Uint16 y, Uint16 w, Uint16 h);
 
 	/* Cursor handling routines */
 	void ShowCursor(void) {
@@ -139,11 +142,13 @@ public:
 	void HideCursor(void) {
 		SDL_ShowCursor(0);
 	}
-	void SetCaption(char *caption, char *icon = NULL) {
+	void SetCaption(const char *caption, const char *icon = NULL) {
 		if ( icon == NULL ) {
 			icon = caption;
 		}
-		SDL_WM_SetCaption(caption, icon);
+		SDL_SetWindowTitle(window, caption);
+		//sdl_setwindowi
+		//SDL_WM_SetCaption(caption, icon);
 	}
 
 	/* Error message routine */
@@ -161,7 +166,7 @@ private:
 	int locked, faded;
 
 	/* Error message */
-	void SetError(char *fmt, ...) {
+	void SetError(const char *fmt, ...) {
 		va_list ap;
 
 		va_start(ap, fmt);

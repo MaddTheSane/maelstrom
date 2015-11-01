@@ -19,7 +19,7 @@
 /* External functions used in this file */
 extern int DoInitializations(Uint32 video_flags);		/* init.cc */
 
-static char *Version =
+static const char *Version =
 "Maelstrom v1.4.3 (GPL version 3.0.6) -- 10/19/2002 by Sam Lantinga\n";
 
 // Global variables set in this file...
@@ -35,7 +35,7 @@ static ButtonList buttons;
 // Local functions in this file...
 static void DrawMainScreen(void);
 static void DrawSoundLevel(void);
-static void DrawKey(MPoint *pt, char *ch, char *str, void (*callback)(void));
+static void DrawKey(MPoint *pt, const char *ch, const char *str, void (*callback)(void));
 
 // Main Menu actions:
 static void RunDoAbout(void)
@@ -165,12 +165,12 @@ void PrintUsage(void)
 
 /* ----------------------------------------------------------------- */
 /* -- Blitter main program */
-int main(int argc, char *argv[])
+int SDL_main(int argc, char *argv[])
 {
 	/* Command line flags */
 	int doprinthigh = 0;
 	int speedtest = 0;
-	Uint32 video_flags = SDL_SWSURFACE;
+	int video_flags = 0;
 
 	/* Normal variables */
 	SDL_Event event;
@@ -194,7 +194,7 @@ int main(int argc, char *argv[])
 	/* Parse command line arguments */
 	for ( progname=argv[0]; --argc; ++argv ) {
 		if ( strcmp(argv[1], "-fullscreen") == 0 ) {
-			video_flags |= SDL_FULLSCREEN;
+			video_flags |= SDL_WINDOW_FULLSCREEN;
 		} else
 		if ( strcmp(argv[1], "-gamma") == 0 ) {
 			int gammacorrect;
@@ -406,7 +406,7 @@ int main(int argc, char *argv[])
 }	/* -- main */
 
 
-int DrawText(int x, int y, char *text, MFont *font, Uint8 style,
+int DrawText(int x, int y, const char *text, MFont *font, Uint8 style,
 					Uint8 R, Uint8 G, Uint8 B)
 {
 	SDL_Surface *textimage;
@@ -630,7 +630,7 @@ void DrawMainScreen(void)
 /* ----------------------------------------------------------------- */
 /* -- Draw the key and its function */
 
-static void DrawKey(MPoint *pt, char *key, char *text, void (*callback)(void))
+static void DrawKey(MPoint *pt, const char *key, const char *text, void (*callback)(void))
 {
 	MFont *geneva;
 
@@ -651,7 +651,7 @@ static void DrawKey(MPoint *pt, char *key, char *text, void (*callback)(void))
 }	/* -- DrawKey */
 
 
-void Message(char *message)
+void Message(const char *message)
 {
 	static MFont *font;
 	static int xOff;

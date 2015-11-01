@@ -38,8 +38,8 @@
 		55D128460F09D5C200E06E2A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		55D128480F09D5C200E06E2A /* Maelstrom.icns in Resources */ = {isa = PBXBuildFile; fileRef = F5709022010A768101000001 /* Maelstrom.icns */; };
 		55D1284E0F09D79100E06E2A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		55D1284F0F09D79200E06E2A /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127EF0F09D54000E06E2A /* SDL.framework */; };
-		55D128500F09D79200E06E2A /* SDL_net.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127F00F09D54000E06E2A /* SDL_net.framework */; };
+		55D1284F0F09D79200E06E2A /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127EF0F09D54000E06E2A /* SDL2.framework */; };
+		55D128500F09D79200E06E2A /* SDL2_net.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127F00F09D54000E06E2A /* SDL2_net.framework */; };
 		55D128790F09D9EA00E06E2A /* Maelstrom-netd.c in Sources */ = {isa = PBXBuildFile; fileRef = 1736716C00B03F027F000001 /* Maelstrom-netd.c */; };
 		55D1287C0F09DA0A00E06E2A /* Maelstrom_Server in Resources */ = {isa = PBXBuildFile; fileRef = 55D128720F09D9BD00E06E2A /* Maelstrom_Server */; };
 		55D1289D0F09DA7200E06E2A /* Images in Resources */ = {isa = PBXBuildFile; fileRef = 55D1287F0F09DA7200E06E2A /* Images */; };
@@ -49,8 +49,8 @@
 		55D128A50F09DAA400E06E2A /* Maelstrom-Scores in Resources */ = {isa = PBXBuildFile; fileRef = 55D128A10F09DAA400E06E2A /* Maelstrom-Scores */; };
 		55D128BF0F09DB1C00E06E2A /* icon.bmp in Resources */ = {isa = PBXBuildFile; fileRef = 55D128BE0F09DB1C00E06E2A /* icon.bmp */; };
 		55E020AC19E5CEC500F27EC7 /* SDLMain2.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55E020AB19E5CEC500F27EC7 /* SDLMain2.xib */; };
-		55EBAE1E17174CFB0029EB7B /* SDL.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 55D127EF0F09D54000E06E2A /* SDL.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		55EBAE1F17174CFF0029EB7B /* SDL_net.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 55D127F00F09D54000E06E2A /* SDL_net.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		55EBAE1E17174CFB0029EB7B /* SDL2.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127EF0F09D54000E06E2A /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		55EBAE1F17174CFF0029EB7B /* SDL2_net.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127F00F09D54000E06E2A /* SDL2_net.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,15 +64,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		55EBAE1D17174CF20029EB7B /* CopyFiles */ = {
+		55EBAE1D17174CF20029EB7B /* Copy Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				55EBAE1E17174CFB0029EB7B /* SDL.framework in CopyFiles */,
-				55EBAE1F17174CFF0029EB7B /* SDL_net.framework in CopyFiles */,
+				55EBAE1E17174CFB0029EB7B /* SDL2.framework in Copy Frameworks */,
+				55EBAE1F17174CFF0029EB7B /* SDL2_net.framework in Copy Frameworks */,
 			);
+			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -145,8 +146,8 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		557258B519E5CC730073CDF2 /* SDLMain.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SDLMain.xib; sourceTree = "<group>"; };
-		55D127EF0F09D54000E06E2A /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = /Library/Frameworks/SDL.framework; sourceTree = "<absolute>"; };
-		55D127F00F09D54000E06E2A /* SDL_net.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_net.framework; path = /Library/Frameworks/SDL_net.framework; sourceTree = "<absolute>"; };
+		55D127EF0F09D54000E06E2A /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = /Library/Frameworks/SDL2.framework; sourceTree = "<absolute>"; };
+		55D127F00F09D54000E06E2A /* SDL2_net.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_net.framework; path = /Library/Frameworks/SDL2_net.framework; sourceTree = "<absolute>"; };
 		55D128240F09D57F00E06E2A /* Maelstrom.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Maelstrom.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55D128260F09D57F00E06E2A /* Maelstrom-UB-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Maelstrom-UB-Info.plist"; sourceTree = "<group>"; };
 		55D128510F09D7B200E06E2A /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
@@ -170,8 +171,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				55D1284E0F09D79100E06E2A /* Cocoa.framework in Frameworks */,
-				55D1284F0F09D79200E06E2A /* SDL.framework in Frameworks */,
-				55D128500F09D79200E06E2A /* SDL_net.framework in Frameworks */,
+				55D1284F0F09D79200E06E2A /* SDL2.framework in Frameworks */,
+				55D128500F09D79200E06E2A /* SDL2_net.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -227,8 +228,8 @@
 				55D128590F09D7DC00E06E2A /* IOKit.framework */,
 				55D1285A0F09D7DC00E06E2A /* OpenGL.framework */,
 				55D128510F09D7B200E06E2A /* Carbon.framework */,
-				55D127EF0F09D54000E06E2A /* SDL.framework */,
-				55D127F00F09D54000E06E2A /* SDL_net.framework */,
+				55D127EF0F09D54000E06E2A /* SDL2.framework */,
+				55D127F00F09D54000E06E2A /* SDL2_net.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
 			);
 			name = "Linked Frameworks";
@@ -377,7 +378,7 @@
 				55D128200F09D57F00E06E2A /* Resources */,
 				55D128210F09D57F00E06E2A /* Sources */,
 				55D128220F09D57F00E06E2A /* Frameworks */,
-				55EBAE1D17174CF20029EB7B /* CopyFiles */,
+				55EBAE1D17174CF20029EB7B /* Copy Frameworks */,
 			);
 			buildRules = (
 			);
@@ -411,7 +412,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0610;
+				LastUpgradeCheck = 0710;
 			};
 			buildConfigurationList = 55D127E10F09D4BD00E06E2A /* Build configuration list for PBXProject "Maelstrom" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -522,7 +523,11 @@
 		55D127D80F09D4BC00E06E2A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = "";
@@ -535,7 +540,10 @@
 		55D127D90F09D4BC00E06E2A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				SDKROOT = macosx;
@@ -554,11 +562,13 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				HEADER_SEARCH_PATHS = (
-					/Library/Frameworks/SDL.framework/Headers,
-					/Library/Frameworks/SDL_net.framework/Headers,
+					/Library/Frameworks/SDL2.framework/Headers,
+					/Library/Frameworks/SDL2_net.framework/Headers,
 				);
 				INFOPLIST_FILE = "Maelstrom-UB-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.devolution.${PRODUCT_NAME:identifier}";
 				PRODUCT_NAME = Maelstrom;
 			};
 			name = Debug;
@@ -574,11 +584,13 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				HEADER_SEARCH_PATHS = (
-					/Library/Frameworks/SDL.framework/Headers,
-					/Library/Frameworks/SDL_net.framework/Headers,
+					/Library/Frameworks/SDL2.framework/Headers,
+					/Library/Frameworks/SDL2_net.framework/Headers,
 				);
 				INFOPLIST_FILE = "Maelstrom-UB-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.devolution.${PRODUCT_NAME:identifier}";
 				PRODUCT_NAME = Maelstrom;
 			};
 			name = Release;

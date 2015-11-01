@@ -6,25 +6,25 @@
 	<string>English</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
-	<key>CFBundleIdentifier</key>
-	<string>com.devolution.${PRODUCT_NAME:identifier}</string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
 	<key>CFBundleGetInfoString</key>
 	<string>Maelstrom 3.0.6</string>
 	<key>CFBundleIconFile</key>
 	<string>Maelstrom</string>
-	<key>CFBundleShortVersionString</key>
-	<string>3.0.6</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
-	<key>NSMainNibFile</key>
-	<string>SDLMain</string>
+	<key>CFBundleShortVersionString</key>
+	<string>3.0.6</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-	<key>NSPrincipalClass</key>
-	<string>NSApplication</string>
 	<key>CFBundleVersion</key>
 	<string>3.0.6</string>
+	<key>NSMainNibFile</key>
+	<string>SDLMain</string>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
 </dict>
 </plist>

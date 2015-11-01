@@ -61,9 +61,10 @@ FrameBuf:: FrameBuf()
 	locked = 0;
 	images.next = NULL;
 	itail = &images;
+	window = NULL;
 }
 
-static void PrintSurface(char *title, SDL_Surface *surface)
+static void PrintSurface(const char *title, SDL_Surface *surface)
 {
 #ifdef FRAMEBUF_DEBUG
 	fprintf(stderr, "%s:\n", title);
@@ -87,6 +88,10 @@ int
 FrameBuf:: Init(int width, int height, Uint32 video_flags,
 					SDL_Color *colors, SDL_Surface *icon)
 {
+	window = SDL_CreateWindow("title", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, video_flags);
+	if (window == NULL) {
+		return -1;
+	}
 	/* Set the icon, if any */
 	if ( icon ) {
 		int masklen;
@@ -95,13 +100,13 @@ FrameBuf:: Init(int width, int height, Uint32 video_flags,
 		masklen = ((icon->w+7)/8)*icon->h;
 		mask = new Uint8[masklen];
 		memset(mask, 0xFF, masklen);
-		SDL_WM_SetIcon(icon, mask);
+		SDL_SetWindowIcon(window, icon);
 		delete[] mask;
 	}
 
+	/* old comment: */
 	/* Try for the 8-bit video mode that was requested, accept any depth */
-	//video_flags |= SDL_ANYFORMAT;
-	screenfg = SDL_SetVideoMode(width, height, 8, video_flags);
+	screenfg = SDL_GetWindowSurface(window);
 	if ( screenfg == NULL ) {
 		SetError("Couldn't set %dx%d video mode: %s", 
 					width, height, SDL_GetError());
@@ -190,14 +195,19 @@ FrameBuf:: ~FrameBuf()
 
 /* Setup routines */
 void
-FrameBuf:: SetPalette(SDL_Color *colors)
+FrameBuf:: SetPalette(const SDL_Color *colors)
 {
 	int i;
 
 	if ( screenfg->format->palette ) {
-		SDL_SetColors(screenfg, colors, 0, 256);
-		SDL_SetColors(screenbg, screenfg->format->palette->colors,
-					0, screenfg->format->palette->ncolors);
+		SDL_Palette *palette = SDL_AllocPalette(256);
+		SDL_SetPaletteColors(palette, colors, 0, 256);
+		SDL_SetSurfacePalette(screenfg, palette);
+		SDL_SetSurfacePalette(screenbg, screenfg->format->palette);
+		SDL_FreePalette(palette);
+		//SDL_SetColors(screenfg, colors, 0, 256);
+		//SDL_SetColors(screenbg, screenfg->format->palette->colors,
+		//			0, screenfg->format->palette->ncolors);
 	}
 	for ( i=0; i<256; ++i ) {
 		image_map[i] = SDL_MapRGB(screenfg->format, 
@@ -276,10 +286,11 @@ FrameBuf:: Update(int auto_update)
 			SDL_LowerBlit(screenbg, &updatelist[i],
 			 		screenfg, &updatelist[i]);
 		}
-		SDL_UpdateRects(screenfg, updatelen, updatelist);
+		//SDL_UpdateRects(screenfg, updatelen, updatelist);
 	} else {
-		SDL_UpdateRects(screen, updatelen, updatelist);
+		//SDL_UpdateRects(screen, updatelen, updatelist);
 	}
+	SDL_UpdateWindowSurfaceRects(window, updatelist, updatelen);
 	ClearDirtyList();
 }
 
@@ -541,7 +552,8 @@ FrameBuf:: Fade(void)
 		for ( int i = 0; i < 256; i++ ) {
 			ramp[i] = (i * v / max) << 8;
 		}
-		SDL_SetGammaRamp(ramp, ramp, ramp);
+		//SDL_set
+		SDL_SetWindowGammaRamp(window, ramp, ramp, ramp);
 		SDL_Delay(10);
 	}
 	faded = !faded;
@@ -550,7 +562,7 @@ FrameBuf:: Fade(void)
 		for ( int i = 0; i < 256; i++ ) {
 			ramp[i] = 0;
 		}
-		SDL_SetGammaRamp(ramp, ramp, ramp);
+		SDL_SetWindowGammaRamp(window, ramp, ramp, ramp);
 	}
 } 
 
@@ -614,7 +626,7 @@ FrameBuf:: GrabArea(Uint16 x, Uint16 y, Uint16 w, Uint16 h)
 }
 
 int
-FrameBuf:: ScreenDump(char *prefix, Uint16 x, Uint16 y, Uint16 w, Uint16 h)
+FrameBuf:: ScreenDump(const char *prefix, Uint16 x, Uint16 y, Uint16 w, Uint16 h)
 {
 	SDL_Surface *dump;
 	int retval;
@@ -709,7 +721,7 @@ FrameBuf:: LoadImage(Uint16 w, Uint16 h, Uint8 *pixels, Uint8 *mask)
 			}
 			pix_mem += pad;
 		}
-		SDL_SetColorKey(artwork,SDL_SRCCOLORKEY|SDL_RLEACCEL,colorkey);
+		SDL_SetColorKey(artwork,/*SDL_SRCCOLORKEY*/1|SDL_RLEACCEL,colorkey);
 	} else {
 		/* Copy over the pixels */
 		pix_mem = pixels;
