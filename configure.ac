@@ -1,12 +1,13 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(README)
+AC_INIT([Maelstrom],[3.0.6])
+AC_CONFIG_SRCDIR([main.cpp])
 
 dnl Detect the canonical target build environment
-AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
+AC_CANONICAL_HOST
 
 dnl Setup for automake
-AM_INIT_AUTOMAKE(Maelstrom, 3.0.6)
+AM_INIT_AUTOMAKE
 
 dnl Check for tools
 
@@ -115,12 +116,11 @@ dnl C++ flags are the same as the C flags
 CXXFLAGS="$CXXFLAGS $CFLAGS"
 
 # Finally create all the generated files
-AC_OUTPUT([
+AC_CONFIG_FILES([
 Makefile
 netlogic/Makefile
 screenlib/Makefile
 maclib/Makefile
-Images/Makefile
-Docs/Makefile
 Maelstrom.spec
 ])
+AC_OUTPUT

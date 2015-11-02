@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
 			continue;
 		}
 		wave.Load(snd, rate);
-		sprintf(wavname, "snd_%d.wav", ids[i]);
+		snprintf(wavname, sizeof(wavname), "snd_%d.wav", ids[i]);
 		wave.Save(wavname);
 	}
 	delete macx;
