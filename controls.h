@@ -1,6 +1,9 @@
 
 #ifndef __MAELSTROM_CONTROLS__
 #define __MAELSTROM_CONTROLS__
+
+#include <SDL_keycode.h>
+
 // Functions from controls.cc
 #ifdef USE_JOYSTICK
 extern void	CalibrateJoystick(char *joystick);

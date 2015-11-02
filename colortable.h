@@ -1,7 +1,9 @@
 
+#include <SDL_pixels.h>
+
 /* The standard Maelstrom colormap + 8 levels of gamma correction */
 
-#define MAX_GAMMA	8
+#define MAX_GAMMA	8L
 
 static SDL_Color colors[1+MAX_GAMMA][256] = {
 	/* Gamma level 0 */

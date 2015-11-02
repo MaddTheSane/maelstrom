@@ -1,5 +1,6 @@
 
 #include <stdlib.h>
+#include <stdbool.h>
 
 #include "SDL_FrameBuf.h"
 #include "Mac_FontServ.h"
@@ -25,9 +26,9 @@ extern Sound *sound;
 extern FrameBuf *screen;
 
 /* Boolean type */
-typedef Uint8 Bool;
-#define true	1
-#define false	0
+typedef bool Bool;
+//#define true	1
+//#define false	0
 
 // Functions from main.cc
 extern void   PrintUsage(void);

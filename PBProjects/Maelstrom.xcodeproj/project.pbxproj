@@ -7,8 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5515E81E1BE609700048605C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5515E81D1BE609700048605C /* AppDelegate.swift */; };
+		5515E8201BE609700048605C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5515E81F1BE609700048605C /* Assets.xcassets */; };
+		5515E8231BE609700048605C /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5515E8211BE609700048605C /* MainMenu.xib */; };
+		5515E8281BE6097F0048605C /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127EF0F09D54000E06E2A /* SDL2.framework */; };
+		5515E8291BE609840048605C /* SDL2_net.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127F00F09D54000E06E2A /* SDL2_net.framework */; };
+		5515E82D1BE60A760048605C /* Rect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5515E82C1BE60A760048605C /* Rect.swift */; };
+		5515E82E1BE60F7A0048605C /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A616511BE5614600AD2049 /* main.swift */; };
+		5515E8311BE611310048605C /* Mac_Resource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5515E8301BE611310048605C /* Mac_Resource.swift */; };
+		5515E8341BE6878E0048605C /* MacBinary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5515E8331BE6878E0048605C /* MacBinary.swift */; };
+		5515E8361BE68A7D0048605C /* applefile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5515E8351BE68A7D0048605C /* applefile.swift */; };
 		557258B619E5CC730073CDF2 /* SDLMain.xib in Resources */ = {isa = PBXBuildFile; fileRef = 557258B519E5CC730073CDF2 /* SDLMain.xib */; };
-		55D1282B0F09D59800E06E2A /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 00F9DA5100AC730E7F000001 /* SDLMain.m */; };
+		55A616501BE55FEC00AD2049 /* SDLMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A6164F1BE55FEC00AD2049 /* SDLMain.swift */; };
+		55A616521BE5614600AD2049 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A616511BE5614600AD2049 /* main.swift */; };
 		55D1282C0F09D59800E06E2A /* checksum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 173670BC00AF295B7F000001 /* checksum.cpp */; };
 		55D1282D0F09D59800E06E2A /* controls.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 173670BF00AF295B7F000001 /* controls.cpp */; };
 		55D1282E0F09D59800E06E2A /* dialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 173670C100AF295B7F000001 /* dialog.cpp */; };
@@ -80,8 +91,6 @@
 
 /* Begin PBXFileReference section */
 		00F8BA57010A53097F000001 /* objects.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = objects.cpp; sourceTree = "<group>"; };
-		00F9DA4F00AC72F57F000001 /* SDLMain.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = SOURCE_ROOT; };
-		00F9DA5100AC730E7F000001 /* SDLMain.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = SOURCE_ROOT; };
 		00FF5C4A00B0464B7F000001 /* about.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = about.cpp; sourceTree = "<group>"; };
 		00FF5C4B00B0464B7F000001 /* blit.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = blit.cpp; sourceTree = "<group>"; };
 		00FF5C4C00B0464B7F000001 /* game.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = game.cpp; sourceTree = "<group>"; };
@@ -99,33 +108,33 @@
 		00FF5C5800B0464B7F000001 /* player.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = player.h; sourceTree = "<group>"; };
 		00FF5C5900B0464B7F000001 /* protocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = protocol.h; sourceTree = "<group>"; };
 		00FF5C5A00B0464B7F000001 /* shinobi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = shinobi.h; sourceTree = "<group>"; };
-		0104628800B326437F000001 /* netscore.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = netscore.cpp; path = ../netscore.cpp; sourceTree = SOURCE_ROOT; };
+		0104628800B326437F000001 /* netscore.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = netscore.cpp; sourceTree = "<group>"; };
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
-		173670BB00AF295B7F000001 /* buttonlist.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = buttonlist.h; path = ../buttonlist.h; sourceTree = SOURCE_ROOT; };
-		173670BC00AF295B7F000001 /* checksum.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = checksum.cpp; path = ../checksum.cpp; sourceTree = SOURCE_ROOT; };
-		173670BD00AF295B7F000001 /* checksum.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = checksum.h; path = ../checksum.h; sourceTree = SOURCE_ROOT; };
-		173670BE00AF295B7F000001 /* colortable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = colortable.h; path = ../colortable.h; sourceTree = SOURCE_ROOT; };
-		173670BF00AF295B7F000001 /* controls.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = controls.cpp; path = ../controls.cpp; sourceTree = SOURCE_ROOT; };
-		173670C000AF295B7F000001 /* controls.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = controls.h; path = ../controls.h; sourceTree = SOURCE_ROOT; };
-		173670C100AF295B7F000001 /* dialog.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = dialog.cpp; path = ../dialog.cpp; sourceTree = SOURCE_ROOT; };
-		173670C200AF295B7F000001 /* dialog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = dialog.h; path = ../dialog.h; sourceTree = SOURCE_ROOT; };
-		173670CB00AF29927F000001 /* fastrand.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = fastrand.cpp; path = ../fastrand.cpp; sourceTree = SOURCE_ROOT; };
-		173670CC00AF29927F000001 /* fastrand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = fastrand.h; path = ../fastrand.h; sourceTree = SOURCE_ROOT; };
-		173670CD00AF29927F000001 /* init.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = init.cpp; path = ../init.cpp; sourceTree = SOURCE_ROOT; };
-		173670CE00AF29927F000001 /* load.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = load.cpp; path = ../load.cpp; sourceTree = SOURCE_ROOT; };
-		173670CF00AF29927F000001 /* load.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = load.h; path = ../load.h; sourceTree = SOURCE_ROOT; };
-		173670D000AF29927F000001 /* logic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = logic.h; path = ../logic.h; sourceTree = SOURCE_ROOT; };
-		173670D100AF29927F000001 /* Maelstrom_Globals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Maelstrom_Globals.h; path = ../Maelstrom_Globals.h; sourceTree = SOURCE_ROOT; };
-		173670D300AF29927F000001 /* Maelstrom.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Maelstrom.h; path = ../Maelstrom.h; sourceTree = SOURCE_ROOT; };
-		173670D400AF29927F000001 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../main.cpp; sourceTree = SOURCE_ROOT; };
-		173670D500AF29927F000001 /* myerror.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = myerror.cpp; path = ../myerror.cpp; sourceTree = SOURCE_ROOT; };
-		173670D600AF29927F000001 /* myerror.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = myerror.h; path = ../myerror.h; sourceTree = SOURCE_ROOT; };
-		173670D700AF29927F000001 /* public_key.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = public_key.h; path = ../public_key.h; sourceTree = SOURCE_ROOT; };
-		173670D800AF29927F000001 /* rect.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = rect.cpp; path = ../rect.cpp; sourceTree = SOURCE_ROOT; };
-		173670D900AF29927F000001 /* rect.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = rect.h; path = ../rect.h; sourceTree = SOURCE_ROOT; };
-		173670DA00AF29927F000001 /* scores.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = scores.cpp; path = ../scores.cpp; sourceTree = SOURCE_ROOT; };
-		173670DB00AF29927F000001 /* scores.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = scores.h; path = ../scores.h; sourceTree = SOURCE_ROOT; };
+		173670BB00AF295B7F000001 /* buttonlist.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = buttonlist.h; sourceTree = "<group>"; };
+		173670BC00AF295B7F000001 /* checksum.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = checksum.cpp; sourceTree = "<group>"; };
+		173670BD00AF295B7F000001 /* checksum.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = checksum.h; sourceTree = "<group>"; };
+		173670BE00AF295B7F000001 /* colortable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = colortable.h; sourceTree = "<group>"; };
+		173670BF00AF295B7F000001 /* controls.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = controls.cpp; sourceTree = "<group>"; };
+		173670C000AF295B7F000001 /* controls.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = controls.h; sourceTree = "<group>"; };
+		173670C100AF295B7F000001 /* dialog.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = dialog.cpp; sourceTree = "<group>"; };
+		173670C200AF295B7F000001 /* dialog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = dialog.h; sourceTree = "<group>"; };
+		173670CB00AF29927F000001 /* fastrand.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = fastrand.cpp; sourceTree = "<group>"; };
+		173670CC00AF29927F000001 /* fastrand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fastrand.h; sourceTree = "<group>"; };
+		173670CD00AF29927F000001 /* init.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = init.cpp; sourceTree = "<group>"; };
+		173670CE00AF29927F000001 /* load.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = load.cpp; sourceTree = "<group>"; };
+		173670CF00AF29927F000001 /* load.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = load.h; sourceTree = "<group>"; };
+		173670D000AF29927F000001 /* logic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = logic.h; sourceTree = "<group>"; };
+		173670D100AF29927F000001 /* Maelstrom_Globals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Maelstrom_Globals.h; sourceTree = "<group>"; };
+		173670D300AF29927F000001 /* Maelstrom.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Maelstrom.h; sourceTree = "<group>"; };
+		173670D400AF29927F000001 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		173670D500AF29927F000001 /* myerror.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = myerror.cpp; sourceTree = "<group>"; };
+		173670D600AF29927F000001 /* myerror.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = myerror.h; sourceTree = "<group>"; };
+		173670D700AF29927F000001 /* public_key.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = public_key.h; sourceTree = "<group>"; };
+		173670D800AF29927F000001 /* rect.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = rect.cpp; sourceTree = "<group>"; };
+		173670D900AF29927F000001 /* rect.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rect.h; sourceTree = "<group>"; };
+		173670DA00AF29927F000001 /* scores.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = scores.cpp; sourceTree = "<group>"; };
+		173670DB00AF29927F000001 /* scores.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = scores.h; sourceTree = "<group>"; };
 		1736710800AF2A6D7F000001 /* pixel.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = pixel.cpp; sourceTree = "<group>"; };
 		1736710900AF2A6D7F000001 /* pixel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pixel.h; sourceTree = "<group>"; };
 		1736710B00AF2A6D7F000001 /* SDL_FrameBuf.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SDL_FrameBuf.cpp; sourceTree = "<group>"; };
@@ -145,7 +154,22 @@
 		1736716C00B03F027F000001 /* Maelstrom-netd.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "Maelstrom-netd.c"; path = "../Maelstrom-netd.c"; sourceTree = SOURCE_ROOT; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		5515E81B1BE609700048605C /* Swift Maelstrom.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Swift Maelstrom.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5515E81D1BE609700048605C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		5515E81F1BE609700048605C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		5515E8221BE609700048605C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		5515E8241BE609700048605C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5515E82A1BE609B40048605C /* bridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = bridge.h; path = "Swift Maelstrom/bridge.h"; sourceTree = SOURCE_ROOT; };
+		5515E82C1BE60A760048605C /* Rect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rect.swift; sourceTree = "<group>"; };
+		5515E8301BE611310048605C /* Mac_Resource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Mac_Resource.swift; path = ../Mac_Resource.swift; sourceTree = "<group>"; };
+		5515E8321BE686AE0048605C /* macbinary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = macbinary.h; sourceTree = "<group>"; };
+		5515E8331BE6878E0048605C /* MacBinary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacBinary.swift; sourceTree = "<group>"; };
+		5515E8351BE68A7D0048605C /* applefile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = applefile.swift; sourceTree = "<group>"; };
 		557258B519E5CC730073CDF2 /* SDLMain.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SDLMain.xib; sourceTree = "<group>"; };
+		55A6164E1BE55FEA00AD2049 /* Maelstrom-UB-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Maelstrom-UB-Bridging-Header.h"; sourceTree = "<group>"; };
+		55A6164F1BE55FEC00AD2049 /* SDLMain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SDLMain.swift; sourceTree = "<group>"; };
+		55A616511BE5614600AD2049 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		55A616531BE575CA00AD2049 /* checksum-CC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "checksum-CC.cpp"; path = "PBProjects/checksum-CC.cpp"; sourceTree = "<group>"; };
 		55D127EF0F09D54000E06E2A /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = /Library/Frameworks/SDL2.framework; sourceTree = "<absolute>"; };
 		55D127F00F09D54000E06E2A /* SDL2_net.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_net.framework; path = /Library/Frameworks/SDL2_net.framework; sourceTree = "<absolute>"; };
 		55D128240F09D57F00E06E2A /* Maelstrom.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Maelstrom.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -166,6 +190,15 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		5515E8181BE609700048605C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5515E8281BE6097F0048605C /* SDL2.framework in Frameworks */,
+				5515E8291BE609840048605C /* SDL2_net.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		55D128220F09D57F00E06E2A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -208,18 +241,17 @@
 				00FF5C5900B0464B7F000001 /* protocol.h */,
 				00FF5C5A00B0464B7F000001 /* shinobi.h */,
 			);
-			name = netlogic;
-			path = ../netlogic;
-			sourceTree = SOURCE_ROOT;
+			path = netlogic;
+			sourceTree = "<group>";
 		};
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				00F9DA4F00AC72F57F000001 /* SDLMain.h */,
-				00F9DA5100AC730E7F000001 /* SDLMain.m */,
+				55A6164F1BE55FEC00AD2049 /* SDLMain.swift */,
+				55A616511BE5614600AD2049 /* main.swift */,
 			);
 			name = Classes;
-			sourceTree = "<group>";
+			sourceTree = SOURCE_ROOT;
 		};
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
@@ -248,6 +280,7 @@
 			isa = PBXGroup;
 			children = (
 				173670BB00AF295B7F000001 /* buttonlist.h */,
+				55A616531BE575CA00AD2049 /* checksum-CC.cpp */,
 				173670BC00AF295B7F000001 /* checksum.cpp */,
 				173670BD00AF295B7F000001 /* checksum.h */,
 				173670BE00AF295B7F000001 /* colortable.h */,
@@ -277,6 +310,7 @@
 				1736710400AF2A6D7F000001 /* screenlib */,
 			);
 			name = "Maelstrom Sources";
+			path = ..;
 			sourceTree = "<group>";
 		};
 		1736710400AF2A6D7F000001 /* screenlib */ = {
@@ -287,14 +321,14 @@
 				1736710B00AF2A6D7F000001 /* SDL_FrameBuf.cpp */,
 				1736710C00AF2A6D7F000001 /* SDL_FrameBuf.h */,
 			);
-			name = screenlib;
-			path = ../screenlib;
-			sourceTree = SOURCE_ROOT;
+			path = screenlib;
+			sourceTree = "<group>";
 		};
 		1736711700AF2C7D7F000001 /* maclib */ = {
 			isa = PBXGroup;
 			children = (
 				1736711800AF2C7D7F000001 /* applefile.h */,
+				5515E8321BE686AE0048605C /* macbinary.h */,
 				1736711900AF2C7D7F000001 /* bitesex.h */,
 				1736711B00AF2C7D7F000001 /* Mac_Compat.h */,
 				1736711C00AF2C7D7F000001 /* Mac_FontServ.cpp */,
@@ -306,15 +340,15 @@
 				1736712200AF2C7D7F000001 /* Mac_Wave.cpp */,
 				1736712300AF2C7D7F000001 /* Mac_Wave.h */,
 			);
-			name = maclib;
-			path = ../maclib;
-			sourceTree = SOURCE_ROOT;
+			path = maclib;
+			sourceTree = "<group>";
 		};
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				55D128240F09D57F00E06E2A /* Maelstrom.app */,
 				55D128720F09D9BD00E06E2A /* Maelstrom_Server */,
+				5515E81B1BE609700048605C /* Swift Maelstrom.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -326,6 +360,7 @@
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
+				5515E81C1BE609700048605C /* Swift Maelstrom */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				1736716C00B03F027F000001 /* Maelstrom-netd.c */,
@@ -337,10 +372,11 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				55A6164E1BE55FEA00AD2049 /* Maelstrom-UB-Bridging-Header.h */,
 				1736711500AF2C257F000001 /* config.h */,
 			);
 			name = "Other Sources";
-			sourceTree = "<group>";
+			sourceTree = SOURCE_ROOT;
 		};
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
@@ -357,7 +393,7 @@
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 			);
 			name = Resources;
-			sourceTree = "<group>";
+			sourceTree = SOURCE_ROOT;
 		};
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
@@ -368,9 +404,58 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		5515E81C1BE609700048605C /* Swift Maelstrom */ = {
+			isa = PBXGroup;
+			children = (
+				5515E82B1BE60A3F0048605C /* Maelstrom Classes */,
+				5515E81D1BE609700048605C /* AppDelegate.swift */,
+				5515E81F1BE609700048605C /* Assets.xcassets */,
+				5515E8211BE609700048605C /* MainMenu.xib */,
+				5515E8241BE609700048605C /* Info.plist */,
+				5515E82A1BE609B40048605C /* bridge.h */,
+			);
+			path = "Swift Maelstrom";
+			sourceTree = "<group>";
+		};
+		5515E82B1BE60A3F0048605C /* Maelstrom Classes */ = {
+			isa = PBXGroup;
+			children = (
+				5515E82C1BE60A760048605C /* Rect.swift */,
+				5515E82F1BE6111C0048605C /* maclib */,
+			);
+			name = "Maelstrom Classes";
+			sourceTree = "<group>";
+		};
+		5515E82F1BE6111C0048605C /* maclib */ = {
+			isa = PBXGroup;
+			children = (
+				5515E8301BE611310048605C /* Mac_Resource.swift */,
+				5515E8331BE6878E0048605C /* MacBinary.swift */,
+				5515E8351BE68A7D0048605C /* applefile.swift */,
+			);
+			path = maclib;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		5515E81A1BE609700048605C /* Swift Maelstrom */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5515E8271BE609700048605C /* Build configuration list for PBXNativeTarget "Swift Maelstrom" */;
+			buildPhases = (
+				5515E8171BE609700048605C /* Sources */,
+				5515E8181BE609700048605C /* Frameworks */,
+				5515E8191BE609700048605C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Swift Maelstrom";
+			productName = "Swift Maelstrom";
+			productReference = 5515E81B1BE609700048605C /* Swift Maelstrom.app */;
+			productType = "com.apple.product-type.application";
+		};
 		55D128230F09D57F00E06E2A /* Maelstrom-UB */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 55D1282A0F09D58100E06E2A /* Build configuration list for PBXNativeTarget "Maelstrom-UB" */;
@@ -412,7 +497,13 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0710;
 				LastUpgradeCheck = 0710;
+				TargetAttributes = {
+					5515E81A1BE609700048605C = {
+						CreatedOnToolsVersion = 7.1;
+					};
+				};
 			};
 			buildConfigurationList = 55D127E10F09D4BD00E06E2A /* Build configuration list for PBXProject "Maelstrom" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -423,6 +514,7 @@
 				Japanese,
 				French,
 				German,
+				Base,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* SDL Application */;
 			projectDirPath = "";
@@ -430,11 +522,21 @@
 			targets = (
 				55D128230F09D57F00E06E2A /* Maelstrom-UB */,
 				55D128710F09D9BD00E06E2A /* Maelstrom_Server */,
+				5515E81A1BE609700048605C /* Swift Maelstrom */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		5515E8191BE609700048605C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5515E8201BE609700048605C /* Assets.xcassets in Resources */,
+				5515E8231BE609700048605C /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		55D128200F09D57F00E06E2A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -456,11 +558,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		5515E8171BE609700048605C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5515E81E1BE609700048605C /* AppDelegate.swift in Sources */,
+				5515E8311BE611310048605C /* Mac_Resource.swift in Sources */,
+				5515E8341BE6878E0048605C /* MacBinary.swift in Sources */,
+				5515E82D1BE60A760048605C /* Rect.swift in Sources */,
+				5515E8361BE68A7D0048605C /* applefile.swift in Sources */,
+				5515E82E1BE60F7A0048605C /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		55D128210F09D57F00E06E2A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				55D1282B0F09D59800E06E2A /* SDLMain.m in Sources */,
 				55D1282C0F09D59800E06E2A /* checksum.cpp in Sources */,
 				55D1282D0F09D59800E06E2A /* controls.cpp in Sources */,
 				55D1282E0F09D59800E06E2A /* dialog.cpp in Sources */,
@@ -468,6 +582,8 @@
 				55D128300F09D59800E06E2A /* init.cpp in Sources */,
 				55D128310F09D59800E06E2A /* load.cpp in Sources */,
 				55D128320F09D59800E06E2A /* main.cpp in Sources */,
+				55A616521BE5614600AD2049 /* main.swift in Sources */,
+				55A616501BE55FEC00AD2049 /* SDLMain.swift in Sources */,
 				55D128330F09D59800E06E2A /* myerror.cpp in Sources */,
 				55D128340F09D59800E06E2A /* rect.cpp in Sources */,
 				55D128350F09D59800E06E2A /* scores.cpp in Sources */,
@@ -517,9 +633,116 @@
 			name = InfoPlist.strings;
 			sourceTree = SOURCE_ROOT;
 		};
+		5515E8211BE609700048605C /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5515E8221BE609700048605C /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		5515E8251BE609700048605C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					/Library/Frameworks,
+					"$(inherited)",
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					/Library/Frameworks/SDL2.framework/Headers,
+					/Library/Frameworks/SDL2_net.framework/Headers,
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "Swift Maelstrom/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.github.maddthesane.Swift-Maelstrom";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Swift Maelstrom/bridge.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		5515E8261BE609700048605C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					/Library/Frameworks,
+					"$(inherited)",
+				);
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					/Library/Frameworks/SDL2.framework/Headers,
+					/Library/Frameworks/SDL2_net.framework/Headers,
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "Swift Maelstrom/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.github.maddthesane.Swift-Maelstrom";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Swift Maelstrom/bridge.h";
+			};
+			name = Release;
+		};
 		55D127D80F09D4BC00E06E2A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -531,7 +754,7 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 			};
@@ -545,7 +768,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -554,6 +777,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = /Library/Frameworks;
@@ -570,6 +794,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.devolution.${PRODUCT_NAME:identifier}";
 				PRODUCT_NAME = Maelstrom;
+				SWIFT_OBJC_BRIDGING_HEADER = "Maelstrom-UB-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -577,6 +803,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -592,6 +819,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.devolution.${PRODUCT_NAME:identifier}";
 				PRODUCT_NAME = Maelstrom;
+				SWIFT_OBJC_BRIDGING_HEADER = "Maelstrom-UB-Bridging-Header.h";
 			};
 			name = Release;
 		};
@@ -628,6 +856,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		5515E8271BE609700048605C /* Build configuration list for PBXNativeTarget "Swift Maelstrom" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5515E8251BE609700048605C /* Debug */,
+				5515E8261BE609700048605C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		55D127E10F09D4BD00E06E2A /* Build configuration list for PBXProject "Maelstrom" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

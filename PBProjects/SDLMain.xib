@@ -80,7 +80,7 @@
                 </menuItem>
             </items>
         </menu>
-        <customObject id="194" userLabel="SDLMain" customClass="SDLMain">
+        <customObject id="194" userLabel="SDLMain" customClass="SDLMain" customModule="Maelstrom" customModuleProvider="target">
             <connections>
                 <outlet property="fragCount" destination="336" id="349"/>
                 <outlet property="fullscreen" destination="293" id="343"/>

@@ -74,8 +74,6 @@ public:
 	}
 	int ToggleFullScreen(void) {
 		return SDL_SetWindowFullscreen(window, 0);
-		//SDL_Surface *surf = SDL_GetWindowSurface(window);
-		//return(SDL_WM_ToggleFullScreen(SDL_GetVideoSurface()));
 	}
 
 	/* Locking blitting and update routines */
@@ -147,8 +145,6 @@ public:
 			icon = caption;
 		}
 		SDL_SetWindowTitle(window, caption);
-		//sdl_setwindowi
-		//SDL_WM_SetCaption(caption, icon);
 	}
 
 	/* Error message routine */
