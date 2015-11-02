@@ -63,14 +63,14 @@ private func checkAppleFile(resfile: UnsafeMutablePointer<FILE>, inout resbase: 
 			sizeofValue(header.numEntries), 1, resfile);
 		bytesex16(&header.numEntries);
 		#if APPLEDOUBLE_DEBUG
-			print(String(format: "Header magic: 0x%.8x, version 0x%.8x\n",
+			print(String(format: "Header magic: 0x%.8x, version 0x%.8x",
 				header.magicNum, header.versionNum))
 		#endif
 		
 		var entry = ASEntry()
 		
 		#if APPLEDOUBLE_DEBUG
-			print(String(format: "Number of entries: %d, sizeof(entry) = %d\n",
+			print(String(format: "Number of entries: %d, sizeof(entry) = %d",
 				header.numEntries, sizeofValue(entry)))
 		#endif
 		for i in 0..<header.numEntries {
@@ -81,7 +81,7 @@ private func checkAppleFile(resfile: UnsafeMutablePointer<FILE>, inout resbase: 
 			bytesex32(&entry.entryOffset);
 			bytesex32(&entry.entryLength);
 			#if APPLEDOUBLE_DEBUG
-				print(String(format: "Entry (%d): ID = 0x%.8x, Offset = %d, Length = %d\n",
+				print(String(format: "Entry (%d): ID = 0x%.8x, Offset = %d, Length = %d",
 					i+1, entry.entryID, entry.entryOffset, entry.entryLength))
 			#endif
 			if entry.entryID == .Resource {
@@ -102,87 +102,178 @@ private func checkMacBinary(resfile: UnsafeMutablePointer<FILE>, inout resbase: 
 	fseek(resfile, 0, SEEK_SET)
 }
 
-/*
-static FILE *Open_MacRes(char **original, Uint32 *resbase)
-{
-	char *filename, *basename, *ptr, *newname;
-	const char *dirname;
-	FILE *resfile=NULL;
 
-	/* Search and replace characters */
-	const int N_SNRS = 2;
-	struct searchnreplace {
-		char search;
-		char replace;
-	} snr[N_SNRS] = {
-		{ '\0',	'\0' },
-		{ ' ',	'_' },
-	};
-	int iterations=0;
-
-	/* Separate the Mac name from a UNIX path */
-	filename = new char[strlen(*original)+1];
-	strcpy(filename, *original);
-	if ( (basename=strrchr(filename, '/')) != NULL ) {
-		dirname = filename;
-		*(basename++) = '\0';
-	} else {
-		dirname = "";
-		basename = filename;
+private func openMacRes(inout original: NSURL, inout resbase: UInt32) -> UnsafeMutablePointer<FILE> {
+	var resfile: UnsafeMutablePointer<FILE> = nil
+	let directory = original.URLByDeletingLastPathComponent
+	var filename = original.lastPathComponent!
+	var newURL: NSURL?
+	
+	func urlByAddingPath(aPath: String) -> NSURL {
+		if let directory = directory {
+			return directory.URLByAppendingPathComponent(aPath)
+		}
+		return NSURL(fileURLWithPath: aPath)
 	}
-
-	for ( iterations=0; iterations < N_SNRS; ++iterations ) {
+	
+	struct searchnreplace {
+		var search: Character
+		var replace: Character
+	}
+	let snr = [searchnreplace(search: "\0", replace: "\0"),
+	searchnreplace(search: " ", replace: "_")]
+	
+	var iterations = 0
+	
+	for iterations = 0; iterations < snr.count; iterations++ {
 		/* Translate ' ' into '_', etc */
 		/* Note that this translation is irreversible */
-		for ( ptr = basename; *ptr; ++ptr ) {
-			if ( *ptr == snr[iterations].search )
-				*ptr = snr[iterations].replace;
+		if snr[iterations].replace != "\0" {
+			filename.replaceAllInstancesOfCharacter(snr[iterations].search, withCharacter: snr[iterations].replace)
 		}
-
+		//filename
+		
 		/* First look for Executor (tm) resource forks */
-		newname = new char[strlen(dirname)+2+1+strlen(basename)+1];
-		sprintf(newname, "%s%s%%%s", dirname, (*dirname ? "/" : ""),
-								basename);
-		if ( (resfile=fopen(newname, "rb")) != NULL ) {
-			break;
+		var newName = "%\(filename)"
+		newURL = urlByAddingPath(newName)
+		resfile = fopen(newURL!.fileSystemRepresentation, "rb")
+		guard resfile == nil else {
+			break
 		}
-		delete[] newname;
-
+		
+		newURL = nil
+		
 		/* Look for MacBinary files */
-		newname = new char[strlen(dirname)+2+strlen(basename)+4+1];
-		sprintf(newname, "%s%s%s.bin", dirname, (*dirname ? "/" : ""),
-								basename);
-		if ( (resfile=fopen(newname, "rb")) != NULL ) {
-			break;
+		newName = (filename as NSString).stringByAppendingPathExtension("bin")!
+		newURL = urlByAddingPath(newName)
+		resfile = fopen(newURL!.fileSystemRepresentation, "rb")
+		guard resfile == nil else {
+			break
 		}
-		delete[] newname;
+		
+		newURL = nil
 
 		/* Look for raw resource fork.. */
-		newname = new char[strlen(dirname)+2+strlen(basename)+1];
-		sprintf(newname, "%s%s%s", dirname, (*dirname ? "/" : ""),
-								basename);
-		if ( (resfile=fopen(newname, "rb")) != NULL ) {
-			break;
+		newName = filename
+		newURL = urlByAddingPath(newName)
+		resfile = fopen(newURL!.fileSystemRepresentation, "rb")
+		guard resfile == nil else {
+			break
 		}
+		
+		newURL = nil
+
 	}
+	
 	/* Did we find anything? */
-	if ( iterations != N_SNRS ) {
-		*original = newname;
-		*resbase = 0;
-
+	if iterations != snr.count {
+		original = newURL!
+		resbase = 0
+		
 		/* Look for AppleDouble format header */
-		CheckAppleFile(resfile, resbase);
-
+		checkAppleFile(resfile, resbase: &resbase)
+		
 		/* Look for MacBinary format header */
-		CheckMacBinary(resfile, resbase);
+		checkMacBinary(resfile, resbase: &resbase)
 	}
-#ifdef APPLEDOUBLE_DEBUG
-mesg("Resfile base = %d\n", *resbase);
-#endif
-	delete[] filename;
-	return(resfile);
+	#if APPLEDOUBLE_DEBUG
+		print(String(format: "Resfile base = %d", *resbase))
+	#endif
+
+	return resfile
 }
+
+// MARK: - These are the data structures that make up the Macintosh Resource Fork
+private struct Resource_Header {
+	///Offset of resources in file
+	var res_offset: UInt32
+	///Offset of resource map in file
+	var map_offset: UInt32
+	///Length of the resource data
+	var res_length: UInt32
+	///Length of the resource map
+	var map_length: UInt32
+	
+	init() {
+		res_offset = 0
+		map_offset = 0
+		res_length = 0
+		map_length = 0
+	}
+}
+
+private struct Resource_Data {
+	///Length of the resources data
+	var Data_length: UInt32
+	#if SHOW_VARLENGTH_FIELDS
+	///The Resource Data
+	var Data: [UInt8]
+	#endif
+	
+	init() {
+		Data_length = 0
+	}
+};
+
+private struct Type_entry {
+	///Resource type
+	var Res_type: OSType
+	///# this type resources in map - 1
+	var Num_rez: UInt16
+	/** Offset from type list, of reference
+	list for this type */
+	var Ref_offset: UInt16
+	
+	init() {
+		Res_type = 0
+		Num_rez = 0
+		Ref_offset = 0
+	}
+};
+
+private struct Ref_entry {
+	///The ID for this resource
+	var Res_id: UInt16
+	/** Offset in name list of resource
+	name, or -1 if no name */
+	var Name_offset: UInt16
+	///Resource attributes
+	var Res_attrs: UInt8
+	///3-byte offset from Resource data
+	var Res_offset: (UInt8, UInt8, UInt8)
+	///Reserved for use in-core
+	var Reserved: UInt32
+};
+
+private struct Name_entry {
+	///Length of the following name
+	var Name_len: UInt8
+	#if SHOW_VARLENGTH_FIELDS
+	/// Variable length resource name
+	var name: (UInt8)
+	#endif
+};
+
+private struct Resource_Map {
+	///Reserved for use in-core
+	var Reserved: (UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8)
+	///Map attributes
+	var Map_attrs: UInt16
+	///Offset of resource type list
+	var types_offset: UInt16
+	///Offset of resource name list
+	var names_offset: UInt16
+	///# of types in map - 1
+	var num_types: UInt16
+	/*
+	#if SHOW_VARLENGTH_FIELDS
+	struct Type_entry  types[0];	 /* Variable length types list */
+	struct Ref_entry   refs[0];	 /* Variable length reference list */
+	struct Name_entry  names[0];	 /* Variable length name list */
+	#endif
 */
+}
+
 
 /// The actual resources in the resource fork
 struct Mac_ResData {
@@ -191,6 +282,13 @@ struct Mac_ResData {
 
 	var dataArray: Array<UInt8> {
 		return Array(UnsafeMutableBufferPointer(start: data, count: Int(length)))
+	}
+	
+	var dataObject: NSData {
+		if length == 0 {
+			return NSData()
+		}
+		return NSData(bytes: data, length: Int(length))
 	}
 }
 
@@ -221,9 +319,28 @@ class Mac_Resource {
 	};
 
 	
-	init(filename: String) {
+	convenience init(filename: String) {
+		self.init(fileURL: NSURL(fileURLWithPath: filename))
+	}
+	
+	init(fileURL: NSURL) {
 		
 	}
+	/** Create a set of resource types in this file */
+	var types: Set<OSType> {
+		return []
+	}
+
+	/** Return the number of resources of the given type */
+	func numberOfResources(type type: OSType) -> UInt16 {
+		return 0
+	}
+	
+	/** Create an array of resource ids for a type */
+	func resourceIDs(type type: OSType) -> [UInt16] {
+		return []
+	}
+
 	
 	deinit {
 		if filep != nil {

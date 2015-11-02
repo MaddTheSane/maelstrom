@@ -320,7 +320,7 @@ int SyncNetwork(void)
 	while ( nleft ) {
 		int ready = SDLNet_CheckSockets(SocketSet, 1000+60*gOurPlayer);
 		if ( ready == 0 ) {
-error("Timed out waiting for frame %ld\r\n", NextFrame);
+error("Timed out waiting for frame %u\r\n", (unsigned int)NextFrame);
 			/* Timeout, resend the sync packet */
 			for ( index=0; index<gNumPlayers; ++index ) {
 				if ( SyncPtr[index] == NULL ) {
@@ -370,11 +370,11 @@ error("Timed out waiting for frame %ld\r\n", NextFrame);
 		if ( frame != NextFrame ) {
 			/* We kept the last frame cached, so send it */
 			if ( frame == (NextFrame-1) ) {
-error("Transmitting packet for old frame (%lu)\r\n", frame);
+error("Transmitting packet for old frame (%u)\r\n", (unsigned int)frame);
 				SDLNet_UDP_Send(gNetFD, sent.channel, OutBound[!CurrOut]);
 			} else if ( frame == (NextFrame+1) ) {
-error("Received packet for next frame! (%lu, current = %lu)\r\n",
-						frame, NextFrame);
+error("Received packet for next frame! (%u, current = %u)\r\n",
+						(unsigned int)frame, (unsigned int)NextFrame);
 				/* Send this player our current frame */
 				SDLNet_UDP_Send(gNetFD, sent.channel, OutBound[CurrOut]);
 				/* Cache this frame for next round,
@@ -385,8 +385,8 @@ error("Received packet for next frame! (%lu, current = %lu)\r\n",
 				++NextSync;
 			}
 else
-error("Warning! Received packet for really old frame! (%lu, current = %lu)\r\n",
-							frame, NextFrame);
+error("Warning! Received packet for really old frame! (%u, current = %u)\r\n",
+							(unsigned int)frame, (unsigned int)NextFrame);
 			/* Go to select, reset timeout */
 			continue;
 		}

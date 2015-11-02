@@ -1,7 +1,3 @@
-
-#ifndef _myerror_h
-#define _myerror_h
-
 /* Generic error message routines */
 
 #include <stdio.h>
@@ -39,10 +35,7 @@ void myperror(const char *msg)
 
 	if ( *msg ) {
 		snprintf(buffer, sizeof(buffer), "%s: %s\n", msg, strerror(errno));
-		error(buffer);
+		error("%s", buffer);
 	} else
-		error((char *)strerror(errno));
+		error("%s", strerror(errno));
 }
-
-#endif /* _myerror_h */
-
