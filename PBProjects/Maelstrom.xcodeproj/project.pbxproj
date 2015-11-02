@@ -23,7 +23,6 @@
 		55D128370F09D59800E06E2A /* SDL_FrameBuf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1736710B00AF2A6D7F000001 /* SDL_FrameBuf.cpp */; };
 		55D128380F09D59800E06E2A /* Mac_FontServ.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1736711C00AF2C7D7F000001 /* Mac_FontServ.cpp */; };
 		55D128390F09D59800E06E2A /* Mac_Resource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1736711E00AF2C7D7F000001 /* Mac_Resource.cpp */; };
-		55D1283A0F09D59800E06E2A /* Mac_Sound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1736712000AF2C7D7F000001 /* Mac_Sound.cpp */; };
 		55D1283B0F09D59800E06E2A /* Mac_Wave.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1736712200AF2C7D7F000001 /* Mac_Wave.cpp */; };
 		55D1283C0F09D59800E06E2A /* about.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF5C4A00B0464B7F000001 /* about.cpp */; };
 		55D1283D0F09D59800E06E2A /* blit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF5C4B00B0464B7F000001 /* blit.cpp */; };
@@ -33,7 +32,6 @@
 		55D128410F09D59800E06E2A /* netplay.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF5C5200B0464B7F000001 /* netplay.cpp */; };
 		55D128420F09D59800E06E2A /* object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF5C5400B0464B7F000001 /* object.cpp */; };
 		55D128430F09D59800E06E2A /* player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FF5C5700B0464B7F000001 /* player.cpp */; };
-		55D128440F09D59800E06E2A /* netscore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0104628800B326437F000001 /* netscore.cpp */; };
 		55D128450F09D59800E06E2A /* objects.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00F8BA57010A53097F000001 /* objects.cpp */; };
 		55D128460F09D5C200E06E2A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		55D128480F09D5C200E06E2A /* Maelstrom.icns in Resources */ = {isa = PBXBuildFile; fileRef = F5709022010A768101000001 /* Maelstrom.icns */; };
@@ -44,13 +42,13 @@
 		55D1287C0F09DA0A00E06E2A /* Maelstrom_Server in Resources */ = {isa = PBXBuildFile; fileRef = 55D128720F09D9BD00E06E2A /* Maelstrom_Server */; };
 		55D1289D0F09DA7200E06E2A /* Images in Resources */ = {isa = PBXBuildFile; fileRef = 55D1287F0F09DA7200E06E2A /* Images */; };
 		55D128A20F09DAA400E06E2A /* Maelstrom_Fonts in Resources */ = {isa = PBXBuildFile; fileRef = 55D1289E0F09DAA400E06E2A /* Maelstrom_Fonts */; };
-		55D128A30F09DAA400E06E2A /* Maelstrom_Sounds in Resources */ = {isa = PBXBuildFile; fileRef = 55D1289F0F09DAA400E06E2A /* Maelstrom_Sounds */; };
 		55D128A40F09DAA400E06E2A /* Maelstrom_Sprites in Resources */ = {isa = PBXBuildFile; fileRef = 55D128A00F09DAA400E06E2A /* Maelstrom_Sprites */; };
 		55D128A50F09DAA400E06E2A /* Maelstrom-Scores in Resources */ = {isa = PBXBuildFile; fileRef = 55D128A10F09DAA400E06E2A /* Maelstrom-Scores */; };
 		55D128BF0F09DB1C00E06E2A /* icon.bmp in Resources */ = {isa = PBXBuildFile; fileRef = 55D128BE0F09DB1C00E06E2A /* icon.bmp */; };
 		55E020AC19E5CEC500F27EC7 /* SDLMain2.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55E020AB19E5CEC500F27EC7 /* SDLMain2.xib */; };
 		55EBAE1E17174CFB0029EB7B /* SDL2.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127EF0F09D54000E06E2A /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		55EBAE1F17174CFF0029EB7B /* SDL2_net.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127F00F09D54000E06E2A /* SDL2_net.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		55F9C8E11BE702E90063246F /* sound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55F9C8DF1BE702E90063246F /* sound.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -99,7 +97,6 @@
 		00FF5C5800B0464B7F000001 /* player.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = player.h; sourceTree = "<group>"; };
 		00FF5C5900B0464B7F000001 /* protocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = protocol.h; sourceTree = "<group>"; };
 		00FF5C5A00B0464B7F000001 /* shinobi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = shinobi.h; sourceTree = "<group>"; };
-		0104628800B326437F000001 /* netscore.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = netscore.cpp; path = ../netscore.cpp; sourceTree = SOURCE_ROOT; };
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		173670BB00AF295B7F000001 /* buttonlist.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = buttonlist.h; path = ../buttonlist.h; sourceTree = SOURCE_ROOT; };
@@ -138,8 +135,6 @@
 		1736711D00AF2C7D7F000001 /* Mac_FontServ.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Mac_FontServ.h; sourceTree = "<group>"; };
 		1736711E00AF2C7D7F000001 /* Mac_Resource.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Mac_Resource.cpp; sourceTree = "<group>"; };
 		1736711F00AF2C7D7F000001 /* Mac_Resource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Mac_Resource.h; sourceTree = "<group>"; };
-		1736712000AF2C7D7F000001 /* Mac_Sound.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Mac_Sound.cpp; sourceTree = "<group>"; };
-		1736712100AF2C7D7F000001 /* Mac_Sound.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Mac_Sound.h; sourceTree = "<group>"; };
 		1736712200AF2C7D7F000001 /* Mac_Wave.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Mac_Wave.cpp; sourceTree = "<group>"; };
 		1736712300AF2C7D7F000001 /* Mac_Wave.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Mac_Wave.h; sourceTree = "<group>"; };
 		1736716C00B03F027F000001 /* Maelstrom-netd.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "Maelstrom-netd.c"; path = "../Maelstrom-netd.c"; sourceTree = SOURCE_ROOT; };
@@ -157,11 +152,12 @@
 		55D128720F09D9BD00E06E2A /* Maelstrom_Server */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Maelstrom_Server; sourceTree = BUILT_PRODUCTS_DIR; };
 		55D1287F0F09DA7200E06E2A /* Images */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Images; path = ../Images; sourceTree = SOURCE_ROOT; };
 		55D1289E0F09DAA400E06E2A /* Maelstrom_Fonts */ = {isa = PBXFileReference; lastKnownFileType = file; name = Maelstrom_Fonts; path = ../Maelstrom_Fonts; sourceTree = SOURCE_ROOT; };
-		55D1289F0F09DAA400E06E2A /* Maelstrom_Sounds */ = {isa = PBXFileReference; lastKnownFileType = file; name = Maelstrom_Sounds; path = ../Maelstrom_Sounds; sourceTree = SOURCE_ROOT; };
 		55D128A00F09DAA400E06E2A /* Maelstrom_Sprites */ = {isa = PBXFileReference; lastKnownFileType = file; name = Maelstrom_Sprites; path = ../Maelstrom_Sprites; sourceTree = SOURCE_ROOT; };
 		55D128A10F09DAA400E06E2A /* Maelstrom-Scores */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Maelstrom-Scores"; path = "../Maelstrom-Scores"; sourceTree = SOURCE_ROOT; };
 		55D128BE0F09DB1C00E06E2A /* icon.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; name = icon.bmp; path = ../icon.bmp; sourceTree = SOURCE_ROOT; };
 		55E020AB19E5CEC500F27EC7 /* SDLMain2.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SDLMain2.xib; sourceTree = "<group>"; };
+		55F9C8DF1BE702E90063246F /* sound.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sound.cpp; path = ../sound.cpp; sourceTree = "<group>"; };
+		55F9C8E01BE702E90063246F /* sound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sound.h; path = ../sound.h; sourceTree = "<group>"; };
 		F5709022010A768101000001 /* Maelstrom.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Maelstrom.icns; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -266,12 +262,13 @@
 				173670D400AF29927F000001 /* main.cpp */,
 				173670D500AF29927F000001 /* myerror.cpp */,
 				173670D600AF29927F000001 /* myerror.h */,
-				0104628800B326437F000001 /* netscore.cpp */,
 				173670D700AF29927F000001 /* public_key.h */,
 				173670D800AF29927F000001 /* rect.cpp */,
 				173670D900AF29927F000001 /* rect.h */,
 				173670DA00AF29927F000001 /* scores.cpp */,
 				173670DB00AF29927F000001 /* scores.h */,
+				55F9C8DF1BE702E90063246F /* sound.cpp */,
+				55F9C8E01BE702E90063246F /* sound.h */,
 				00FF5C4900B0464B7F000001 /* netlogic */,
 				1736711700AF2C7D7F000001 /* maclib */,
 				1736710400AF2A6D7F000001 /* screenlib */,
@@ -301,8 +298,6 @@
 				1736711D00AF2C7D7F000001 /* Mac_FontServ.h */,
 				1736711E00AF2C7D7F000001 /* Mac_Resource.cpp */,
 				1736711F00AF2C7D7F000001 /* Mac_Resource.h */,
-				1736712000AF2C7D7F000001 /* Mac_Sound.cpp */,
-				1736712100AF2C7D7F000001 /* Mac_Sound.h */,
 				1736712200AF2C7D7F000001 /* Mac_Wave.cpp */,
 				1736712300AF2C7D7F000001 /* Mac_Wave.h */,
 			);
@@ -348,7 +343,6 @@
 				55D1287F0F09DA7200E06E2A /* Images */,
 				F5709022010A768101000001 /* Maelstrom.icns */,
 				55D1289E0F09DAA400E06E2A /* Maelstrom_Fonts */,
-				55D1289F0F09DAA400E06E2A /* Maelstrom_Sounds */,
 				55D128A00F09DAA400E06E2A /* Maelstrom_Sprites */,
 				55D128A10F09DAA400E06E2A /* Maelstrom-Scores */,
 				557258B519E5CC730073CDF2 /* SDLMain.xib */,
@@ -444,7 +438,6 @@
 				55D1287C0F09DA0A00E06E2A /* Maelstrom_Server in Resources */,
 				55D1289D0F09DA7200E06E2A /* Images in Resources */,
 				55D128A20F09DAA400E06E2A /* Maelstrom_Fonts in Resources */,
-				55D128A30F09DAA400E06E2A /* Maelstrom_Sounds in Resources */,
 				55D128A40F09DAA400E06E2A /* Maelstrom_Sprites in Resources */,
 				55D128A50F09DAA400E06E2A /* Maelstrom-Scores in Resources */,
 				557258B619E5CC730073CDF2 /* SDLMain.xib in Resources */,
@@ -475,17 +468,16 @@
 				55D128370F09D59800E06E2A /* SDL_FrameBuf.cpp in Sources */,
 				55D128380F09D59800E06E2A /* Mac_FontServ.cpp in Sources */,
 				55D128390F09D59800E06E2A /* Mac_Resource.cpp in Sources */,
-				55D1283A0F09D59800E06E2A /* Mac_Sound.cpp in Sources */,
 				55D1283B0F09D59800E06E2A /* Mac_Wave.cpp in Sources */,
 				55D1283C0F09D59800E06E2A /* about.cpp in Sources */,
 				55D1283D0F09D59800E06E2A /* blit.cpp in Sources */,
 				55D1283E0F09D59800E06E2A /* game.cpp in Sources */,
 				55D1283F0F09D59800E06E2A /* logic.cpp in Sources */,
 				55D128400F09D59800E06E2A /* make.cpp in Sources */,
+				55F9C8E11BE702E90063246F /* sound.cpp in Sources */,
 				55D128410F09D59800E06E2A /* netplay.cpp in Sources */,
 				55D128420F09D59800E06E2A /* object.cpp in Sources */,
 				55D128430F09D59800E06E2A /* player.cpp in Sources */,
-				55D128440F09D59800E06E2A /* netscore.cpp in Sources */,
 				55D128450F09D59800E06E2A /* objects.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -530,6 +522,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "VERSION=\\\"4.0.4\\\"";
 				GCC_VERSION = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
@@ -544,6 +537,7 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = "VERSION=\\\"4.0.4\\\"";
 				GCC_VERSION = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				SDKROOT = macosx;

@@ -414,6 +414,5 @@ FontServ:: InvertText(SDL_Surface *text)
 	colors[0] = text->format->palette->colors[1];
 	colors[1] = text->format->palette->colors[0];
 	SDL_SetPaletteColors(text->format->palette, colors, 0, 2);
-	//SDL_SetColors(text, colors, 0, 2);
 	return(0);
 }
