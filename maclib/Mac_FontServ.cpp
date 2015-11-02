@@ -29,7 +29,7 @@
 #include <ctype.h>
 #include <string.h>
 
-#include "SDL_types.h"
+#include <SDL_types.h>
 #include "bitesex.h"
 #include "Mac_FontServ.h"
 

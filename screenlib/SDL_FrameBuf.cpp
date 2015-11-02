@@ -205,9 +205,6 @@ FrameBuf:: SetPalette(const SDL_Color *colors)
 		SDL_SetSurfacePalette(screenfg, palette);
 		SDL_SetSurfacePalette(screenbg, screenfg->format->palette);
 		SDL_FreePalette(palette);
-		//SDL_SetColors(screenfg, colors, 0, 256);
-		//SDL_SetColors(screenbg, screenfg->format->palette->colors,
-		//			0, screenfg->format->palette->ncolors);
 	}
 	for ( i=0; i<256; ++i ) {
 		image_map[i] = SDL_MapRGB(screenfg->format, 
@@ -552,7 +549,6 @@ FrameBuf:: Fade(void)
 		for ( int i = 0; i < 256; i++ ) {
 			ramp[i] = (i * v / max) << 8;
 		}
-		//SDL_set
 		SDL_SetWindowGammaRamp(window, ramp, ramp, ramp);
 		SDL_Delay(10);
 	}

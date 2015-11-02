@@ -32,7 +32,7 @@ Note: Most of the info in this file came from "Inside Macintosh"
 #include <stdlib.h>
 #include <string.h>
 
-#include "SDL_types.h"
+#include <SDL_types.h>
 #include "bitesex.h"
 #include "Mac_Resource.h"
 

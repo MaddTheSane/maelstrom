@@ -25,7 +25,7 @@
 #ifndef _Mac_Compat_h
 #define _Mac_Compat_h
 
-#include "SDL_timer.h"
+#include <SDL_timer.h>
 
 /* Some simple inline Macintosh compatibility routines */
 
