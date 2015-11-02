@@ -64,25 +64,25 @@ private func checkAppleFile(resfile: UnsafeMutablePointer<FILE>, inout resbase: 
 		bytesex16(&header.numEntries);
 		#if APPLEDOUBLE_DEBUG
 			print(String(format: "Header magic: 0x%.8x, version 0x%.8x\n",
-		header.magicNum, header.versionNum))
+				header.magicNum, header.versionNum))
 		#endif
-
+		
 		var entry = ASEntry()
 		
 		#if APPLEDOUBLE_DEBUG
-		print(String(format: "Number of entries: %d, sizeof(entry) = %d\n",
-		header.numEntries, sizeofValue(entry)))
+			print(String(format: "Number of entries: %d, sizeof(entry) = %d\n",
+				header.numEntries, sizeofValue(entry)))
 		#endif
 		for i in 0..<header.numEntries {
 			if fread(&entry, sizeofValue(entry), 1, resfile) == 0 {
-			break;
+				break;
 			}
 			bytesex32(&entry.entryIDValue);
 			bytesex32(&entry.entryOffset);
 			bytesex32(&entry.entryLength);
 			#if APPLEDOUBLE_DEBUG
-			print(String(format: "Entry (%d): ID = 0x%.8x, Offset = %d, Length = %d\n",
-			i+1, entry.entryID, entry.entryOffset, entry.entryLength))
+				print(String(format: "Entry (%d): ID = 0x%.8x, Offset = %d, Length = %d\n",
+					i+1, entry.entryID, entry.entryOffset, entry.entryLength))
 			#endif
 			if entry.entryID == .Resource {
 				resbase = entry.entryOffset;
