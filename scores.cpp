@@ -9,7 +9,7 @@
 #endif
 #include <stdio.h>
 
-#include "SDL_endian.h"
+#include <SDL_endian.h>
 
 #include "Maelstrom_Globals.h"
 #include "load.h"

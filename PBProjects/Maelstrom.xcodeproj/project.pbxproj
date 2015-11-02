@@ -62,7 +62,6 @@
 		55D128A40F09DAA400E06E2A /* Maelstrom_Sprites in Resources */ = {isa = PBXBuildFile; fileRef = 55D128A00F09DAA400E06E2A /* Maelstrom_Sprites */; };
 		55D128A50F09DAA400E06E2A /* Maelstrom-Scores in Resources */ = {isa = PBXBuildFile; fileRef = 55D128A10F09DAA400E06E2A /* Maelstrom-Scores */; };
 		55D128BF0F09DB1C00E06E2A /* icon.bmp in Resources */ = {isa = PBXBuildFile; fileRef = 55D128BE0F09DB1C00E06E2A /* icon.bmp */; };
-		55E020AC19E5CEC500F27EC7 /* SDLMain2.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55E020AB19E5CEC500F27EC7 /* SDLMain2.xib */; };
 		55EBAE1E17174CFB0029EB7B /* SDL2.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127EF0F09D54000E06E2A /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		55EBAE1F17174CFF0029EB7B /* SDL2_net.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127F00F09D54000E06E2A /* SDL2_net.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -190,7 +189,6 @@
 		55D128A00F09DAA400E06E2A /* Maelstrom_Sprites */ = {isa = PBXFileReference; lastKnownFileType = file; name = Maelstrom_Sprites; path = ../Maelstrom_Sprites; sourceTree = SOURCE_ROOT; };
 		55D128A10F09DAA400E06E2A /* Maelstrom-Scores */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Maelstrom-Scores"; path = "../Maelstrom-Scores"; sourceTree = SOURCE_ROOT; };
 		55D128BE0F09DB1C00E06E2A /* icon.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; name = icon.bmp; path = ../icon.bmp; sourceTree = SOURCE_ROOT; };
-		55E020AB19E5CEC500F27EC7 /* SDLMain2.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SDLMain2.xib; sourceTree = "<group>"; };
 		F5709022010A768101000001 /* Maelstrom.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Maelstrom.icns; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -393,7 +391,6 @@
 				55D128A00F09DAA400E06E2A /* Maelstrom_Sprites */,
 				55D128A10F09DAA400E06E2A /* Maelstrom-Scores */,
 				557258B519E5CC730073CDF2 /* SDLMain.xib */,
-				55E020AB19E5CEC500F27EC7 /* SDLMain2.xib */,
 				55D128BE0F09DB1C00E06E2A /* icon.bmp */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 			);
@@ -558,7 +555,6 @@
 				55D128A50F09DAA400E06E2A /* Maelstrom-Scores in Resources */,
 				557258B619E5CC730073CDF2 /* SDLMain.xib in Resources */,
 				55D128BF0F09DB1C00E06E2A /* icon.bmp in Resources */,
-				55E020AC19E5CEC500F27EC7 /* SDLMain2.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

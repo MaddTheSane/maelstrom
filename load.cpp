@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "SDL_endian.h"
+#include <SDL_endian.h>
 
 #include "load.h"
 #include "myerror.h"

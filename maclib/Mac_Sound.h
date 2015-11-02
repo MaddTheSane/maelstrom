@@ -29,10 +29,10 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
-#include "SDL_types.h"
-#include "SDL_mutex.h"
-#include "SDL_thread.h"
-#include "SDL_audio.h"
+#include <SDL_types.h>
+#include <SDL_mutex.h>
+#include <SDL_thread.h>
+#include <SDL_audio.h>
 #include "Mac_Wave.h"
 
 #define MAX_VOLUME	8		/* Software volume ranges from 0 - 8 */

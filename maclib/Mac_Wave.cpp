@@ -26,8 +26,8 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include "SDL_endian.h"
-#include "SDL_rwops.h"
+#include <SDL_endian.h>
+#include <SDL_rwops.h>
 #include "Mac_Wave.h"
 
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN

@@ -4,7 +4,7 @@
 */
 #include <ctype.h>
 
-#include "SDL_net.h"
+#include <SDL_net.h>
 
 #include "Maelstrom_Globals.h"
 #include "netscore.h"
