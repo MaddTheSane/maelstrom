@@ -102,6 +102,12 @@ struct FXInfo {
 
 /// header portion of AppleSingle
 struct ASHeader {
+	init() {
+		magicNum = 0
+		versionNum = 0
+		filler = (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
+		numEntries = 0
+	}
 /* AppleSingle = 0x00051600; AppleDouble = 0x00051607 */
 	/// internal file type tag
 	var magicNum: UInt32
@@ -116,7 +122,11 @@ struct ASHeader {
 /// one AppleSingle entry descriptor
 struct ASEntry
 {
-
+	init() {
+		entryIDValue = 0
+		entryOffset = 0
+		entryLength = 0
+	}
 	/// Apple reserves the range of entry IDs from `1` to `0x7FFFFFFF`.
 	/// Entry ID 0 is invalid.  The rest of the range is available
 	/// for applications to define their own entry types.  "Apple does
@@ -339,8 +349,12 @@ struct ASEntry
 	}; /* ASAfpDirId */
 
 	
+	var entryID: EntryID {
+		return EntryID(rawValue: entryIDValue) ?? .Invalid
+	}
+	
 	/// entry type: see list, 0 invalid
-	var entryID: EntryID
+	var entryIDValue: UInt32
 	/// offset, in octets, from beginning
 	/// of file to this entry's data
 	var entryOffset: UInt32

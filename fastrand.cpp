@@ -5,7 +5,9 @@
 #include <stdio.h>
 #include <time.h>
 
-#include "SDL_types.h"
+#include <SDL_types.h>
+
+#include "fastrand.h"
 
 static Uint32 randomSeed;
 
@@ -15,7 +17,7 @@ void SeedRandom(Uint32 Seed)
   fprintf(stderr, "SeedRandom(%lu)\n", Seed);
 #endif
 	if ( ! Seed ) {
-		srand(time(NULL));
+		srand(time(NULL) & 0x7FFFFFFF);
 		Seed = (((rand()%0xFFFF)<<16)|(rand()%0xFFFF));
 	}
 	randomSeed = Seed;

@@ -17,6 +17,9 @@
 		5515E8311BE611310048605C /* Mac_Resource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5515E8301BE611310048605C /* Mac_Resource.swift */; };
 		5515E8341BE6878E0048605C /* MacBinary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5515E8331BE6878E0048605C /* MacBinary.swift */; };
 		5515E8361BE68A7D0048605C /* applefile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5515E8351BE68A7D0048605C /* applefile.swift */; };
+		555968611BE6EB22003A3001 /* fastrand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 173670CB00AF29927F000001 /* fastrand.cpp */; };
+		555968631BE6EBCB003A3001 /* Mac_Compat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555968621BE6EBCB003A3001 /* Mac_Compat.swift */; };
+		555968651BE6ED5D003A3001 /* Mac_Wave.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555968641BE6ED5D003A3001 /* Mac_Wave.swift */; };
 		557258B619E5CC730073CDF2 /* SDLMain.xib in Resources */ = {isa = PBXBuildFile; fileRef = 557258B519E5CC730073CDF2 /* SDLMain.xib */; };
 		55A616501BE55FEC00AD2049 /* SDLMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A6164F1BE55FEC00AD2049 /* SDLMain.swift */; };
 		55A616521BE5614600AD2049 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A616511BE5614600AD2049 /* main.swift */; };
@@ -165,6 +168,8 @@
 		5515E8321BE686AE0048605C /* macbinary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = macbinary.h; sourceTree = "<group>"; };
 		5515E8331BE6878E0048605C /* MacBinary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacBinary.swift; sourceTree = "<group>"; };
 		5515E8351BE68A7D0048605C /* applefile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = applefile.swift; sourceTree = "<group>"; };
+		555968621BE6EBCB003A3001 /* Mac_Compat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mac_Compat.swift; sourceTree = "<group>"; };
+		555968641BE6ED5D003A3001 /* Mac_Wave.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mac_Wave.swift; sourceTree = "<group>"; };
 		557258B519E5CC730073CDF2 /* SDLMain.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SDLMain.xib; sourceTree = "<group>"; };
 		55A6164E1BE55FEA00AD2049 /* Maelstrom-UB-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Maelstrom-UB-Bridging-Header.h"; sourceTree = "<group>"; };
 		55A6164F1BE55FEC00AD2049 /* SDLMain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SDLMain.swift; sourceTree = "<group>"; };
@@ -432,6 +437,8 @@
 				5515E8301BE611310048605C /* Mac_Resource.swift */,
 				5515E8331BE6878E0048605C /* MacBinary.swift */,
 				5515E8351BE68A7D0048605C /* applefile.swift */,
+				555968621BE6EBCB003A3001 /* Mac_Compat.swift */,
+				555968641BE6ED5D003A3001 /* Mac_Wave.swift */,
 			);
 			path = maclib;
 			sourceTree = "<group>";
@@ -562,12 +569,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				555968611BE6EB22003A3001 /* fastrand.cpp in Sources */,
 				5515E81E1BE609700048605C /* AppDelegate.swift in Sources */,
 				5515E8311BE611310048605C /* Mac_Resource.swift in Sources */,
 				5515E8341BE6878E0048605C /* MacBinary.swift in Sources */,
 				5515E82D1BE60A760048605C /* Rect.swift in Sources */,
 				5515E8361BE68A7D0048605C /* applefile.swift in Sources */,
 				5515E82E1BE60F7A0048605C /* main.swift in Sources */,
+				555968651BE6ED5D003A3001 /* Mac_Wave.swift in Sources */,
+				555968631BE6EBCB003A3001 /* Mac_Compat.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -863,6 +873,7 @@
 				5515E8261BE609700048605C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		55D127E10F09D4BD00E06E2A /* Build configuration list for PBXProject "Maelstrom" */ = {
 			isa = XCConfigurationList;
