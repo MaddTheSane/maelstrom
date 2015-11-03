@@ -63,6 +63,8 @@
 		55D128A50F09DAA400E06E2A /* Maelstrom-Scores in Resources */ = {isa = PBXBuildFile; fileRef = 55D128A10F09DAA400E06E2A /* Maelstrom-Scores */; };
 		55D128BF0F09DB1C00E06E2A /* icon.bmp in Resources */ = {isa = PBXBuildFile; fileRef = 55D128BE0F09DB1C00E06E2A /* icon.bmp */; };
 		55D4F8B61BE7F3DB00F31A0F /* SwiftHelping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D4F8B51BE7F3DB00F31A0F /* SwiftHelping.swift */; };
+		55D4F8B81BE83ADB00F31A0F /* Mac_FontServ.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D4F8B71BE83ADB00F31A0F /* Mac_FontServ.swift */; };
+		55D4F8BA1BE83B0900F31A0F /* Mac_Sound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D4F8B91BE83B0900F31A0F /* Mac_Sound.swift */; };
 		55EBAE1E17174CFB0029EB7B /* SDL2.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127EF0F09D54000E06E2A /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		55EBAE1F17174CFF0029EB7B /* SDL2_net.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127F00F09D54000E06E2A /* SDL2_net.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -191,6 +193,8 @@
 		55D128A10F09DAA400E06E2A /* Maelstrom-Scores */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Maelstrom-Scores"; path = "../Maelstrom-Scores"; sourceTree = SOURCE_ROOT; };
 		55D128BE0F09DB1C00E06E2A /* icon.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; name = icon.bmp; path = ../icon.bmp; sourceTree = SOURCE_ROOT; };
 		55D4F8B51BE7F3DB00F31A0F /* SwiftHelping.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftHelping.swift; sourceTree = "<group>"; };
+		55D4F8B71BE83ADB00F31A0F /* Mac_FontServ.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mac_FontServ.swift; sourceTree = "<group>"; };
+		55D4F8B91BE83B0900F31A0F /* Mac_Sound.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mac_Sound.swift; sourceTree = "<group>"; };
 		F5709022010A768101000001 /* Maelstrom.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Maelstrom.icns; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -433,11 +437,13 @@
 		5515E82F1BE6111C0048605C /* maclib */ = {
 			isa = PBXGroup;
 			children = (
-				5515E8301BE611310048605C /* Mac_Resource.swift */,
-				5515E8331BE6878E0048605C /* MacBinary.swift */,
 				5515E8351BE68A7D0048605C /* applefile.swift */,
 				555968621BE6EBCB003A3001 /* Mac_Compat.swift */,
+				55D4F8B71BE83ADB00F31A0F /* Mac_FontServ.swift */,
+				5515E8301BE611310048605C /* Mac_Resource.swift */,
+				55D4F8B91BE83B0900F31A0F /* Mac_Sound.swift */,
 				555968641BE6ED5D003A3001 /* Mac_Wave.swift */,
+				5515E8331BE6878E0048605C /* MacBinary.swift */,
 				55D4F8B51BE7F3DB00F31A0F /* SwiftHelping.swift */,
 			);
 			path = maclib;
@@ -568,6 +574,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55D4F8B81BE83ADB00F31A0F /* Mac_FontServ.swift in Sources */,
 				555968611BE6EB22003A3001 /* fastrand.cpp in Sources */,
 				55D4F8B61BE7F3DB00F31A0F /* SwiftHelping.swift in Sources */,
 				5515E81E1BE609700048605C /* AppDelegate.swift in Sources */,
@@ -578,6 +585,7 @@
 				5515E82E1BE60F7A0048605C /* main.swift in Sources */,
 				555968651BE6ED5D003A3001 /* Mac_Wave.swift in Sources */,
 				555968631BE6EBCB003A3001 /* Mac_Compat.swift in Sources */,
+				55D4F8BA1BE83B0900F31A0F /* Mac_Sound.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

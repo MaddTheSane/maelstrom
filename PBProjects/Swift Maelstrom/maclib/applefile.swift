@@ -17,8 +17,7 @@ import Foundation
 /// coordinates increase from top to bottom. This is the way
 /// both a TV screen and page of English text are scanned:
 /// from top left to bottom right.
-struct Point
-{
+struct Point {
 	/// vertical coordinate
 	var v: Int16
 	
@@ -32,50 +31,50 @@ struct Point
 
 /// Finder information
 struct FInfo {
+	/// Masks for finder flag bits (field `fdFlags` in struct
+	/// `FInfo`).
+	struct FinderFlags: OptionSetType {
+		let rawValue: UInt16
+		init(rawValue rv: UInt16) {
+			rawValue = rv
+		}
+		
+		/// file is on desktop (HFS only)
+		static let OnDesktop = FinderFlags(rawValue: 0x0001)
+		/// color coding (3 bits)
+		static let MaskColor = FinderFlags(rawValue: 0x000E)
+		/// reserved (System 7)
+		static let SwitchLaunch = FinderFlags(rawValue: 0x0020)
+		/// appl available to multiple users
+		static let Shared = FinderFlags(rawValue: 0x0040)
+		/// file contains no INIT resources
+		static let NoINITs = FinderFlags(rawValue: 0x0080)
+		/// Finder has loaded bundle res.
+		static let BeenInited = FinderFlags(rawValue: 0x0100)
+		/// file contains custom icon
+		static let CustomIcom = FinderFlags(rawValue: 0x0400)
+		/// file is a stationary pad
+		static let Stationary = FinderFlags(rawValue: 0x0800)
+		/// file can't be renamed by Finder
+		static let NameLocked = FinderFlags(rawValue: 0x1000)
+		/// file has a bundle
+		static let HasBundle = FinderFlags(rawValue: 0x2000)
+		/// file's icon is invisible
+		static let Invisible = FinderFlags(rawValue: 0x4000)
+		/// file is an alias file (System 7)
+		static let Alias = FinderFlags(rawValue: 0x8000)
+	}
+	
 	/// File type, 4 ASCII chars
-	var fdType: OSType
+	var fdType: MaelOSType
 	/// File's creator, 4 ASCII chars
-	var fdCreator: OSType
+	var fdCreator: MaelOSType
 	/// Finder flag bits
 	var fdFlags: FinderFlags
 	/// file's location in folder
 	var fdLocation: Point
 	/// file 's folder (aka window)
 	var fdFldr: Int16
-}
-
-/// Masks for finder flag bits (field `fdFlags` in struct
-/// `FInfo`).
-struct FinderFlags: OptionSetType {
-	let rawValue: UInt16
-	init(rawValue rv: UInt16) {
-		rawValue = rv
-	}
-	
-	/// file is on desktop (HFS only)
-	static let OnDesktop = FinderFlags(rawValue: 0x0001)
-	/// color coding (3 bits)
-	static let MaskColor = FinderFlags(rawValue: 0x000E)
-	/// reserved (System 7)
-	static let SwitchLaunch = FinderFlags(rawValue: 0x0020)
-	/// appl available to multiple users
-	static let Shared = FinderFlags(rawValue: 0x0040)
-	/// file contains no INIT resources
-	static let NoINITs = FinderFlags(rawValue: 0x0080)
-	/// Finder has loaded bundle res.
-	static let BeenInited = FinderFlags(rawValue: 0x0100)
-	/// file contains custom icon
-	static let CustomIcom = FinderFlags(rawValue: 0x0400)
-	/// file is a stationary pad
-	static let Stationary = FinderFlags(rawValue: 0x0800)
-	/// file can't be renamed by Finder
-	static let NameLocked = FinderFlags(rawValue: 0x1000)
-	/// file has a bundle
-	static let HasBundle = FinderFlags(rawValue: 0x2000)
-	/// file's icon is invisible
-	static let Invisible = FinderFlags(rawValue: 0x4000)
-	/// file is an alias file (System 7)
-	static let Alias = FinderFlags(rawValue: 0x8000)
 }
 
 /* See older Inside Macintosh, Volume IV, page 105.
@@ -101,7 +100,7 @@ struct FXInfo {
 /* Pieces used by AppleSingle & AppleDouble (defined later). */
 
 /// header portion of AppleSingle
-struct ASHeader {
+struct AppleSingleHeader {
 	init() {
 		magicNum = 0
 		versionNum = 0
@@ -120,8 +119,7 @@ struct ASHeader {
 } /* ASHeader */
 
 /// one AppleSingle entry descriptor
-struct ASEntry
-{
+struct AppleSingleEntry {
 	init() {
 		entryIDValue = 0
 		entryOffset = 0
@@ -131,6 +129,29 @@ struct ASEntry
 	/// Entry ID 0 is invalid.  The rest of the range is available
 	/// for applications to define their own entry types.  "Apple does
 	/// not arbitrate the use of the rest of the range."
+	///
+	/// matrix of entry types and their usage:
+	///
+	///                       Macintosh    Pro-DOS    MS-DOS    AFP server
+	///                       ---------    -------    ------    ----------
+	///      1   AS_DATA         xxx         xxx       xxx         xxx
+	///      2   AS_RESOURCE     xxx         xxx
+	///      3   AS_REALNAME     xxx         xxx       xxx         xxx
+	///
+	///      4   AS_COMMENT      xxx
+	///      5   AS_ICONBW       xxx
+	///      6   AS_ICONCOLOR    xxx
+	///
+	///      8   AS_FILEDATES    xxx         xxx       xxx         xxx
+	///      9   AS_FINDERINFO   xxx
+	///     10   AS_MACINFO      xxx
+	///
+	///     11   AS_PRODOSINFO               xxx
+	///     12   AS_MSDOSINFO                          xxx
+	///
+	///     13   AS_AFPNAME                                        xxx
+	///     14   AS_AFPINFO                                        xxx
+	///     15   AS_AFPDIRID                                       xxx
 	enum EntryID: UInt32 {
 		case Invalid = 0
 		
@@ -192,20 +213,19 @@ struct ASEntry
 		/// `'!'` (`0x21`)
 		case AFPName = 13
 		
-		/// AFP file info, attrib., etc
+		/// AFP server file information
 		case AFPInfo = 14
 		
-		/// AFP directory ID
-		case AFPDirID
+		/// AFP server directory ID
+		case AFPDirID = 15
 	}
 	
 	/// entry ID 5, standard Mac black and white icon
 	///
 	/// This is probably a simple duplicate of the 128 octet bitmap
-	/// stored as the 'ICON' resource or the icon element from an 'ICN#'
+	/// stored as the `'ICON'` resource or the icon element from an `'ICN#'`
 	/// resource.
-	struct ASIconBW
-	{
+	struct IconBW {
 		/// 32 rows of 32 1-bit pixels
 		var bitrow: (UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32)
 	}
@@ -215,10 +235,9 @@ struct ASEntry
 	/// Times are stored as a "signed number of seconds before of after
 	/// 12:00 a.m. (midnight), January 1, 2000 Greenwich Mean Time (GMT).
 	/// Applications must convert to their native date and time
-	/// conventions." Any unknown entries are set to 0x80000000
+	/// conventions." Any unknown entries are set to `0x80000000`
 	/// (earliest reasonable time).
-	struct ASFileDates
-	{
+	struct FileDates {
 		/// file creation date/time
 		var create: Int32
 		/// last modification date/time
@@ -235,7 +254,6 @@ struct ASEntry
 	/// See older Inside Macintosh, Volume II, page 115 for
 	/// `PBGetFileInfo()`, and Volume IV, page 155, for `PBGetCatInfo()`.
 	struct ASFinderInfo {
-		
 		/// `PBGetFileInfo()` or `PBGetCatInfo()`
 		var ioFlFndrInfo: FInfo
 		/// `PBGetCatInfo()` (HFS only)
@@ -243,8 +261,7 @@ struct ASEntry
 	}
 	
 	/// entry ID 10, Macintosh file information
-	struct ASMacInfo
-	{
+	struct MacInfo {
 		struct Attributes: OptionSetType {
 			let rawValue: UInt8
 			
@@ -253,9 +270,9 @@ struct ASEntry
 			}
 			
 			/// protected bit
-			static let Protected = Attributes(rawValue: 0x02)
+			static let Protected = Attributes(rawValue: 1 << 1)
 			/// locked bit
-			static let Locked = Attributes(rawValue: 0x01)
+			static let Locked = Attributes(rawValue: 1 << 0)
 		}
 		/// filler, currently all bits 0
 		var filler: (UInt8, UInt8, UInt8)
@@ -269,7 +286,7 @@ struct ASEntry
 	/// NOTE: ProDOS-16 and GS/OS use entire fields.  ProDOS-8 uses low
 	/// order half of each item (low byte in access & filetype, low word
 	/// in auxtype); remainder of each field should be zero filled.
-	struct ASProdosInfo {
+	struct ProDOSInfo {
 		/// access word
 		var access: UInt16
 		/// file type of original file
@@ -284,8 +301,7 @@ struct ASEntry
 	/// MS-DOS file attributes occupy 1 octet; since the Developer Note
 	/// is unspecific, I've placed them in the low order portion of the
 	/// field (based on example of other `ASMacInfo` & `ASProdosInfo`).
-	struct ASMsdosInfo
-	{
+	struct MSDOSInfo {
 		struct DOSAttributes: OptionSetType {
 			let rawValue: UInt8
 			
@@ -296,17 +312,17 @@ struct ASEntry
 			/// normal file (all bits clear)
 			static let Normal = DOSAttributes(rawValue: 0x00)
 			/// file is read-only
-			static let ReadOnly = DOSAttributes(rawValue: 0x01)
+			static let ReadOnly = DOSAttributes(rawValue: 1 << 0)
 			/// hidden file (not shown by DIR)
-			static let Hidden = DOSAttributes(rawValue: 0x02)
+			static let Hidden = DOSAttributes(rawValue: 1 << 1)
 			/// system file (not shown by DIR)
-			static let System = DOSAttributes(rawValue: 0x04)
+			static let System = DOSAttributes(rawValue: 1 << 2)
 			/// volume label (only in root dir)
-			static let VolID = DOSAttributes(rawValue: 0x08)
+			static let VolID = DOSAttributes(rawValue: 1 << 3)
 			/// file is a subdirectory
-			static let SubDir = DOSAttributes(rawValue: 0x10)
+			static let SubDir = DOSAttributes(rawValue: 1 << 4)
 			/// new or modified (needs backup)
-			static let Archive = DOSAttributes(rawValue: 0x20)
+			static let Archive = DOSAttributes(rawValue: 1 << 5)
 		}
 		/// filler, currently all bits 0
 		var filler: UInt8
@@ -315,9 +331,8 @@ struct ASEntry
 		var attr: DOSAttributes
 	}
 	
-	/// entry ID 12, AFP server file information
-	struct ASAfpInfo {
-		
+	/// entry ID 14, AFP server file information
+	struct AFPInfo {
 		struct Attributes: OptionSetType {
 			let rawValue: UInt8
 			
@@ -326,11 +341,11 @@ struct ASEntry
 			}
 			
 			/// file is invisible
-			static let Invisible = Attributes(rawValue: 0x01)
+			static let Invisible = Attributes(rawValue: 1 << 0)
 			/// simultaneous access allowed
-			static let MultiUser = Attributes(rawValue: 0x02)
+			static let MultiUser = Attributes(rawValue: 1 << 1)
 			/// system file
-			static let System = Attributes(rawValue: 0x04)
+			static let System = Attributes(rawValue: 1 << 2)
 			/// new or modified (needs backup)
 			static let BackupNeeded = Attributes(rawValue: 0x40)
 		}
@@ -342,8 +357,7 @@ struct ASEntry
 	}
 	
 	/// entry ID 15, AFP server directory ID
-	struct ASAfpDirId
-	{
+	struct AFPDirId {
 		/// file's directory ID on AFP server
 		var dirid: UInt32
 	}; /* ASAfpDirId */
@@ -361,191 +375,15 @@ struct ASEntry
 	/// length of data in octets
 	var entryLength: UInt32
 }; /* ASEntry */
-/*
-
-
-/* matrix of entry types and their usage:
-*
-*                   Macintosh    Pro-DOS    MS-DOS    AFP server
-*                   ---------    -------    ------    ----------
-*  1   AS_DATA         xxx         xxx       xxx         xxx
-*  2   AS_RESOURCE     xxx         xxx
-*  3   AS_REALNAME     xxx         xxx       xxx         xxx
-*
-*  4   AS_COMMENT      xxx
-*  5   AS_ICONBW       xxx
-*  6   AS_ICONCOLOR    xxx
-*
-*  8   AS_FILEDATES    xxx         xxx       xxx         xxx
-*  9   AS_FINDERINFO   xxx
-* 10   AS_MACINFO      xxx
-*
-* 11   AS_PRODOSINFO               xxx
-* 12   AS_MSDOSINFO                          xxx
-*
-* 13   AS_AFPNAME                                        xxx
-* 14   AS_AFPINFO                                        xxx
-* 15   AS_AFPDIRID                                       xxx
-*/
-
-/* entry ID 1, data fork of file - arbitrary length octet string */
-
-/* entry ID 2, resource fork - arbitrary length opaque octet string;
-*              as created and managed by Mac O.S. resoure manager
-*/
-
-/* entry ID 3, file's name as created on home file system - arbitrary
-*              length octet string; usually short, printable ASCII
-*/
-
-/* entry ID 4, standard Macintosh comment - arbitrary length octet
-*              string; printable ASCII, claimed 200 chars or less
-*/
-
-/* This is probably a simple duplicate of the 128 octet bitmap
-* stored as the 'ICON' resource or the icon element from an 'ICN#'
-* resource.
-*/
-
-struct ASIconBW /* entry ID 5, standard Mac black and white icon */
-{
-Uint32 bitrow[32]; /* 32 rows of 32 1-bit pixels */
-}; /* ASIconBW */
-
-typedef struct ASIconBW ASIconBW;
-
-/* entry ID 6, "standard" Macintosh color icon - several competing
-*              color icons are defined.  Given the copyright dates
-* of the Inside Macintosh volumes, the 'cicn' resource predominated
-* when the AppleSingle Developer's Note was written (most probable
-* candidate).  See Inside Macintosh, Volume V, pages 64 & 80-81 for
-* a description of 'cicn' resources.
-*
-* With System 7, Apple introduced icon families.  They consist of:
-*      large (32x32) B&W icon, 1-bit/pixel,    type 'ICN#',
-*      small (16x16) B&W icon, 1-bit/pixel,    type 'ics#',
-*      large (32x32) color icon, 4-bits/pixel, type 'icl4',
-*      small (16x16) color icon, 4-bits/pixel, type 'ics4',
-*      large (32x32) color icon, 8-bits/pixel, type 'icl8', and
-*      small (16x16) color icon, 8-bits/pixel, type 'ics8'.
-* If entry ID 6 is one of these, take your pick.  See Inside
-* Macintosh, Volume VI, pages 2-18 to 2-22 and 9-9 to 9-13, for
-* descriptions.
-*/
-
-/* entry ID 7, not used */
-
-/* Times are stored as a "signed number of seconds before of after
-* 12:00 a.m. (midnight), January 1, 2000 Greenwich Mean Time (GMT).
-* Applications must convert to their native date and time
-* conventions." Any unknown entries are set to 0x80000000
-* (earliest reasonable time).
-*/
-
-struct ASFileDates      /* entry ID 8, file dates info */
-{
-Sint32 create; /* file creation date/time */
-Sint32 modify; /* last modification date/time */
-Sint32 backup; /* last backup date/time */
-Sint32 access; /* last access date/time */
-}; /* ASFileDates */
-
-typedef struct ASFileDates ASFileDates;
-
-/* See older Inside Macintosh, Volume II, page 115 for
-* PBGetFileInfo(), and Volume IV, page 155, for PBGetCatInfo().
-*/
-
-/* entry ID 9, Macintosh Finder info & extended info */
-struct ASFinderInfo
-{
-FInfo ioFlFndrInfo; /* PBGetFileInfo() or PBGetCatInfo() */
-FXInfo ioFlXFndrInfo; /* PBGetCatInfo() (HFS only) */
-}; /* ASFinderInfo */
-
-typedef struct ASFinderInfo ASFinderInfo;
-
-struct ASMacInfo        /* entry ID 10, Macintosh file information */
-{
-Uint8  filler[3]; /* filler, currently all bits 0 */
-Uint8  ioFlAttrib; /* PBGetFileInfo() or PBGetCatInfo() */
-}; /* ASMacInfo */
-
-typedef struct ASMacInfo ASMacInfo;
-
-#define AS_PROTECTED    0x0002 /* protected bit */
-#define AS_LOCKED       0x0001 /* locked bit */
-
-/* NOTE: ProDOS-16 and GS/OS use entire fields.  ProDOS-8 uses low
-* order half of each item (low byte in access & filetype, low word
-* in auxtype); remainder of each field should be zero filled.
-*/
-
-struct ASProdosInfo     /* entry ID 11, ProDOS file information */
-{
-Uint16 access; /* access word */
-Uint16 filetype; /* file type of original file */
-Uint32 auxtype; /* auxiliary type of the orig file */
-}; /* ASProDosInfo */
-
-typedef struct ASProdosInfo ASProdosInfo;
-
-/* MS-DOS file attributes occupy 1 octet; since the Developer Note
-* is unspecific, I've placed them in the low order portion of the
-* field (based on example of other ASMacInfo & ASProdosInfo).
-*/
-
-struct ASMsdosInfo      /* entry ID 12, MS-DOS file information */
-{
-Uint8  filler; /* filler, currently all bits 0 */
-Uint8  attr; /* _dos_getfileattr(), MS-DOS */
-/* interrupt 21h function 4300h */
-}; /* ASMsdosInfo */
-
-typedef struct ASMsdosInfo ASMsdosInfo;
-
-#define AS_DOS_NORMAL   0x00 /* normal file (all bits clear) */
-#define AS_DOS_READONLY 0x01 /* file is read-only */
-#define AS_DOS_HIDDEN   0x02 /* hidden file (not shown by DIR) */
-#define AS_DOS_SYSTEM   0x04 /* system file (not shown by DIR) */
-#define AS_DOS_VOLID    0x08 /* volume label (only in root dir) */
-#define AS_DOS_SUBDIR   0x10 /* file is a subdirectory */
-#define AS_DOS_ARCHIVE  0x20 /* new or modified (needs backup) */
-
-/* entry ID 13, short file name on AFP server - arbitrary length
-*              octet string; usualy printable ASCII starting with
-*              '!' (0x21)
-*/
-
-struct ASAfpInfo   /* entry ID 12, AFP server file information */
-{
-Uint8  filler[3]; /* filler, currently all bits 0 */
-Uint8  attr; /* file attributes */
-}; /* ASAfpInfo */
-
-typedef struct ASAfpInfo ASAfpInfo;
-
-#define AS_AFP_Invisible    0x01 /* file is invisible */
-#define AS_AFP_MultiUser    0x02 /* simultaneous access allowed */
-#define AS_AFP_System       0x04 /* system file */
-#define AS_AFP_BackupNeeded 0x40 /* new or modified (needs backup) */
-
-struct ASAfpDirId       /* entry ID 15, AFP server directory ID */
-{
-Uint32 dirid; /* file's directory ID on AFP server */
-}; /* ASAfpDirId */
-
-typedef struct ASAfpDirId ASAfpDirId;
-*/
 
 /// format of disk file
 ///
 /// The format of an AppleSingle/AppleDouble header
 struct AppleSingle {
 	/// AppleSingle header part
-	var header: ASHeader
+	var header: AppleSingleHeader
 	/// array of entry descriptors
-	var entry: (ASEntry)
+	var entry: (AppleSingleEntry)
 	/* Uint8   filedata[];          /* followed by rest of file */*/
 }
 
