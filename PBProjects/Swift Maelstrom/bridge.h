@@ -10,8 +10,10 @@
 #include <SDL_audio.h>
 #include <SDL_endian.h>
 #include <SDL_rwops.h>
+#include <SDL_video.h>
 
 #include <SDL_net.h>
 
 #include "bitesex.h"
 #include "fastrand.h"
+#include "pixel.h"

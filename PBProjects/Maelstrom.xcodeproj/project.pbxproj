@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		550CEC541BE842AC00453C11 /* SDL_FrameBuf.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550CEC531BE842AC00453C11 /* SDL_FrameBuf.swift */; };
+		550CEC551BE84B2100453C11 /* pixel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1736710800AF2A6D7F000001 /* pixel.cpp */; };
 		5515E81E1BE609700048605C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5515E81D1BE609700048605C /* AppDelegate.swift */; };
 		5515E8201BE609700048605C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5515E81F1BE609700048605C /* Assets.xcassets */; };
 		5515E8231BE609700048605C /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5515E8211BE609700048605C /* MainMenu.xib */; };
@@ -159,6 +161,7 @@
 		1736716C00B03F027F000001 /* Maelstrom-netd.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "Maelstrom-netd.c"; path = "../Maelstrom-netd.c"; sourceTree = SOURCE_ROOT; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		550CEC531BE842AC00453C11 /* SDL_FrameBuf.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SDL_FrameBuf.swift; sourceTree = "<group>"; };
 		5515E81B1BE609700048605C /* Swift Maelstrom.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Swift Maelstrom.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5515E81D1BE609700048605C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5515E81F1BE609700048605C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -412,6 +415,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		550CEC501BE8425400453C11 /* screenlib */ = {
+			isa = PBXGroup;
+			children = (
+				550CEC531BE842AC00453C11 /* SDL_FrameBuf.swift */,
+			);
+			path = screenlib;
+			sourceTree = "<group>";
+		};
 		5515E81C1BE609700048605C /* Swift Maelstrom */ = {
 			isa = PBXGroup;
 			children = (
@@ -430,6 +441,7 @@
 			children = (
 				5515E82C1BE60A760048605C /* Rect.swift */,
 				5515E82F1BE6111C0048605C /* maclib */,
+				550CEC501BE8425400453C11 /* screenlib */,
 			);
 			name = "Maelstrom Classes";
 			sourceTree = "<group>";
@@ -575,6 +587,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				55D4F8B81BE83ADB00F31A0F /* Mac_FontServ.swift in Sources */,
+				550CEC541BE842AC00453C11 /* SDL_FrameBuf.swift in Sources */,
 				555968611BE6EB22003A3001 /* fastrand.cpp in Sources */,
 				55D4F8B61BE7F3DB00F31A0F /* SwiftHelping.swift in Sources */,
 				5515E81E1BE609700048605C /* AppDelegate.swift in Sources */,
@@ -585,6 +598,7 @@
 				5515E82E1BE60F7A0048605C /* main.swift in Sources */,
 				555968651BE6ED5D003A3001 /* Mac_Wave.swift in Sources */,
 				555968631BE6EBCB003A3001 /* Mac_Compat.swift in Sources */,
+				550CEC551BE84B2100453C11 /* pixel.cpp in Sources */,
 				55D4F8BA1BE83B0900F31A0F /* Mac_Sound.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

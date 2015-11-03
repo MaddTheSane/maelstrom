@@ -8,6 +8,24 @@
 
 import Foundation
 
+//MARK: - SDL macros
+
+typealias SDL_WindowPtr = COpaquePointer
+
+func SDL_WINDOWPOS_CENTERED_DISPLAY(X: Int32) -> Int32 {
+	return SDL_WINDOWPOS_CENTERED_MASK | 0
+}
+
+var SDL_WINDOWPOS_CENTERED: Int32 {
+	return SDL_WINDOWPOS_CENTERED_DISPLAY(0)
+}
+
+func SDL_LoadBMP(file: String) -> UnsafeMutablePointer<SDL_Surface> {
+	return SDL_LoadBMP_RW(SDL_RWFromFile(file, "rb"), 1)
+}
+
+//MARK: -
+
 extension String {
 	mutating func replaceAllInstancesOfCharacter(aChar: Character, withCharacter bChar: Character) {
 		while let charRange = rangeOfString(String(aChar)) {
