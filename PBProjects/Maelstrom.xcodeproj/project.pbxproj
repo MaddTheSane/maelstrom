@@ -9,11 +9,7 @@
 /* Begin PBXBuildFile section */
 		550CEC541BE842AC00453C11 /* SDL_FrameBuf.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550CEC531BE842AC00453C11 /* SDL_FrameBuf.swift */; };
 		550CEC551BE84B2100453C11 /* pixel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1736710800AF2A6D7F000001 /* pixel.cpp */; };
-		5515E81E1BE609700048605C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5515E81D1BE609700048605C /* AppDelegate.swift */; };
 		5515E8201BE609700048605C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5515E81F1BE609700048605C /* Assets.xcassets */; };
-		5515E8231BE609700048605C /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5515E8211BE609700048605C /* MainMenu.xib */; };
-		5515E8281BE6097F0048605C /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127EF0F09D54000E06E2A /* SDL2.framework */; };
-		5515E8291BE609840048605C /* SDL2_net.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127F00F09D54000E06E2A /* SDL2_net.framework */; };
 		5515E82D1BE60A760048605C /* Rect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5515E82C1BE60A760048605C /* Rect.swift */; };
 		5515E82E1BE60F7A0048605C /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A616511BE5614600AD2049 /* main.swift */; };
 		5515E8311BE611310048605C /* Mac_Resource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5515E8301BE611310048605C /* Mac_Resource.swift */; };
@@ -23,6 +19,7 @@
 		555968631BE6EBCB003A3001 /* Mac_Compat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555968621BE6EBCB003A3001 /* Mac_Compat.swift */; };
 		555968651BE6ED5D003A3001 /* Mac_Wave.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555968641BE6ED5D003A3001 /* Mac_Wave.swift */; };
 		557258B619E5CC730073CDF2 /* SDLMain.xib in Resources */ = {isa = PBXBuildFile; fileRef = 557258B519E5CC730073CDF2 /* SDLMain.xib */; };
+		5596588A1BEACEA400D8BB39 /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559658891BEACEA400D8BB39 /* Object.swift */; };
 		55A616501BE55FEC00AD2049 /* SDLMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A6164F1BE55FEC00AD2049 /* SDLMain.swift */; };
 		55A616521BE5614600AD2049 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A616511BE5614600AD2049 /* main.swift */; };
 		55D1282C0F09D59800E06E2A /* checksum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 173670BC00AF295B7F000001 /* checksum.cpp */; };
@@ -67,6 +64,19 @@
 		55D4F8B61BE7F3DB00F31A0F /* SwiftHelping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D4F8B51BE7F3DB00F31A0F /* SwiftHelping.swift */; };
 		55D4F8B81BE83ADB00F31A0F /* Mac_FontServ.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D4F8B71BE83ADB00F31A0F /* Mac_FontServ.swift */; };
 		55D4F8BA1BE83B0900F31A0F /* Mac_Sound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D4F8B91BE83B0900F31A0F /* Mac_Sound.swift */; };
+		55D4F8BB1BE96DEF00F31A0F /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127EF0F09D54000E06E2A /* SDL2.framework */; };
+		55D4F8BC1BE96DEF00F31A0F /* SDL2.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127EF0F09D54000E06E2A /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		55D4F8BD1BE96DEF00F31A0F /* SDL2_net.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127F00F09D54000E06E2A /* SDL2_net.framework */; };
+		55D4F8BE1BE96DEF00F31A0F /* SDL2_net.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127F00F09D54000E06E2A /* SDL2_net.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		55D4F8C01BE96FBF00F31A0F /* icon.bmp in Resources */ = {isa = PBXBuildFile; fileRef = 55D128BE0F09DB1C00E06E2A /* icon.bmp */; };
+		55D4F8C11BE96FC400F31A0F /* Maelstrom_Fonts in Resources */ = {isa = PBXBuildFile; fileRef = 55D1289E0F09DAA400E06E2A /* Maelstrom_Fonts */; };
+		55D4F8C21BE96FC400F31A0F /* Maelstrom_Sounds in Resources */ = {isa = PBXBuildFile; fileRef = 55D1289F0F09DAA400E06E2A /* Maelstrom_Sounds */; };
+		55D4F8C31BE96FC400F31A0F /* Maelstrom_Sprites in Resources */ = {isa = PBXBuildFile; fileRef = 55D128A00F09DAA400E06E2A /* Maelstrom_Sprites */; };
+		55D4F8C41BE96FC400F31A0F /* Maelstrom-Scores in Resources */ = {isa = PBXBuildFile; fileRef = 55D128A10F09DAA400E06E2A /* Maelstrom-Scores */; };
+		55D4F8C71BE971C800F31A0F /* Maelstrom_Server in Resources */ = {isa = PBXBuildFile; fileRef = 55D128720F09D9BD00E06E2A /* Maelstrom_Server */; };
+		55D4F8C81BE9738E00F31A0F /* SDLMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A6164F1BE55FEC00AD2049 /* SDLMain.swift */; };
+		55D4F8C91BE973A400F31A0F /* SDLMain.xib in Resources */ = {isa = PBXBuildFile; fileRef = 557258B519E5CC730073CDF2 /* SDLMain.xib */; };
+		55D4F8CB1BE9747500F31A0F /* Maelstrom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D4F8CA1BE9747500F31A0F /* Maelstrom.swift */; };
 		55EBAE1E17174CFB0029EB7B /* SDL2.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127EF0F09D54000E06E2A /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		55EBAE1F17174CFF0029EB7B /* SDL2_net.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127F00F09D54000E06E2A /* SDL2_net.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -79,9 +89,28 @@
 			remoteGlobalIDString = 55D128710F09D9BD00E06E2A;
 			remoteInfo = Maelstrom_Server;
 		};
+		55D4F8C51BE971BF00F31A0F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 55D128710F09D9BD00E06E2A;
+			remoteInfo = Maelstrom_Server;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		55D4F8BF1BE96DEF00F31A0F /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				55D4F8BC1BE96DEF00F31A0F /* SDL2.framework in Embed Frameworks */,
+				55D4F8BE1BE96DEF00F31A0F /* SDL2_net.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		55EBAE1D17174CF20029EB7B /* Copy Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -117,7 +146,7 @@
 		00FF5C5A00B0464B7F000001 /* shinobi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = shinobi.h; sourceTree = "<group>"; };
 		0104628800B326437F000001 /* netscore.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = netscore.cpp; sourceTree = "<group>"; };
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		173670BB00AF295B7F000001 /* buttonlist.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = buttonlist.h; sourceTree = "<group>"; };
 		173670BC00AF295B7F000001 /* checksum.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = checksum.cpp; sourceTree = "<group>"; };
 		173670BD00AF295B7F000001 /* checksum.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = checksum.h; sourceTree = "<group>"; };
@@ -159,8 +188,8 @@
 		1736712200AF2C7D7F000001 /* Mac_Wave.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Mac_Wave.cpp; sourceTree = "<group>"; };
 		1736712300AF2C7D7F000001 /* Mac_Wave.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Mac_Wave.h; sourceTree = "<group>"; };
 		1736716C00B03F027F000001 /* Maelstrom-netd.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "Maelstrom-netd.c"; path = "../Maelstrom-netd.c"; sourceTree = SOURCE_ROOT; };
-		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
-		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		550CEC531BE842AC00453C11 /* SDL_FrameBuf.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SDL_FrameBuf.swift; sourceTree = "<group>"; };
 		5515E81B1BE609700048605C /* Swift Maelstrom.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Swift Maelstrom.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5515E81D1BE609700048605C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -176,6 +205,7 @@
 		555968621BE6EBCB003A3001 /* Mac_Compat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mac_Compat.swift; sourceTree = "<group>"; };
 		555968641BE6ED5D003A3001 /* Mac_Wave.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mac_Wave.swift; sourceTree = "<group>"; };
 		557258B519E5CC730073CDF2 /* SDLMain.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SDLMain.xib; sourceTree = "<group>"; };
+		559658891BEACEA400D8BB39 /* Object.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Object.swift; sourceTree = "<group>"; };
 		55A6164E1BE55FEA00AD2049 /* Maelstrom-UB-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Maelstrom-UB-Bridging-Header.h"; sourceTree = "<group>"; };
 		55A6164F1BE55FEC00AD2049 /* SDLMain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SDLMain.swift; sourceTree = "<group>"; };
 		55A616511BE5614600AD2049 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
@@ -184,10 +214,10 @@
 		55D127F00F09D54000E06E2A /* SDL2_net.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_net.framework; path = /Library/Frameworks/SDL2_net.framework; sourceTree = "<absolute>"; };
 		55D128240F09D57F00E06E2A /* Maelstrom.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Maelstrom.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55D128260F09D57F00E06E2A /* Maelstrom-UB-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Maelstrom-UB-Info.plist"; sourceTree = "<group>"; };
-		55D128510F09D7B200E06E2A /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
-		55D128580F09D7DC00E06E2A /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
-		55D128590F09D7DC00E06E2A /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
-		55D1285A0F09D7DC00E06E2A /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
+		55D128510F09D7B200E06E2A /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
+		55D128580F09D7DC00E06E2A /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = System/Library/Frameworks/AGL.framework; sourceTree = SDKROOT; };
+		55D128590F09D7DC00E06E2A /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		55D1285A0F09D7DC00E06E2A /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		55D128720F09D9BD00E06E2A /* Maelstrom_Server */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Maelstrom_Server; sourceTree = BUILT_PRODUCTS_DIR; };
 		55D1287F0F09DA7200E06E2A /* Images */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Images; path = ../Images; sourceTree = SOURCE_ROOT; };
 		55D1289E0F09DAA400E06E2A /* Maelstrom_Fonts */ = {isa = PBXFileReference; lastKnownFileType = file; name = Maelstrom_Fonts; path = ../Maelstrom_Fonts; sourceTree = SOURCE_ROOT; };
@@ -198,6 +228,7 @@
 		55D4F8B51BE7F3DB00F31A0F /* SwiftHelping.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftHelping.swift; sourceTree = "<group>"; };
 		55D4F8B71BE83ADB00F31A0F /* Mac_FontServ.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mac_FontServ.swift; sourceTree = "<group>"; };
 		55D4F8B91BE83B0900F31A0F /* Mac_Sound.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mac_Sound.swift; sourceTree = "<group>"; };
+		55D4F8CA1BE9747500F31A0F /* Maelstrom.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Maelstrom.swift; sourceTree = "<group>"; };
 		F5709022010A768101000001 /* Maelstrom.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Maelstrom.icns; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -206,8 +237,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5515E8281BE6097F0048605C /* SDL2.framework in Frameworks */,
-				5515E8291BE609840048605C /* SDL2_net.framework in Frameworks */,
+				55D4F8BB1BE96DEF00F31A0F /* SDL2.framework in Frameworks */,
+				55D4F8BD1BE96DEF00F31A0F /* SDL2_net.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -440,8 +471,10 @@
 			isa = PBXGroup;
 			children = (
 				5515E82C1BE60A760048605C /* Rect.swift */,
+				55D4F8CA1BE9747500F31A0F /* Maelstrom.swift */,
 				5515E82F1BE6111C0048605C /* maclib */,
 				550CEC501BE8425400453C11 /* screenlib */,
+				559658881BEACE7600D8BB39 /* netlogic */,
 			);
 			name = "Maelstrom Classes";
 			sourceTree = "<group>";
@@ -461,6 +494,14 @@
 			path = maclib;
 			sourceTree = "<group>";
 		};
+		559658881BEACE7600D8BB39 /* netlogic */ = {
+			isa = PBXGroup;
+			children = (
+				559658891BEACEA400D8BB39 /* Object.swift */,
+			);
+			path = netlogic;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -471,10 +512,12 @@
 				5515E8171BE609700048605C /* Sources */,
 				5515E8181BE609700048605C /* Frameworks */,
 				5515E8191BE609700048605C /* Resources */,
+				55D4F8BF1BE96DEF00F31A0F /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				55D4F8C61BE971BF00F31A0F /* PBXTargetDependency */,
 			);
 			name = "Swift Maelstrom";
 			productName = "Swift Maelstrom";
@@ -557,8 +600,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55D4F8C71BE971C800F31A0F /* Maelstrom_Server in Resources */,
+				55D4F8C21BE96FC400F31A0F /* Maelstrom_Sounds in Resources */,
+				55D4F8C11BE96FC400F31A0F /* Maelstrom_Fonts in Resources */,
+				55D4F8C01BE96FBF00F31A0F /* icon.bmp in Resources */,
+				55D4F8C91BE973A400F31A0F /* SDLMain.xib in Resources */,
 				5515E8201BE609700048605C /* Assets.xcassets in Resources */,
-				5515E8231BE609700048605C /* MainMenu.xib in Resources */,
+				55D4F8C41BE96FC400F31A0F /* Maelstrom-Scores in Resources */,
+				55D4F8C31BE96FC400F31A0F /* Maelstrom_Sprites in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -590,15 +639,17 @@
 				550CEC541BE842AC00453C11 /* SDL_FrameBuf.swift in Sources */,
 				555968611BE6EB22003A3001 /* fastrand.cpp in Sources */,
 				55D4F8B61BE7F3DB00F31A0F /* SwiftHelping.swift in Sources */,
-				5515E81E1BE609700048605C /* AppDelegate.swift in Sources */,
+				55D4F8CB1BE9747500F31A0F /* Maelstrom.swift in Sources */,
 				5515E8311BE611310048605C /* Mac_Resource.swift in Sources */,
 				5515E8341BE6878E0048605C /* MacBinary.swift in Sources */,
 				5515E82D1BE60A760048605C /* Rect.swift in Sources */,
 				5515E8361BE68A7D0048605C /* applefile.swift in Sources */,
+				55D4F8C81BE9738E00F31A0F /* SDLMain.swift in Sources */,
 				5515E82E1BE60F7A0048605C /* main.swift in Sources */,
 				555968651BE6ED5D003A3001 /* Mac_Wave.swift in Sources */,
 				555968631BE6EBCB003A3001 /* Mac_Compat.swift in Sources */,
 				550CEC551BE84B2100453C11 /* pixel.cpp in Sources */,
+				5596588A1BEACEA400D8BB39 /* Object.swift in Sources */,
 				55D4F8BA1BE83B0900F31A0F /* Mac_Sound.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -654,6 +705,11 @@
 			target = 55D128710F09D9BD00E06E2A /* Maelstrom_Server */;
 			targetProxy = 55D1287D0F09DA0C00E06E2A /* PBXContainerItemProxy */;
 		};
+		55D4F8C61BE971BF00F31A0F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 55D128710F09D9BD00E06E2A /* Maelstrom_Server */;
+			targetProxy = 55D4F8C51BE971BF00F31A0F /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -699,6 +755,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					/Library/Frameworks,
 					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -752,6 +809,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					/Library/Frameworks,
 					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 				);
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

@@ -45,6 +45,20 @@ struct MaelOSType: Hashable {
 	var c: UInt8
 	var d: UInt8
 	
+	init?(stringValue: String) {
+		if var aStr = stringValue.cStringUsingEncoding(NSMacOSRomanStringEncoding) {
+			while aStr.count < 4 {
+				aStr.append(0)
+			}
+			a = UInt8(bitPattern: aStr[0])
+			b = UInt8(bitPattern: aStr[1])
+			c = UInt8(bitPattern: aStr[2])
+			d = UInt8(bitPattern: aStr[3])
+		} else {
+			return nil
+		}
+	}
+	
 	var rawOSType: OSType {
 		get {
 			//TODO: make this endian-safe

@@ -9,10 +9,10 @@
 import Foundation
 
 struct Rect {
-	var top: Int16
-	var left: Int16
-	var bottom: Int16
-	var right: Int16
+	var top: Int16 = 0
+	var left: Int16 = 0
+	var bottom: Int16 = 0
+	var right: Int16 = 0
 	
 	func offsetRectBy(x x: Int32, y: Int32) -> Rect {
 		var r = self

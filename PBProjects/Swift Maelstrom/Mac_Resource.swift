@@ -289,29 +289,6 @@ private struct Resource_Map {
 	}
 }
 
-
-/// The actual resources in the resource fork
-struct Mac_ResData {
-	var length: UInt32
-	var data: UnsafeMutablePointer<UInt8>
-
-	var dataArray: Array<UInt8> {
-		return Array(UnsafeMutableBufferPointer(start: data, count: Int(length)))
-	}
-	
-	var dataObject: NSData {
-		if length == 0 {
-			return NSData()
-		}
-		return NSData(bytes: data, length: Int(length))
-	}
-	
-	init() {
-		length = 0
-		data = nil
-	}
-}
-
 class Mac_Resource {
 	
 	enum Errors: ErrorType {
@@ -480,7 +457,7 @@ class Mac_Resource {
 	}
 
 	/** Return the number of resources of the given type */
-	func numberOfResources(type type: MaelOSType) -> Int {
+	func countOfResources(type type: MaelOSType) -> Int {
 		for res in resources {
 			if res.type == type {
 				return res.list.count
