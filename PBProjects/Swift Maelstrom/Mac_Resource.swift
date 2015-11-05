@@ -16,33 +16,42 @@ private let MACBINARY_MASK: UInt16 = 0xFCFF
 private let MACBINARY_MAGIC: UInt16 = 0x8081
 
 
-func ==(lhs: Mac_Resource.Resource, rhs: Mac_Resource.Resource) -> Bool {
+private func ==(lhs: Mac_Resource.Resource, rhs: Mac_Resource.Resource) -> Bool {
 	return lhs.id == rhs.id
 }
 
-func <(lhs: Mac_Resource.Resource, rhs: Mac_Resource.Resource) -> Bool {
+private func <(lhs: Mac_Resource.Resource, rhs: Mac_Resource.Resource) -> Bool {
 	return lhs.id < rhs.id
 }
 
-private func bytesex32(inout x: UInt32) -> UInt32 {
+@inline(__always) internal func bytesex32(inout x: UInt32) -> UInt32 {
 	x = x.bigEndian
 	return x
 }
 
-private func bytesex32(inout x: Int32) -> Int32 {
+@inline(__always) internal func bytesex32(inout x: Int32) -> Int32 {
 	x = x.bigEndian
 	return x
 }
 
 
-private func bytesex16(inout x: UInt16) -> UInt16 {
+@inline(__always) internal func bytesex16(inout x: UInt16) -> UInt16 {
 	x = x.bigEndian
 	return x
 }
 
-private func bytesex16(inout x: Int16) -> Int16 {
+@inline(__always) internal func bytesex16(inout x: Int16) -> Int16 {
 	x = x.bigEndian
 	return x
+}
+
+/** Swap bytes from big-endian to this machine's type.
+The input data is assumed to be always in big-endian format.
+*/
+@inline(__always) internal func byteswap(var array: UnsafeMutablePointer<UInt16>, var count nshorts: Int) {
+	for ; nshorts-- > 0; array++ {
+		bytesex16(&array.memory)
+	}
 }
 
 /** Here's an iterator to find heuristically (I've always wanted to use that
@@ -128,10 +137,7 @@ private func openMacRes(inout original: NSURL, inout resbase: Int) -> UnsafeMuta
 	for iterations = 0; iterations < snr.count; iterations++ {
 		/* Translate ' ' into '_', etc */
 		/* Note that this translation is irreversible */
-		if snr[iterations].replace != "\0" {
 			filename.replaceAllInstancesOfCharacter(snr[iterations].search, withCharacter: snr[iterations].replace)
-		}
-		//filename
 		
 		/* First look for Executor (tm) resource forks */
 		var newName = "%\(filename)"
@@ -162,7 +168,6 @@ private func openMacRes(inout original: NSURL, inout resbase: Int) -> UnsafeMuta
 		}
 		
 		newURL = nil
-
 	}
 	
 	/* Did we find anything? */
@@ -290,7 +295,6 @@ private struct Resource_Map {
 }
 
 class Mac_Resource {
-	
 	enum Errors: ErrorType {
 		case FileNotFound
 		case CouldNotOpenResource
@@ -314,7 +318,7 @@ class Mac_Resource {
 	
 	private(set) var errstr: String?
 	
-	class Resource: Comparable {
+	private final class Resource: Comparable {
 		let name: String
 		let id: UInt16
 		let offset: UInt32
@@ -330,7 +334,7 @@ class Mac_Resource {
 		}
 	}
 
-	final class ResourceList {
+	private final class ResourceList {
 		var type: MaelOSType
 		private var intCount: UInt16
 		private(set) var list = [Resource]()
@@ -340,7 +344,6 @@ class Mac_Resource {
 			intCount = entry.Num_rez
 		}
 	}
-
 	
 	convenience init(filename: String) throws {
 		try self.init(fileURL: NSURL(fileURLWithPath: filename))
@@ -509,6 +512,7 @@ class Mac_Resource {
 		resource.data = NSData(data: d)
 	}
 	
+	/// Return a resource of a certain type and id.
 	func resource(type res_type: MaelOSType, id: UInt16) throws -> NSData {
 		for rezes in resources {
 			if rezes.type == res_type {
@@ -529,6 +533,7 @@ class Mac_Resource {
 		throw Errors.CouldNotFindResourceTypeID(type: res_type, id: id)
 	}
 	
+	/// Return a resource of a certain type and name.
 	func resource(type res_type: MaelOSType, name: String, comparisonOptions options: NSStringCompareOptions = []) throws -> NSData {
 		for rezes in resources {
 			if rezes.type == res_type {

@@ -28,6 +28,9 @@ func SDL_LoadBMP(file: String) -> UnsafeMutablePointer<SDL_Surface> {
 
 extension String {
 	mutating func replaceAllInstancesOfCharacter(aChar: Character, withCharacter bChar: Character) {
+		if aChar == bChar {
+			return
+		}
 		while let charRange = rangeOfString(String(aChar)) {
 			replaceRange(charRange, with: String(bChar))
 		}
