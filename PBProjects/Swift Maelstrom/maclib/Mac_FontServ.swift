@@ -234,7 +234,7 @@ class FontServ {
 
 		var i = 0
 		
-		for (i=0; i<Int(fondStruct.num_fonts); ++i, data += sizeof(FontEntry)) {
+		for i=0; i<Int(fondStruct.num_fonts); ++i, data += sizeof(FontEntry) {
 			memcpy(&fent, data, sizeof(FontEntry));
 			func aSwap(fe: UnsafeMutablePointer<FontEntry>) {
 				byteswap(UnsafeMutablePointer<UInt16>(fe), count: 3)
@@ -242,7 +242,7 @@ class FontServ {
 			//byteswap((Uint16 *)&Fent, 3);
 			aSwap(&fent)
 			if Int(fent.size) == Int(ptsize) && fent.style == 0 {
-			break;
+				break;
 			}
 		}
 		
@@ -337,25 +337,173 @@ class FontServ {
 		return (width, height)
 	}
 	
+	/// Returns a bitmap image filled with the requested text.
+	/// The text should be freed with `freeText()` after it is used.
+	func newTextImage(text: String, font: MFont, style: FontStyle, foreground: SDL_Color, background: SDL_Color) -> UnsafeMutablePointer<SDL_Surface> {
+		guard let aChars = text.cStringUsingEncoding(NSMacOSRomanStringEncoding) else {
+			error = "FontServ: Encoding error"
+			return nil
+		}
+		let bChars: [UInt8] = {
+			var cChars = aChars.map { (aChar) -> UInt8 in
+			return UInt8(bitPattern: aChar)
+		}
+			cChars.removeLast()
+			
+			return cChars
+		}()
+		
+		///Set bit `i` of a scan line
+		func SETBIT(scanline: UnsafeMutablePointer<UInt8>, _ i: Int, _ bit: UInt8) {
+			scanline[(i)/8] |= bit << (7 - UInt8((i)%8))
+		}
+		
+		///Get bit `i` of a scan line
+		func GETBIT(scanline: UnsafeMutablePointer<UInt16>, _ i: Int) -> UInt8 {
+			return UInt8(scanline[(i)/16] >> (15 - UInt16(i%16))) & 1
+		}
+		
+		var image: UnsafeMutablePointer<SDL_Surface> = nil
+		var bitmap: UnsafeMutablePointer<UInt8> = nil
+		
+		var bold_offset = 0
+		
+		if style.contains(.Bold) {
+			bold_offset = 1
+		}
+		
+		if style.contains(.Italic) {
+			error = "FontServ: Italics not implemented!"
+			return nil
+		}
+		
+		/*
+		switch (style) {
+		case STYLE_NORM:	bold_offset = 0;
+		break;
+		case STYLE_BOLD:	bold_offset = 1;
+		break;
+		case STYLE_ULINE:	bold_offset = 0;
+		break;
+		case STYLE_ITALIC:	SetError(
+			"FontServ: Italics not implemented!");
+		return(NULL);
+		default:		SetError(
+			"FontServ: Unknown text style!");
+		return(NULL);
+		}*/
+		
+		/* Notes on the tables.
+		
+		Table 'bits' contains a bitmap image of the entire font.
+		There are fRectHeight rows, each rowWords long.
+		The high bit of a word is leftmost in the image.
+		The characters are placed in this image in order of their
+		ASCII value.  The last image is that of the "missing
+		character"; every Mac font must have such an image
+		(traditionally a maximum-sized block).
+		
+		The location table (loctab) and offset/width table (owtab)
+		have one entry per character in the range firstChar..lastChar,
+		plus two extra entries: one for the "missing character" image
+		and a terminator.  They describe, respectively, where to
+		find the character in the bitmap and how to interpret it with
+		respect to the "character origin" (pen position on the base
+		line).
+		
+		The location table entry for a character contains the bit (!)
+		offset of the start of its image data in the font's bitmap.
+		The image data's width is computed by subtracting the start
+		from the start of the next character (hence the terminator).
+		
+		The offset/width table contains -1 for undefined characters;
+		for defined characters, the high byte contains the character
+		offset (distance between left of character image and
+		character origin), and the low byte contains the character
+		width (distance between the character origin and the origin
+		of the next character on the line).
+	 */
+		
+		/* Figure out how big the text image will be */
+		let width = textWidth(text, font: font, style: style);
+		if width == 0 {
+			error = "No text to convert"
+			return nil
+		}
+		let height = font.header.fRectHeight
+		
+		/* Allocate the text bitmap image */
+		image = SDL_CreateRGBSurface(UInt32(SDL_SWSURFACE), Int32(width), Int32(height), 1, 0,0,0,0);
+		if image == nil {
+			error = String(format: "Unable to allocate bitmap: %s", SDL_GetError());
+			return nil
+		}
+		bitmap = UnsafeMutablePointer<UInt8>(image.memory.pixels)
+		
+		/* Print the individual characters */
+		/* Note: this could probably be optimized.. eh, who cares. :) */
+		var bit_offset = 0
+		for var boldness=0; boldness <= bold_offset; ++boldness {
+			bit_offset=0;
+			for aChar in bChars {
+				/* check to see if this character is defined */
+				/* According to the above comment, we should */
+				/* check if the table contains -1, but this  */
+				/* change seems to fix a SIGSEGV that would  */
+				/* otherwise occur in some cases.            */
+				if font.owTable[Int(aChar)] <= 0 {
+				continue;
+				}
+				
+				let space_width = LoByte(UInt16(font.owTable[Int(aChar)]));
+				let space_offset = HiByte(UInt16(font.owTable[Int(aChar)]));
+				let ascii = Int16(aChar) - font.header.firstChar
+				let glyph_line_offset = font.locTable[Int(ascii)]
+				let glyph_width = (font.locTable[Int(ascii)+1] -
+				font.locTable[Int(ascii)]);
+				for y in 0..<height {
+					var dst_offset = 0
+					var src_scanline: UnsafeMutablePointer<UInt16> = nil
+					
+					dst_offset = (Int(y)*Int(image.memory.pitch)*8 +
+						bit_offset+Int(space_offset))
+					src_scanline = UnsafeMutablePointer<UInt16>(font.bitImage).advancedBy(Int(y) * Int(font.header.rowWords))
+					for bit in 0..<glyph_width {
+						SETBIT(bitmap, dst_offset+Int(bit)+boldness,
+							GETBIT(src_scanline, Int(glyph_line_offset+bit)))
+					}
+				}
+				//#ifdef WIDE_BOLD
+				bit_offset += (Int(space_width)+Int(bold_offset));
+				//#else
+				//bit_offset += space_width;
+				//#endif
+			}
+		}
+		if style.contains(.Underline) {
+			let y = height-(font.header).descent+1
+			bit_offset =  Int(y)*Int(image.memory.pitch)*8
+			for bit in 0..<width {
+				SETBIT(bitmap, bit_offset+Int(bit), 0x01);
+			}
+		}
+		
+		/* Map the image and return */
+		SDL_SetColorKey(image, 1/*SDL_SRCCOLORKEY*/, 0);
+		image.memory.format.memory.palette.memory.colors[0] = background
+		image.memory.format.memory.palette.memory.colors[1] = foreground
+		++text_allocated;
+		return image
+	}
 	
-	
-	/*
-/* Returns a bitmap image filled with the requested text.
-The text should be freed with FreeText() after it is used.
-*/
-SDL_Surface *TextImage(const char *text, MFont *font, Uint8 style,
-SDL_Color background, SDL_Color foreground);
-SDL_Surface *TextImage(const char *text, MFont *font, Uint8 style,
-Uint8 R, Uint8 G, Uint8 B) {
-SDL_Color background = { 0xFF, 0xFF, 0xFF, 0 };
-SDL_Color foreground;
-
-foreground.r = R;
-foreground.g = G;
-foreground.b = B;
-return(TextImage(text, font, style, foreground, background));
-}
-*/
+	/// Returns a bitmap image filled with the requested text.
+	/// The text should be freed with `freeText()` after it is used.
+	func newTextImage(text: String, font: MFont, style: FontStyle, foreground: (red: UInt8, green: UInt8, blue: UInt8)) -> UnsafeMutablePointer<SDL_Surface> {
+		let background = SDL_Color(r: 0xFF, g: 0xFF, b: 0xFF, a: 0)
+		let fgColor = SDL_Color(r: foreground.red, g: foreground.green, b: foreground.blue, a: 0)
+		
+		return newTextImage(text, font: font, style: style, foreground: fgColor, background: background)
+	}
 	
 	func freeText(text: UnsafeMutablePointer<SDL_Surface>) {
 		--text_allocated
