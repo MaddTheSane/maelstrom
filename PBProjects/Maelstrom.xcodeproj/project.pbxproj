@@ -198,7 +198,7 @@
 		5515E8241BE609700048605C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5515E82A1BE609B40048605C /* bridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = bridge.h; path = "Swift Maelstrom/bridge.h"; sourceTree = SOURCE_ROOT; };
 		5515E82C1BE60A760048605C /* Rect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rect.swift; sourceTree = "<group>"; };
-		5515E8301BE611310048605C /* Mac_Resource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Mac_Resource.swift; path = ../Mac_Resource.swift; sourceTree = "<group>"; };
+		5515E8301BE611310048605C /* Mac_Resource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mac_Resource.swift; sourceTree = "<group>"; };
 		5515E8321BE686AE0048605C /* macbinary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = macbinary.h; sourceTree = "<group>"; };
 		5515E8331BE6878E0048605C /* MacBinary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacBinary.swift; sourceTree = "<group>"; };
 		5515E8351BE68A7D0048605C /* applefile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = applefile.swift; sourceTree = "<group>"; };
