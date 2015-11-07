@@ -67,7 +67,7 @@ private func sndCopy<X where X: ByteSwappable>(inout V: X, inout _ D: UnsafePoin
 
 final class Wave {
 	///The SDL-ready audio specification
-	private(set) var spec = SDL_AudioSpec()
+	var spec = SDL_AudioSpec()
 	private var soundData: UnsafeMutablePointer<UInt8> = nil
 	private var soundDataLen: UInt32 = 0
 	
