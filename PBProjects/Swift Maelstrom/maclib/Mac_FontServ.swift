@@ -499,8 +499,8 @@ class FontServ {
 	/// Returns a bitmap image filled with the requested text.
 	/// The text should be freed with `freeText()` after it is used.
 	func newTextImage(text: String, font: MFont, style: FontStyle, foreground: (red: UInt8, green: UInt8, blue: UInt8)) -> UnsafeMutablePointer<SDL_Surface> {
-		let background = SDL_Color(r: 0xFF, g: 0xFF, b: 0xFF, a: 0)
-		let fgColor = SDL_Color(r: foreground.red, g: foreground.green, b: foreground.blue, a: 0)
+		let background = SDL_Color(r: 0xFF, g: 0xFF, b: 0xFF, a: 0xFF)
+		let fgColor = SDL_Color(r: foreground.red, g: foreground.green, b: foreground.blue, a: 0xFF)
 		
 		return newTextImage(text, font: font, style: style, foreground: fgColor, background: background)
 	}

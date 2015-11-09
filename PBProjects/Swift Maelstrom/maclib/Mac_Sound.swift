@@ -98,13 +98,49 @@ final class Sound {
 		get {
 			return intVol
 		}
-		set(vol) {
+		set(aVol) {
+			var vol = aVol
 			
+			var active = playing;
+			if volume == 0 && vol > 0 {
+				/* Kill bogus sound thread */
+				if bogusAudio != nil {
+					bogus_running = false
+					SDL_WaitThread(bogusAudio, nil);
+					bogusAudio = nil;
+				}
+				
+				/* Try to open the audio */
+				if SDL_OpenAudio(&spec, nil) < 0 {
+					vol = 0;		/* Fake sound */
+				}
+				active = true
+				SDL_PauseAudio(0);		/* Go! */
+			}
+			if ( vol > MAX_VOLUME ) {
+				vol = MAX_VOLUME;
+			}
+			intVol = vol;
+			
+			if active && (volume == 0) {
+				if ( playing ) {
+					SDL_CloseAudio();
+				}
+				active = false
+				
+				/* Run bogus sound thread */
+				bogus_running = true
+				bogusAudio = SDL_CreateThread(bogusAudioThread, "BogusAudioThread", &spec);
+				if bogusAudio == nil {
+					/* Oh well... :-) */
+				}
+			}
+			playing = active;
 		}
 	}
 	
 	private var spec: SDL_AudioSpec = SDL_AudioSpec()
-	
+	private var playing = false
 	private(set) var waves = [UInt16: Wave]()
 	
 	///Stop mixing on all channels
@@ -117,6 +153,22 @@ final class Sound {
 	///Stop mixing on the requested channel
 	func haltSound(channel channel: Int) {
 		channels[channel].len = 0
+	}
+	
+	/// Find out if a sound is playing on a channel 
+	func playing(sndID: UInt16 = 0, inout channel: UInt8) -> Bool {
+		for i in 0..<NUM_CHANNELS {
+			guard channels[i].len > 0 else {
+				continue
+			}
+			
+			if ( (sndID == 0) || (sndID == channels[i].ID) ) {
+				channel = UInt8(i)
+				return true;
+			}
+		}
+		
+		return false
 	}
 
 	init(soundFileURL soundfile: NSURL, volume vol: UInt8 = 4) throws {
@@ -268,4 +320,14 @@ final class Sound {
 	}
 
 	private(set) var error: String? = nil
+	
+	deinit {
+		if playing {
+			SDL_CloseAudio();
+		} else if bogusAudio != nil {
+			bogus_running = false
+			SDL_WaitThread(bogusAudio, nil);
+			bogusAudio = nil
+		}
+	}
 }
