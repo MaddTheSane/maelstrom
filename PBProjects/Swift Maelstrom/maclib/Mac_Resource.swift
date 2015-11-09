@@ -79,7 +79,7 @@ private func checkAppleFile(resfile: UnsafeMutablePointer<FILE>, inout resbase: 
 		var entry = AppleSingleEntry()
 		
 		#if APPLEDOUBLE_DEBUG
-			print(String(format: "Number of entries: %d, sizeof(entry) = %d",
+			print(String(format: "Number of entries: %d, sizeof(entry) = %ld",
 				header.numEntries, sizeofValue(entry)))
 		#endif
 		for i in 0..<header.numEntries {
@@ -553,7 +553,7 @@ class Mac_Resource {
 		
 		throw Errors.CouldNotFindResourceTypeName(type: res_type, name: name)
 	}
-
+	
 	deinit {
 		if filep != nil {
 			fclose(filep);

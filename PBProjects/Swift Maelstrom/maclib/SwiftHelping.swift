@@ -11,6 +11,7 @@ import Foundation
 //MARK: - SDL macros
 
 typealias SDL_WindowPtr = COpaquePointer
+typealias SDL_ThreadPtr = COpaquePointer
 
 func SDL_WINDOWPOS_CENTERED_DISPLAY(X: Int32) -> Int32 {
 	return SDL_WINDOWPOS_CENTERED_MASK | 0
@@ -27,11 +28,6 @@ func SDL_LoadBMP(file: UnsafePointer<CChar>) -> UnsafeMutablePointer<SDL_Surface
 func SDL_LoadWAV(file: UnsafePointer<CChar>, inout _ spec: SDL_AudioSpec, _ audio_buf: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>>, inout _ audio_len: UInt32) -> UnsafeMutablePointer<SDL_AudioSpec> {
 	return SDL_LoadWAV_RW(SDL_RWFromFile(file, "rb"),1, &spec,audio_buf,&audio_len)
 }
-
-/*
-#define SDL_LoadWAV(file, spec, audio_buf, audio_len) \
-SDL_LoadWAV_RW(SDL_RWFromFile(file, "rb"),1, spec,audio_buf,audio_len)
-*/
 
 //MARK: -
 
