@@ -46,7 +46,7 @@ struct Rect {
 		self.bottom += Int16(y)
 	}
 	
-	func insetRectBy(x x: Int32, y: Int32) -> Rect {
+	func inset(x x: Int32, y: Int32) -> Rect {
 		var R = self
 		R.left += Int16(x)
 		R.top += Int16(y)
@@ -55,7 +55,7 @@ struct Rect {
 		return R
 	}
 	
-	func insetRectBy(x x: Int, y: Int) -> Rect {
+	func inset(x x: Int, y: Int) -> Rect {
 		var R = self
 		R.left += Int16(x)
 		R.top += Int16(y)

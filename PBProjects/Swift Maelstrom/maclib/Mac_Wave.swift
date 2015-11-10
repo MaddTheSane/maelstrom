@@ -75,22 +75,35 @@ final class Wave {
 	private var soundptr: UnsafeMutablePointer<UInt8> = nil
 	private var soundlen: Int32 = 0
 	
+	enum Errors: ErrorType {
+		case SDLError(String)
+		case MultiTypeSound
+		case UnknownSoundFormat(UInt16)
+		case UnknownSoundCommand(UInt16)
+		case OffsetTooLarge
+		case NonStandardSoundEncoding(UInt8)
+		case TruncatedSoundResource
+		case NotSampledSound
+		case SamplesDoNotFollowHeader
+		case MultiCommandNotSupported
+	}
+	
 	init() {
 		Init()
 	}
 	
-	convenience init(waveURL wavefile: NSURL, desiredRate: Int32? = nil) {
+	convenience init(waveURL wavefile: NSURL, desiredRate: Int32? = nil) throws {
 		self.init()
-		load(waveURL: wavefile, desiredRate: desiredRate)
+		try load(waveURL: wavefile, desiredRate: desiredRate)
 	}
 	
-	convenience init(snd: NSData, desiredRate: Int32? = nil) {
+	convenience init(snd: NSData, desiredRate: Int32? = nil) throws {
 		self.init()
-		load(sndData: snd, desiredRate: desiredRate)
+		try load(sndData: snd, desiredRate: desiredRate)
 	}
 	
 	///Load WAVE resources, converting to the desired sample rate
-	func load(waveURL wavefile: NSURL, desiredRate: Int32? = nil) -> Bool {
+	func load(waveURL wavefile: NSURL, desiredRate: Int32? = nil) throws {
 		var samples: UnsafeMutablePointer<UInt8> = nil
 		
 		/* Free any existing WAVE data */
@@ -99,8 +112,7 @@ final class Wave {
 		
 		/* Load the WAVE file */
 		if ( SDL_LoadWAV(wavefile.fileSystemRepresentation, &spec, &samples, &soundDataLen) == nil ) {
-			error = String(SDL_GetError())
-			return false
+			throw Errors.SDLError(String(SDL_GetError()))
 		}
 		/* Copy malloc()'d data to new'd data */
 		soundData = UnsafeMutablePointer<UInt8>(malloc(Int(soundDataLen)))
@@ -112,11 +124,10 @@ final class Wave {
 		
 		/* Rewind and go! */
 		rewind();
-		return true;
 	}
 	
 	/// Most of this information came from the "Inside Macintosh" book series
-	func load(sndData snd: NSData, desiredRate: Int32? = nil) -> Bool {
+	func load(sndData snd: NSData, desiredRate: Int32? = nil) throws {
 		var snd_version: UInt16 = 0
 		var snd_channels: Int32 = 0
 		var samples: UnsafeMutablePointer<UInt8> = nil
@@ -131,7 +142,7 @@ final class Wave {
 		sndCopy(&snd_version, &data);
 		
 		snd_channels = 1;			/* Is this always true? */
-		if ( snd_version == FORMAT_1 ) {
+		if snd_version == FORMAT_1 {
 			/* Number of sound data types */
 			var n_types: UInt16 = 0
 			/* First sound data type */
@@ -141,23 +152,20 @@ final class Wave {
 			
 			sndCopy(&n_types, &data);
 			if ( n_types != 1 ) {
-				error = "Multi-type sound not supported"
-				return false
+				throw Errors.MultiTypeSound
 			}
 			sndCopy(&f_type, &data);
 			if ( f_type != SAMPLED_SND ) {
-				error = "Not a sampled sound resource"
-				return false
+				throw Errors.NotSampledSound
 			}
 			sndCopy(&init_op, &data);
-		} else if ( snd_version == FORMAT_2 ) {
+		} else if snd_version == FORMAT_2 {
 			/* (unused) */
 			var ref_cnt: UInt16 = 0
 			
 			sndCopy(&ref_cnt, &data);
 		} else {
-			error = String(format: "Unknown sound format: 0x%X", snd_version)
-			return false;
+			throw Errors.UnknownSoundFormat(snd_version)
 		}
 		
 		/* Next is the Sound commands section */
@@ -169,13 +177,11 @@ final class Wave {
 			
 			sndCopy(&num_cmds, &data);
 			if num_cmds != 1 {
-				error = "Multi-command sound not supported"
-				return false;
+				throw Errors.MultiCommandNotSupported
 			}
 			sndCopy(&command, &data);
-			if ( (command != BUFFER_CMD) && (command != SOUND_CMD) ) {
-				error = String(format: "Unknown sound command: 0x%X\n", command);
-				return false;
+			if command != BUFFER_CMD && command != SOUND_CMD {
+				throw Errors.UnknownSoundCommand(command)
 			}
 			sndCopy(&param1, &data);
 			/* Param1 is ignored (should be 0x0000) */
@@ -183,8 +189,7 @@ final class Wave {
 			sndCopy(&param2, &data);
 			/* Set 'data' to the offset of the sampled data */
 			if Int(param2) > snd.length {
-				error = "Offset too large -- corrupt sound?"
-				return false;
+				throw Errors.OffsetTooLarge
 			}
 			data = UnsafePointer<UInt8>(snd.bytes).advancedBy(Int(param2))
 		}
@@ -202,8 +207,7 @@ final class Wave {
 			sndCopy(&sample_offset, &data);
 			// FIXME: What's the interpretation of this offset?
 			if sample_offset != 0 {
-				error = "Sound samples don't immediately follow header"
-				return false
+				throw Errors.SamplesDoNotFollowHeader
 			}
 			sndCopy(&num_samples, &data);
 			sndCopy(&sample_rate, &data);
@@ -212,9 +216,8 @@ final class Wave {
 			sndCopy(&loop_end, &data);
 			encoding = data.memory
 			data++
-			if ( encoding != stdSH ) {
-				error = String(format: "Non-standard sound encoding: 0x%X", encoding)
-				return false;
+			if encoding != stdSH {
+				throw Errors.NonStandardSoundEncoding(encoding)
 			}
 			/* Frequency base might be used later */
 			//freq_base = data.memory
@@ -222,14 +225,13 @@ final class Wave {
 			
 			/* Now allocate room for the sound */
 			if Int(num_samples) > snd.length - data.distanceTo(UnsafePointer<UInt8>(snd.bytes)) {
-				error = "truncated sound resource"
-				return false;
+				throw Errors.TruncatedSoundResource
 			}
 			
 			/* Convert the audio data to desired sample rates */
 			
 			samples = UnsafeMutablePointer(data)
-			switch ( sample_rate ) {
+			switch sample_rate {
 			case rate11khz, rate11khz2:
 				/* Assuming 8-bit mono samples */
 				if ( desired_rate == 0 ) {
@@ -280,7 +282,6 @@ final class Wave {
 			}
 		}
 		rewind();
-		return true
 	}
 	
 	func rewind() {
@@ -344,7 +345,6 @@ final class Wave {
 	private func Init() {
 		soundData = nil;
 		soundDataLen = 0
-		error = nil;
 	}
 	
 	private func Free() {
@@ -394,6 +394,4 @@ final class Wave {
 			samples.memory = output;
 			return oPos/UInt32(s_size)
 	}
-
-	private(set) var error: String? = nil
 }

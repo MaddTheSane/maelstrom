@@ -185,10 +185,7 @@ final class Sound {
 		
 		for id in ids {
 			let snd = try soundres.resource(type: sndResType, id: id)
-			wave = Wave(snd: snd, desiredRate: DSP_FREQUENCY)
-			if let wavErr = wave.error {
-				throw Errors.ResourceLoadError(wavErr)
-			}
+			wave = try Wave(snd: snd, desiredRate: DSP_FREQUENCY)
 			waves[id] = wave
 		}
 		

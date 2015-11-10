@@ -41,7 +41,6 @@ func SDL_RWtell(ctx: UnsafeMutablePointer<SDL_RWops>) -> Int64 {
 	return ctx.memory.seek(ctx, 0, RW_SEEK_CUR)
 }
 
-
 func SDL_RWread(ctx: UnsafeMutablePointer<SDL_RWops>, ptr: UnsafeMutablePointer<Void>,size: Int, maxnum: Int) -> Int {
 	return ctx.memory.read(ctx, ptr, size, maxnum)
 }
