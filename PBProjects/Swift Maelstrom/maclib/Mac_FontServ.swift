@@ -346,8 +346,8 @@ class FontServ {
 		}
 		let bChars: [UInt8] = {
 			var cChars = aChars.map { (aChar) -> UInt8 in
-			return UInt8(bitPattern: aChar)
-		}
+				return UInt8(bitPattern: aChar)
+			}
 			cChars.removeLast()
 			
 			return cChars
@@ -525,7 +525,6 @@ class FontServ {
 		colors.append(text.memory.format.memory.palette.memory.colors[1])
 		colors.append(text.memory.format.memory.palette.memory.colors[0])
 		SDL_SetPaletteColors(text.memory.format.memory.palette, colors, 0, 2);
-		//SDL_SetColors(text, colors, 0, 2);
 		return true
 	}
 

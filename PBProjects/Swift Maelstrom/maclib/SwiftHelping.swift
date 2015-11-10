@@ -8,7 +8,7 @@
 
 import Foundation
 
-//MARK: - SDL macros
+//MARK: SDL macros
 
 typealias SDL_WindowPtr = COpaquePointer
 typealias SDL_ThreadPtr = COpaquePointer
@@ -27,6 +27,31 @@ func SDL_LoadBMP(file: UnsafePointer<CChar>) -> UnsafeMutablePointer<SDL_Surface
 
 func SDL_LoadWAV(file: UnsafePointer<CChar>, inout _ spec: SDL_AudioSpec, _ audio_buf: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>>, inout _ audio_len: UInt32) -> UnsafeMutablePointer<SDL_AudioSpec> {
 	return SDL_LoadWAV_RW(SDL_RWFromFile(file, "rb"),1, &spec,audio_buf,&audio_len)
+}
+
+func SDL_RWsize(ctx: UnsafeMutablePointer<SDL_RWops>) -> Int64 {
+	return ctx.memory.size(ctx)
+}
+
+func SDL_RWseek(ctx: UnsafeMutablePointer<SDL_RWops>, offset: Int64, whence: Int32) -> Int64 {
+	return ctx.memory.seek(ctx, offset, whence)
+}
+
+func SDL_RWtell(ctx: UnsafeMutablePointer<SDL_RWops>) -> Int64 {
+	return ctx.memory.seek(ctx, 0, RW_SEEK_CUR)
+}
+
+
+func SDL_RWread(ctx: UnsafeMutablePointer<SDL_RWops>, ptr: UnsafeMutablePointer<Void>,size: Int, maxnum: Int) -> Int {
+	return ctx.memory.read(ctx, ptr, size, maxnum)
+}
+
+func SDL_RWwrite(ctx: UnsafeMutablePointer<SDL_RWops>, ptr: UnsafePointer<Void>,size: Int, maxnum: Int) -> Int {
+	return ctx.memory.write(ctx, ptr, size, maxnum)
+}
+
+func SDL_RWclose(ctx: UnsafeMutablePointer<SDL_RWops>) -> Int32 {
+	return ctx.memory.close(ctx)
 }
 
 //MARK: -

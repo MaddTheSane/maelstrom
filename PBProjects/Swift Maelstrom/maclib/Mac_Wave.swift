@@ -8,7 +8,7 @@
 
 import Foundation
 
-//MARK: - Define values for Macintosh SND format
+//MARK: Define values for Macintosh SND format
 //MARK: Different sound header formats 
 private let FORMAT_1: UInt16 = 0x0001
 private let FORMAT_2: UInt16 = 0x0002
@@ -67,7 +67,7 @@ private func sndCopy<X where X: ByteSwappable>(inout V: X, inout _ D: UnsafePoin
 
 final class Wave {
 	///The SDL-ready audio specification
-	var spec = SDL_AudioSpec()
+	private(set) var spec = SDL_AudioSpec()
 	private var soundData: UnsafeMutablePointer<UInt8> = nil
 	private var soundDataLen: UInt32 = 0
 	
@@ -200,7 +200,7 @@ final class Wave {
 			//var freq_base: UInt8 = 0
 			
 			sndCopy(&sample_offset, &data);
-			/* FIXME: What's the interpretation of this offset? */
+			// FIXME: What's the interpretation of this offset?
 			if sample_offset != 0 {
 				error = "Sound samples don't immediately follow header"
 				return false

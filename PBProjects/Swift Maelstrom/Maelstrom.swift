@@ -48,68 +48,64 @@ enum SoundResource: UInt16 {
 	case Pause
 }
 
-func SDL_main(argc: Int32, _ argv: UnsafeMutablePointer<UnsafeMutablePointer<Int8>>) -> Int32 {
-	return 0
-}
-
 let MAX_SPRITE_FRAMES = 60
 
+let SCREEN_WIDTH = 640
+let SCREEN_HEIGHT = 480
 
-/*
-#define SCREEN_WIDTH		640
-#define SCREEN_HEIGHT		480
+let SOUND_DELAY = 6
+let FADE_STEPS = 40
 
-#define	SOUND_DELAY		6
-#define	FADE_STEPS		40
+/// Time in 60'th of second between frames
+let FRAME_DELAY = 2
 
-/* Time in 60'th of second between frames */
-#define FRAME_DELAY		2
 
-#define MAX_SPRITES		100
-#define	MAX_STARS		30
-#define	SHIP_FRAMES		48
-#define	SPRITES_WIDTH		32
-#define SPRITE_PRECISION	4	/* internal <--> screen precision */
-#define	VEL_FACTOR		4
-#define	VEL_MAX			(8<<SPRITE_PRECISION)
-#define	SCALE_FACTOR		16
-#define	SHAKE_FACTOR		256
-#define	MIN_BAD_DISTANCE	64
+let MAX_SPRITES		= 100
+let MAX_STARS		= 30
+let SHIP_FRAMES		= 48
+let SPRITES_WIDTH	= 32
+///internal <--> screen precision
+let SPRITE_PRECISION	= 4
+let VEL_FACTOR			= 4
+let VEL_MAX				= 8 << SPRITE_PRECISION
+let SCALE_FACTOR		= 16
+let SHAKE_FACTOR		= 256
+let MIN_BAD_DISTANCE	= 64
 
-#define NO_PHASE_CHANGE		-1	/* Sprite doesn't change phase */
+/// Sprite doesn't change phase
+let NO_PHASE_CHANGE: Int32 = -1
 
-#define	MAX_SHOTS		18
-#define	SHOT_SIZE		4
-#define	SHOT_SCALE_FACTOR	4
+let MAX_SHOTS			= 18
+let SHOT_SIZE			= 4
+let SHOT_SCALE_FACTOR	= 4
 
-#define	STATUS_HEIGHT		14
-#define	SHIELD_WIDTH		55
-#define	INITIAL_BONUS		2000
+let STATUS_HEIGHT	= 14
+let SHIELD_WIDTH	= 55
+let INITIAL_BONUS	= 2000
 
-#define	ENEMY_HITS		3
-#define	HOMING_HITS		9
-#define	STEEL_SPECIAL		10
-#define DEFAULT_HITS		1
+let ENEMY_HITS		= 3
+let HOMING_HITS		= 9
+let STEEL_SPECIAL	= 10
+let DEFAULT_HITS	= 1
 
-#define	NEW_LIFE		50000
-#define	SMALL_ROID_PTS		300
-#define	MEDIUM_ROID_PTS		100
-#define	BIG_ROID_PTS		50
-#define	GRAVITY_PTS		500
-#define	HOMING_PTS		700
-#define	NOVA_PTS		1000
-#define	STEEL_PTS		100
-#define	ENEMY_PTS		1000
+let NEW_LIFE: Int32			= 50000
+let SMALL_ROID_PTS: Int32	= 300
+let MEDIUM_ROID_PTS: Int32	= 100
+let BIG_ROID_PTS: Int32		= 50
+let GRAVITY_PTS: Int32		= 500
+let HOMING_PTS: Int32		= 700
+let NOVA_PTS: Int32			= 1000
+let STEEL_PTS: Int32		= 100
+let ENEMY_PTS: Int32		= 1000
 
-#define	HOMING_MOVE		6
-#define GRAVITY_MOVE		3
+let HOMING_MOVE		= 6
+let GRAVITY_MOVE	= 3
 
-#define	BLUE_MOON		50
-#define	MOON_FACTOR		4
-#define	NUM_PRIZES		8
-#define	LUCK_ODDS		3
+let BLUE_MOON	= 50
+let MOON_FACTOR	= 4
+let NUM_PRIZES	= 8
+let LUCK_ODDS	= 3
 
-*/
 
 //MARK: - Structures and typedefs
 
@@ -127,15 +123,34 @@ struct Star {
 typealias StarPtr = UnsafeMutablePointer<Star>
 
 ///Sprite blitting information structure
-struct Blit {
+class Blit {
 	typealias BitMask = (UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8)
 	typealias Surfaces = (SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface)
 	var numFrames: Int32 = 0
 	var isSmall: Bool = false
 	var hitRect: Rect = Rect()
 	var mask: [BitMask] = []
+	var sprite = [SDL_Surface]()
 	//SDL_Surface *sprite[MAX_SPRITE_FRAMES];
 }
 
-///Sprite blitting information structure pointer
-typealias BlitPtr = UnsafeMutablePointer<Blit>
+extension Sound {
+	func playSound(sndID: SoundResource, priority: UInt8, callback: ((channel: UInt8) -> ())? = nil) -> Bool {
+		return self.playSound(sndID.rawValue, priority: priority, callback: callback)
+	}
+}
+
+/// The Font Server :)
+var fontserv: FontServ!
+
+/// The Sound Server *grin*
+var sound: Sound!
+
+/// The SCREEN!! :)
+var screen: FrameBuf!
+
+func SDL_main(argc: Int32, _ argv: UnsafeMutablePointer<UnsafeMutablePointer<Int8>>) -> Int32 {
+	return 0
+}
+
+

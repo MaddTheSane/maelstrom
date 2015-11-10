@@ -218,7 +218,7 @@ final class Sound {
 		}
 	}
 
-	func priority(channel: UInt8) -> Int16 {
+	func priorityOfChannel(channel: UInt8) -> Int16 {
 		if channels[Int(channel)].len > 0 {
 			return channels[Int(channel)].priority
 		}
@@ -235,7 +235,7 @@ final class Sound {
 		}
 		
 		for i in 0..<NUM_CHANNELS {
-			if Int16(priority) > self.priority(UInt8(i)) {
+			if Int16(priority) > self.priorityOfChannel(UInt8(i)) {
 				return playSound(sndID, priority: priority, channel: UInt8(i), callback: callback)
 			}
 		}
@@ -245,7 +245,7 @@ final class Sound {
 	
 	/// Play the requested sound
 	func playSound(sndID: UInt16, priority: UInt8, channel: UInt8, callback: ((channel: UInt8) -> ())? = nil) -> Bool {
-		if Int16(priority) <= self.priority(channel) {
+		if Int16(priority) <= self.priorityOfChannel(channel) {
 			return false
 		}
 		
