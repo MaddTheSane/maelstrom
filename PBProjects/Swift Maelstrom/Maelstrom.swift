@@ -203,11 +203,6 @@ private func runSpeedTest() {
 	print("Graphics speed test took \((now-then)/test_reps) microseconds per cycle.");
 }
 
-//int DoInitializations(Uint32 video_flags)
-func doInitializations(video_flags: SDL_WindowFlags) -> Bool {
-	return false
-}
-
 func drawText(x x: UInt16, y: UInt16, text: String, font: FontServ.MFont, style: FontStyle,
 	R: UInt8, G: UInt8, B: UInt8) -> Int32 {
 	return drawText(x: Int32(x), y: Int32(y), text: text, font: font, style: style, R: R, G: G, B: B)
@@ -260,9 +255,9 @@ private func drawMainScreen() {
 	yOff = (SCREEN_HEIGHT - height) / 2;
 	
 	title = loadTitle(screen, title_id: 129);
-	if ( title == nil ) {
+	if title == nil {
 		fatalError("Can't load 'title' title! (ID=\(129))");
-		exit(255);
+		//exit(255);
 	}
 	
 	clr = screen.mapRGB(red: UInt8(30000>>8), green: UInt8(30000>>8), blue: 0xFF);
@@ -299,7 +294,7 @@ private func drawMainScreen() {
 	/* -- First the headings  -- fontserv() isn't elegant, but hey.. */
 	guard let bigfont = fontserv.newFont("New York", pointSize: 18) else {
 		fatalError("Can't use New York (18) font! -- Exiting.");
-		exit(255);
+		//exit(255);
 	}
 	drawText(x: Int32(xOff)+5, y: Int32(botDiv+22), text: "Name", font: bigfont, style: .Underline,
 		R: 0xFF, G: 0xFF, B: 0x00);
@@ -316,7 +311,7 @@ private func drawMainScreen() {
 	loadScores();
 	guard var font = fontserv.newFont("New York", pointSize: 14) else {
 		fatalError("Can't use New York (14) font! -- Exiting.");
-		exit(255);
+		//exit(255);
 	}
 	
 	for (index = 0; index < 10; index++) {
@@ -687,8 +682,8 @@ func SDL_main(var argc: Int32, var _ argv: UnsafeMutablePointer<UnsafeMutablePoi
 	}
 
 	screen.fade()
-	Delay(60);
-	return(0);
+	Delay(60)
+	return 0
 }
 
 private func runQuitGame() {
@@ -706,7 +701,7 @@ private func drawKey(inout pt: MPoint, key: String, text: String, callback: (()-
 {
 	guard let geneva = fontserv.newFont("Geneva", pointSize: 9) else {
 		fatalError("Can't use Geneva font! -- Exiting.\n");
-		exit(255);
+		//exit(255);
 	}
 	screen.queueBlit(x: pt.h, y: pt.v, src: gKeyIcon);
 	screen.update();
@@ -719,37 +714,29 @@ private func drawKey(inout pt: MPoint, key: String, text: String, callback: (()-
 	buttons.addButton(x: UInt16(pt.h), y: UInt16(pt.v), width: UInt16(gKeyIcon.memory.w), height: UInt16(gKeyIcon.memory.h), callback: callback);
 }
 
-
+private let xOff = (SCREEN_WIDTH - 512) / 2;
+private let yOff = (SCREEN_HEIGHT - 384) / 2;
+private var geneva9: FontServ.MFont! = nil
+private var drawSoundLevelOnce: dispatch_once_t = 0
 
 /// Draw the current sound volume
 private func drawSoundLevel() {
-	/*
-	static int need_init=1;
-	static MFont *geneva;
-	static char text[12];
-	static int xOff, yOff;
-	
-	if ( need_init ) {
-		if ( (geneva = fontserv->NewFont("Geneva", 9)) == NULL ) {
-			error("Can't use Geneva font! -- Exiting.\n");
-			exit(255);
+	dispatch_once(&drawSoundLevelOnce) { () -> Void in
+		guard let geneva = fontserv.newFont("Geneva", pointSize: 9) else {
+			fatalError("Can't use Geneva font! -- Exiting.");
 		}
-		xOff = (SCREEN_WIDTH - 512) / 2;
-		yOff = (SCREEN_HEIGHT - 384) / 2;
-		need_init = 0;
-	} else {
-		DrawText(xOff+309-7, yOff+240-6, text, geneva, STYLE_BOLD,
-			0x00, 0x00, 0x00);
+		geneva9 = geneva
 	}
-	sprintf(text, "%d", gSoundLevel);
-	DrawText(xOff+309-7, yOff+240-6, text, geneva, STYLE_BOLD,
-		30000>>8, 30000>>8, 0xFF);
-	screen->Update();
-*/
+	//drawText(xOff+309-7, yOff+240-6, text, geneva9, STYLE_BOLD,
+	//	0x00, 0x00, 0x00);
+	let text = String(gSoundLevel)
+	drawText(x: xOff+309-7, y: yOff+240-6, text: text, font: geneva9, style: .Bold,
+		R: UInt8(30000>>8), G: UInt8(30000>>8), B: 0xFF);
+	screen.update();
 }
 
 private func incrementSound() {
-	if ( gSoundLevel < 8 ) {
+	if gSoundLevel < 8 {
 		sound.volume = ++gSoundLevel
 		sound.playSound(.NewLife, priority: 5);
 		
@@ -759,7 +746,7 @@ private func incrementSound() {
 }
 
 private func decrementSound() {
-	if ( gSoundLevel > 0 ) {
+	if gSoundLevel > 0 {
 		sound.volume = --gSoundLevel;
 		sound.playSound(.NewLife, priority: 5);
 		

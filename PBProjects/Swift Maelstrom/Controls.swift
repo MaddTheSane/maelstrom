@@ -26,3 +26,16 @@ func showDawn() {
 func configureControls() {
 	
 }
+
+func dropEvents() -> Int32 {
+	var event = SDL_Event()
+	var keys: Int32 = 0;
+	
+	while SDL_PollEvent(&event) != 0 {
+		if event.type == SDL_KEYDOWN.rawValue {
+			++keys;
+		}
+	}
+	return keys
+}
+

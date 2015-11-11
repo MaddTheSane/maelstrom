@@ -33,7 +33,7 @@ func SDL_RWsize(ctx: UnsafeMutablePointer<SDL_RWops>) -> Int64 {
 	return ctx.memory.size(ctx)
 }
 
-func SDL_RWseek(ctx: UnsafeMutablePointer<SDL_RWops>, offset: Int64, whence: Int32) -> Int64 {
+func SDL_RWseek(ctx: UnsafeMutablePointer<SDL_RWops>, _ offset: Int64, _ whence: Int32) -> Int64 {
 	return ctx.memory.seek(ctx, offset, whence)
 }
 
@@ -41,11 +41,11 @@ func SDL_RWtell(ctx: UnsafeMutablePointer<SDL_RWops>) -> Int64 {
 	return ctx.memory.seek(ctx, 0, RW_SEEK_CUR)
 }
 
-func SDL_RWread(ctx: UnsafeMutablePointer<SDL_RWops>, ptr: UnsafeMutablePointer<Void>,size: Int, maxnum: Int) -> Int {
+func SDL_RWread(ctx: UnsafeMutablePointer<SDL_RWops>, _ ptr: UnsafeMutablePointer<Void>, _ size: Int, _ maxnum: Int) -> Int {
 	return ctx.memory.read(ctx, ptr, size, maxnum)
 }
 
-func SDL_RWwrite(ctx: UnsafeMutablePointer<SDL_RWops>, ptr: UnsafePointer<Void>,size: Int, maxnum: Int) -> Int {
+func SDL_RWwrite(ctx: UnsafeMutablePointer<SDL_RWops>, _ ptr: UnsafePointer<Void>, _ size: Int, _ maxnum: Int) -> Int {
 	return ctx.memory.write(ctx, ptr, size, maxnum)
 }
 

@@ -31,6 +31,10 @@ func logicParseArgs(inout argvptr: UnsafeMutablePointer<UnsafeMutablePointer<CCh
 	return false
 }
 
+func haltLogic() {
+	haltNetData();
+}
+
 
 func getScore() -> Int32 {
 	return 0

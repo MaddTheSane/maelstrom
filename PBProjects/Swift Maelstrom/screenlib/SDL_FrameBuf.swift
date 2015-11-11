@@ -44,6 +44,9 @@ class FrameBuf {
 	/* Blit clipping rectangle */
 	private var clip = SDL_Rect()
 
+	func clipBlit(cliprect: SDL_Rect) {
+		clip = cliprect
+	}
 	
 	/* List of loaded images */
 	struct ImageList {
@@ -117,6 +120,9 @@ class FrameBuf {
 		return SDL_MapRGB(screenfg.memory.format, R, G, B)
 	}
 
+	func loadImage(w w: UInt16, h: UInt16, pixels: UnsafeMutablePointer<UInt8>, mask: UnsafeMutablePointer<UInt8>) -> UnsafeMutablePointer<SDL_Surface> {
+		return nil
+	}
 	
 	func screenDump(fileName: String, x: UInt16, y: UInt16, w: UInt16, h: UInt16) -> Bool {
 		return false

@@ -19,6 +19,8 @@
 		555968631BE6EBCB003A3001 /* Mac_Compat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555968621BE6EBCB003A3001 /* Mac_Compat.swift */; };
 		555968651BE6ED5D003A3001 /* Mac_Wave.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555968641BE6ED5D003A3001 /* Mac_Wave.swift */; };
 		557258B619E5CC730073CDF2 /* SDLMain.xib in Resources */ = {isa = PBXBuildFile; fileRef = 557258B519E5CC730073CDF2 /* SDLMain.xib */; };
+		55836C651BF3CBA6001605AB /* SwiftLoad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55836C631BF3CBA6001605AB /* SwiftLoad.cpp */; };
+		55836C671BF3D409001605AB /* NetPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55836C661BF3D409001605AB /* NetPlay.swift */; };
 		5596588A1BEACEA400D8BB39 /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559658891BEACEA400D8BB39 /* Object.swift */; };
 		55A616501BE55FEC00AD2049 /* SDLMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A6164F1BE55FEC00AD2049 /* SDLMain.swift */; };
 		55A616521BE5614600AD2049 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A616511BE5614600AD2049 /* main.swift */; };
@@ -214,6 +216,8 @@
 		555968621BE6EBCB003A3001 /* Mac_Compat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mac_Compat.swift; sourceTree = "<group>"; };
 		555968641BE6ED5D003A3001 /* Mac_Wave.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mac_Wave.swift; sourceTree = "<group>"; };
 		557258B519E5CC730073CDF2 /* SDLMain.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SDLMain.xib; sourceTree = "<group>"; };
+		55836C631BF3CBA6001605AB /* SwiftLoad.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SwiftLoad.cpp; sourceTree = "<group>"; };
+		55836C661BF3D409001605AB /* NetPlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetPlay.swift; sourceTree = "<group>"; };
 		559658891BEACEA400D8BB39 /* Object.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Object.swift; sourceTree = "<group>"; };
 		55A6164E1BE55FEA00AD2049 /* Maelstrom-UB-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Maelstrom-UB-Bridging-Header.h"; sourceTree = "<group>"; };
 		55A6164F1BE55FEC00AD2049 /* SDLMain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SDLMain.swift; sourceTree = "<group>"; };
@@ -488,6 +492,7 @@
 		5515E82B1BE60A3F0048605C /* Maelstrom Classes */ = {
 			isa = PBXGroup;
 			children = (
+				55836C621BF3CB77001605AB /* C++ specific */,
 				5515E82C1BE60A760048605C /* Rect.swift */,
 				55D4F8CA1BE9747500F31A0F /* Maelstrom.swift */,
 				55FF31A71BF2E783001977AD /* ButtonList.swift */,
@@ -517,6 +522,14 @@
 			path = maclib;
 			sourceTree = "<group>";
 		};
+		55836C621BF3CB77001605AB /* C++ specific */ = {
+			isa = PBXGroup;
+			children = (
+				55836C631BF3CBA6001605AB /* SwiftLoad.cpp */,
+			);
+			name = "C++ specific";
+			sourceTree = "<group>";
+		};
 		559658881BEACE7600D8BB39 /* netlogic */ = {
 			isa = PBXGroup;
 			children = (
@@ -525,6 +538,7 @@
 				55FF319F1BF2C627001977AD /* Logic.swift */,
 				559658891BEACEA400D8BB39 /* Object.swift */,
 				55FF31AD1BF33A5F001977AD /* Player.swift */,
+				55836C661BF3D409001605AB /* NetPlay.swift */,
 			);
 			path = netlogic;
 			sourceTree = "<group>";
@@ -677,12 +691,14 @@
 				55FF31A01BF2C627001977AD /* Logic.swift in Sources */,
 				5515E82E1BE60F7A0048605C /* main.swift in Sources */,
 				555968651BE6ED5D003A3001 /* Mac_Wave.swift in Sources */,
+				55836C671BF3D409001605AB /* NetPlay.swift in Sources */,
 				55FF31A21BF2D070001977AD /* Scores.swift in Sources */,
 				555968631BE6EBCB003A3001 /* Mac_Compat.swift in Sources */,
 				55FF31AC1BF33444001977AD /* init.swift in Sources */,
 				55FF31AE1BF33A5F001977AD /* Player.swift in Sources */,
 				55FF31A61BF2E3EE001977AD /* Game.swift in Sources */,
 				550CEC551BE84B2100453C11 /* pixel.cpp in Sources */,
+				55836C651BF3CBA6001605AB /* SwiftLoad.cpp in Sources */,
 				5596588A1BEACEA400D8BB39 /* Object.swift in Sources */,
 				55FF31A81BF2E783001977AD /* ButtonList.swift in Sources */,
 				55FF319E1BF2C5A7001977AD /* Controls.swift in Sources */,
