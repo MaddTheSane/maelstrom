@@ -97,6 +97,264 @@ class FrameBuf {
 	
 	}
 	
+	func fade() {
+		
+	}
+	
+	func toggleFullScreen() {
+		
+	}
+	
+	func update() {
+		
+	}
+	
+	func freeImage(title: UnsafeMutablePointer<SDL_Surface>) {
+		
+	}
+	
+	func mapRGB(red R: UInt8, green G: UInt8, blue B: UInt8) -> UInt32 {
+		return SDL_MapRGB(screenfg.memory.format, R, G, B)
+	}
+
+	
+	func screenDump(fileName: String, x: UInt16, y: UInt16, w: UInt16, h: UInt16) -> Bool {
+		return false
+	}
+	
+	func waitEvent(event: UnsafeMutablePointer<SDL_Event>) -> Int32 {
+		return SDL_WaitEvent(event)
+	}
+	
+	func performBlits() {
+		if blitQlen > 0 {
+			/* Perform lazy unlocking */
+			UNLOCK_IF_NEEDED();
+			
+			/* Blast and free the queued blits */
+			for ( var i=0; i<blitQlen; ++i ) {
+				SDL_LowerBlit(blitQ[i].src, &blitQ[i].srcrect,
+					screen, &blitQ[i].dstrect);
+				SDL_FreeSurface(blitQ[i].src);
+			}
+			blitQlen = 0;
+		}
+	}
+
+	
+	func drawPoint(x x: Int16, y: Int16, color: UInt32) {
+		var dirty = SDL_Rect()
+		
+		/* Adjust the bounds */
+		if ( x < 0 ) {return;}
+		if ( Int32(x) > screen.memory.w ) {return;}
+		if ( y < 0 ) {return;}
+		if ( Int32(y) > screen.memory.h ) {return;}
+		
+		performBlits();
+		LOCK_IF_NEEDED();
+		putPixel!(screen_loc: screen_mem.advancedBy(Int(y)*Int(screen.memory.pitch)+Int(x)*Int(screen.memory.format.memory.BytesPerPixel)), screen: screen, pixel: color)
+		dirty.x = Int32(x)
+		dirty.y = Int32(y)
+		dirty.w = 1;
+		dirty.h = 1;
+		addDirtyRect(&dirty);
+	}
+	
+	///Simple, slow, line drawing algorithm.  Improvement, anyone? :-)
+	
+	func drawLine(x1 x1: UInt16, y1: UInt16, x2: UInt16, y2: UInt16, color: UInt32) {
+		drawLine(x1: Int16(x1), y1: Int16(y1), x2: Int16(x2), y2: Int16(y2), color: color)
+	}
+	
+	func drawLine(x1 x1: Int16, y1: Int16, x2: Int16, y2: Int16, color: UInt32) {
+		
+	}
+	/*
+
+/* Simple, slow, line drawing algorithm.  Improvement, anyone? :-) */
+void
+FrameBuf:: DrawLine(Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, Uint32 color)
+{
+SDL_Rect dirty;
+Sint16   x , y;
+Sint16   lo, hi;
+double slope, b;
+Uint8  screen_bpp;
+Uint8 *screen_loc;
+
+/* Adjust the bounds */
+ADJUSTX(x1); ADJUSTY(y1);
+ADJUSTX(x2); ADJUSTY(y2);
+
+PerformBlits();
+LOCK_IF_NEEDED();
+screen_bpp = screen->format->BytesPerPixel;
+if ( y1 == y2 )  {  /* Horizontal line */
+if ( x1 < x2 ) {
+lo = x1;
+hi = x2;
+} else {
+lo = x2;
+hi = x1;
+}
+screen_loc = screen_mem + y1*screen->pitch + lo*screen_bpp;
+for ( x=lo; x<=hi; ++x ) {
+PutPixel(screen_loc, screen, color);
+screen_loc += screen_bpp;
+}
+dirty.x = lo;
+dirty.y = y1;
+dirty.w = (Uint16)(hi-lo+1);
+dirty.h = 1;
+AddDirtyRect(&dirty);
+} else if ( x1 == x2 ) {  /* Vertical line */
+if ( y1 < y2 ) {
+lo = y1;
+hi = y2;
+} else {
+lo = y2;
+hi = y1;
+}
+screen_loc = screen_mem + lo*screen->pitch + x1*screen_bpp;
+for ( y=lo; y<=hi; ++y ) {
+PutPixel(screen_loc, screen, color);
+screen_loc += screen->pitch;
+}
+dirty.x = x1;
+dirty.y = lo;
+dirty.w = 1;
+dirty.h = (Uint16)(hi-lo+1);
+AddDirtyRect(&dirty);
+} else {
+/* Equation:  y = mx + b */
+slope = ((double)((int)(y2 - y1)) /
+(double)((int)(x2 - x1)));
+b = (double)(y1 - slope*(double)x1);
+if ( ((slope < 0) ? slope > -1 : slope < 1) ) {
+if ( x1 < x2 ) {
+lo = x1;
+hi = x2;
+} else {
+lo = x2;
+hi = x1;
+}
+for ( x=lo; x<=hi; ++x ) {
+y = (int)((slope*(double)x) + b);
+screen_loc = screen_mem +
+y*screen->pitch + x*screen_bpp;
+PutPixel(screen_loc, screen, color);
+}
+} else {
+if ( y1 < y2 ) {
+lo = y1;
+hi = y2;
+} else {
+lo = y2;
+hi = y1;
+}
+for ( y=lo; y<=hi; ++y ) {
+x = (int)(((double)y - b)/slope);
+screen_loc = screen_mem +
+y*screen->pitch + x*screen_bpp;
+PutPixel(screen_loc, screen, color);
+}
+}
+dirty.x = MIN(x1, x2);
+dirty.y = MIN(y1, y2);
+dirty.w = (Uint16)(MAX(x1, x2)-dirty.x+1);
+dirty.h = (Uint16)(MAX(y1, y2)-dirty.y+1);
+AddDirtyRect(&dirty);
+}
+}
+	
+	*/
+	func drawRect(x x: Int16, y: Int16, width: Int16, height: Int16, color: UInt32) {
+		
+	}
+	/*
+void
+FrameBuf:: DrawRect(Sint16 x, Sint16 y, Uint16 w, Uint16 h, Uint32 color)
+{
+SDL_Rect dirty;
+int i;
+Uint8  screen_bpp;
+Uint8 *screen_loc;
+
+/* Adjust the bounds */
+ADJUSTX(x); ADJUSTY(y);
+if ( (x+w) > screen->w ) w = (Uint16)(screen->w-x);
+if ( (y+h) > screen->h ) h = (Uint16)(screen->h-y);
+
+PerformBlits();
+LOCK_IF_NEEDED();
+screen_bpp = screen->format->BytesPerPixel;
+
+/* Horizontal lines */
+screen_loc = screen_mem + y*screen->pitch + x*screen_bpp;
+for ( i=0; i<w; ++i ) {
+PutPixel(screen_loc, screen, color);
+screen_loc += screen_bpp;
+}
+screen_loc = screen_mem + (y+h-1)*screen->pitch + x*screen_bpp;
+for ( i=0; i<w; ++i ) {
+PutPixel(screen_loc, screen, color);
+screen_loc += screen_bpp;
+}
+
+/* Vertical lines */
+screen_loc = screen_mem + y*screen->pitch + x*screen_bpp;
+for ( i=0; i<h; ++i ) {
+PutPixel(screen_loc, screen, color);
+screen_loc += screen->pitch;
+}
+screen_loc = screen_mem + y*screen->pitch + (x+w-1)*screen_bpp;
+for ( i=0; i<h; ++i ) {
+PutPixel(screen_loc, screen, color);
+screen_loc += screen->pitch;
+}
+
+/* Update rectangle */
+dirty.x = x;
+dirty.y = y;
+dirty.w = w;
+dirty.h = h;
+AddDirtyRect(&dirty);
+}
+void
+FrameBuf:: FillRect(Sint16 x, Sint16 y, Uint16 w, Uint16 h, Uint32 color)
+{
+SDL_Rect dirty;
+Uint16 i, skip;
+Uint8 screen_bpp;
+Uint8 *screen_loc;
+
+/* Adjust the bounds */
+ADJUSTX(x); ADJUSTY(y);
+if ( (x+w) > screen->w ) w = (screen->w-x);
+if ( (y+h) > screen->h ) h = (screen->h-y);
+
+/* Set the dirty rectangle */
+dirty.x = x;
+dirty.y = y;
+dirty.w = w;
+dirty.h = h;
+
+/* Semi-efficient, for now. :) */
+LOCK_IF_NEEDED();
+screen_bpp = screen->format->BytesPerPixel;
+screen_loc = screen_mem + y*screen->pitch + x*screen_bpp;
+skip = screen->pitch - (w*screen_bpp);
+while ( h-- ) {
+for ( i=w; i!=0; --i ) {
+PutPixel(screen_loc, screen, color);
+screen_loc += screen_bpp;
+}
+screen_loc += skip;
+}
+AddDirtyRect(&dirty);
+}*/
+
 	func setUp(width width: Int32, height: Int32, videoFlags: UInt32, colors: UnsafePointer<SDL_Color> = nil, icon: UnsafeMutablePointer<SDL_Surface> = nil) -> Bool {
 		window = SDL_CreateWindow("title", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, videoFlags);
 		if window == nil {

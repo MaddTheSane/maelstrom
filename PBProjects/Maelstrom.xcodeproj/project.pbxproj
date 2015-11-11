@@ -79,6 +79,15 @@
 		55D4F8CB1BE9747500F31A0F /* Maelstrom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D4F8CA1BE9747500F31A0F /* Maelstrom.swift */; };
 		55EBAE1E17174CFB0029EB7B /* SDL2.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127EF0F09D54000E06E2A /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		55EBAE1F17174CFF0029EB7B /* SDL2_net.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127F00F09D54000E06E2A /* SDL2_net.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		55FF319E1BF2C5A7001977AD /* Controls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FF319D1BF2C5A7001977AD /* Controls.swift */; };
+		55FF31A01BF2C627001977AD /* Logic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FF319F1BF2C627001977AD /* Logic.swift */; };
+		55FF31A21BF2D070001977AD /* Scores.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FF31A11BF2D070001977AD /* Scores.swift */; };
+		55FF31A41BF2E3A6001977AD /* About.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FF31A31BF2E3A6001977AD /* About.swift */; };
+		55FF31A61BF2E3EE001977AD /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FF31A51BF2E3EE001977AD /* Game.swift */; };
+		55FF31A81BF2E783001977AD /* ButtonList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FF31A71BF2E783001977AD /* ButtonList.swift */; };
+		55FF31AA1BF321F9001977AD /* Load.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FF31A91BF321F9001977AD /* Load.swift */; };
+		55FF31AC1BF33444001977AD /* init.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FF31AB1BF33444001977AD /* init.swift */; };
+		55FF31AE1BF33A5F001977AD /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FF31AD1BF33A5F001977AD /* Player.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -229,6 +238,15 @@
 		55D4F8B71BE83ADB00F31A0F /* Mac_FontServ.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mac_FontServ.swift; sourceTree = "<group>"; };
 		55D4F8B91BE83B0900F31A0F /* Mac_Sound.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mac_Sound.swift; sourceTree = "<group>"; };
 		55D4F8CA1BE9747500F31A0F /* Maelstrom.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Maelstrom.swift; sourceTree = "<group>"; };
+		55FF319D1BF2C5A7001977AD /* Controls.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Controls.swift; sourceTree = "<group>"; };
+		55FF319F1BF2C627001977AD /* Logic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logic.swift; sourceTree = "<group>"; };
+		55FF31A11BF2D070001977AD /* Scores.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scores.swift; sourceTree = "<group>"; };
+		55FF31A31BF2E3A6001977AD /* About.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = About.swift; sourceTree = "<group>"; };
+		55FF31A51BF2E3EE001977AD /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
+		55FF31A71BF2E783001977AD /* ButtonList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonList.swift; sourceTree = "<group>"; };
+		55FF31A91BF321F9001977AD /* Load.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Load.swift; sourceTree = "<group>"; };
+		55FF31AB1BF33444001977AD /* init.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = init.swift; sourceTree = "<group>"; };
+		55FF31AD1BF33A5F001977AD /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		F5709022010A768101000001 /* Maelstrom.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Maelstrom.icns; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -472,6 +490,11 @@
 			children = (
 				5515E82C1BE60A760048605C /* Rect.swift */,
 				55D4F8CA1BE9747500F31A0F /* Maelstrom.swift */,
+				55FF31A71BF2E783001977AD /* ButtonList.swift */,
+				55FF31AB1BF33444001977AD /* init.swift */,
+				55FF31A91BF321F9001977AD /* Load.swift */,
+				55FF31A11BF2D070001977AD /* Scores.swift */,
+				55FF319D1BF2C5A7001977AD /* Controls.swift */,
 				5515E82F1BE6111C0048605C /* maclib */,
 				550CEC501BE8425400453C11 /* screenlib */,
 				559658881BEACE7600D8BB39 /* netlogic */,
@@ -497,7 +520,11 @@
 		559658881BEACE7600D8BB39 /* netlogic */ = {
 			isa = PBXGroup;
 			children = (
+				55FF31A31BF2E3A6001977AD /* About.swift */,
+				55FF31A51BF2E3EE001977AD /* Game.swift */,
+				55FF319F1BF2C627001977AD /* Logic.swift */,
 				559658891BEACEA400D8BB39 /* Object.swift */,
+				55FF31AD1BF33A5F001977AD /* Player.swift */,
 			);
 			path = netlogic;
 			sourceTree = "<group>";
@@ -640,16 +667,25 @@
 				555968611BE6EB22003A3001 /* fastrand.cpp in Sources */,
 				55D4F8B61BE7F3DB00F31A0F /* SwiftHelping.swift in Sources */,
 				55D4F8CB1BE9747500F31A0F /* Maelstrom.swift in Sources */,
+				55FF31A41BF2E3A6001977AD /* About.swift in Sources */,
 				5515E8311BE611310048605C /* Mac_Resource.swift in Sources */,
 				5515E8341BE6878E0048605C /* MacBinary.swift in Sources */,
 				5515E82D1BE60A760048605C /* Rect.swift in Sources */,
 				5515E8361BE68A7D0048605C /* applefile.swift in Sources */,
 				55D4F8C81BE9738E00F31A0F /* SDLMain.swift in Sources */,
+				55FF31AA1BF321F9001977AD /* Load.swift in Sources */,
+				55FF31A01BF2C627001977AD /* Logic.swift in Sources */,
 				5515E82E1BE60F7A0048605C /* main.swift in Sources */,
 				555968651BE6ED5D003A3001 /* Mac_Wave.swift in Sources */,
+				55FF31A21BF2D070001977AD /* Scores.swift in Sources */,
 				555968631BE6EBCB003A3001 /* Mac_Compat.swift in Sources */,
+				55FF31AC1BF33444001977AD /* init.swift in Sources */,
+				55FF31AE1BF33A5F001977AD /* Player.swift in Sources */,
+				55FF31A61BF2E3EE001977AD /* Game.swift in Sources */,
 				550CEC551BE84B2100453C11 /* pixel.cpp in Sources */,
 				5596588A1BEACEA400D8BB39 /* Object.swift in Sources */,
+				55FF31A81BF2E783001977AD /* ButtonList.swift in Sources */,
+				55FF319E1BF2C5A7001977AD /* Controls.swift in Sources */,
 				55D4F8BA1BE83B0900F31A0F /* Mac_Sound.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

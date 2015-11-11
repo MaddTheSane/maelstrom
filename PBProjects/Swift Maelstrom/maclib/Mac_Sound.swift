@@ -101,7 +101,7 @@ final class Sound {
 		set(aVol) {
 			var vol = aVol
 			
-			var active = playing;
+			var active = aPlaying;
 			if volume == 0 && vol > 0 {
 				/* Kill bogus sound thread */
 				if bogusAudio != nil {
@@ -117,13 +117,13 @@ final class Sound {
 				active = true
 				SDL_PauseAudio(0);		/* Go! */
 			}
-			if ( vol > MAX_VOLUME ) {
+			if vol > MAX_VOLUME {
 				vol = MAX_VOLUME;
 			}
 			intVol = vol;
 			
 			if active && (volume == 0) {
-				if ( playing ) {
+				if aPlaying {
 					SDL_CloseAudio();
 				}
 				active = false
@@ -135,12 +135,12 @@ final class Sound {
 					/* Oh well... :-) */
 				}
 			}
-			playing = active;
+			aPlaying = active;
 		}
 	}
 	
 	private var spec: SDL_AudioSpec = SDL_AudioSpec()
-	private var playing = false
+	private var aPlaying = false
 	private(set) var waves = [UInt16: Wave]()
 	
 	///Stop mixing on all channels
@@ -155,6 +155,11 @@ final class Sound {
 		channels[channel].len = 0
 	}
 	
+	var playing: Bool {
+		var unusedChannel: UInt8 = 0
+		return playing(channel: &unusedChannel)
+	}
+	
 	/// Find out if a sound is playing on a channel 
 	func playing(sndID: UInt16 = 0, inout channel: UInt8) -> Bool {
 		for i in 0..<NUM_CHANNELS {
@@ -162,7 +167,7 @@ final class Sound {
 				continue
 			}
 			
-			if ( (sndID == 0) || (sndID == channels[i].ID) ) {
+			if (sndID == 0) || (sndID == channels[i].ID) {
 				channel = UInt8(i)
 				return true;
 			}
@@ -319,7 +324,7 @@ final class Sound {
 	private(set) var error: String? = nil
 	
 	deinit {
-		if playing {
+		if aPlaying {
 			SDL_CloseAudio();
 		} else if bogusAudio != nil {
 			bogus_running = false

@@ -146,3 +146,7 @@ struct MaelOSType: Hashable {
 		return rawOSType.hashValue
 	}
 }
+
+func |(lhs: SDL_WindowFlags, rhs: SDL_WindowFlags) -> SDL_WindowFlags {
+	return SDL_WindowFlags(lhs.rawValue | rhs.rawValue)
+}
