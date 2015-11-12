@@ -25,9 +25,19 @@
 #ifndef _pixel_h
 #define _pixel_h
 
+#include <SDL_surface.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern void PutPixel1(Uint8 *screen_loc, SDL_Surface *screen, Uint32 pixel);
 extern void PutPixel2(Uint8 *screen_loc, SDL_Surface *screen, Uint32 pixel);
 extern void PutPixel3(Uint8 *screen_loc, SDL_Surface *screen, Uint32 pixel);
 extern void PutPixel4(Uint8 *screen_loc, SDL_Surface *screen, Uint32 pixel);
 
+#ifdef __cplusplus
+}
+#endif
+	
 #endif /* _pixel_h */

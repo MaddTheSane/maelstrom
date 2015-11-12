@@ -10,7 +10,7 @@
    The input data is assumed to be always in big-endian format.
 */
 static inline void
-byteswap(Uint16 *array, int nshorts)
+byteswap(Uint16 *array, size_t nshorts)
 {
 	for (; nshorts-- > 0; array++)
 		bytesex16(*array);

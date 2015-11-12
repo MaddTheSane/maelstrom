@@ -380,6 +380,8 @@ error("-   Small rock! (%d)\n", gNumRocks);
 		return(Object::Explode());
 	}
 };
+
+
 class MediumRock : public Object {
 
 public:
