@@ -98,33 +98,33 @@
 		00FF5C5800B0464B7F000001 /* player.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = player.h; sourceTree = "<group>"; };
 		00FF5C5900B0464B7F000001 /* protocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = protocol.h; sourceTree = "<group>"; };
 		00FF5C5A00B0464B7F000001 /* shinobi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = shinobi.h; sourceTree = "<group>"; };
-		0104628800B326437F000001 /* netscore.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = netscore.cpp; path = ../netscore.cpp; sourceTree = SOURCE_ROOT; };
+		0104628800B326437F000001 /* netscore.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = netscore.cpp; sourceTree = "<group>"; };
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
-		173670BB00AF295B7F000001 /* buttonlist.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = buttonlist.h; path = ../buttonlist.h; sourceTree = SOURCE_ROOT; };
-		173670BC00AF295B7F000001 /* checksum.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = checksum.cpp; path = ../checksum.cpp; sourceTree = SOURCE_ROOT; };
-		173670BD00AF295B7F000001 /* checksum.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = checksum.h; path = ../checksum.h; sourceTree = SOURCE_ROOT; };
-		173670BE00AF295B7F000001 /* colortable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = colortable.h; path = ../colortable.h; sourceTree = SOURCE_ROOT; };
-		173670BF00AF295B7F000001 /* controls.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = controls.cpp; path = ../controls.cpp; sourceTree = SOURCE_ROOT; };
-		173670C000AF295B7F000001 /* controls.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = controls.h; path = ../controls.h; sourceTree = SOURCE_ROOT; };
-		173670C100AF295B7F000001 /* dialog.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = dialog.cpp; path = ../dialog.cpp; sourceTree = SOURCE_ROOT; };
-		173670C200AF295B7F000001 /* dialog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = dialog.h; path = ../dialog.h; sourceTree = SOURCE_ROOT; };
-		173670CB00AF29927F000001 /* fastrand.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = fastrand.cpp; path = ../fastrand.cpp; sourceTree = SOURCE_ROOT; };
-		173670CC00AF29927F000001 /* fastrand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = fastrand.h; path = ../fastrand.h; sourceTree = SOURCE_ROOT; };
-		173670CD00AF29927F000001 /* init.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = init.cpp; path = ../init.cpp; sourceTree = SOURCE_ROOT; };
-		173670CE00AF29927F000001 /* load.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = load.cpp; path = ../load.cpp; sourceTree = SOURCE_ROOT; };
-		173670CF00AF29927F000001 /* load.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = load.h; path = ../load.h; sourceTree = SOURCE_ROOT; };
-		173670D000AF29927F000001 /* logic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = logic.h; path = ../logic.h; sourceTree = SOURCE_ROOT; };
-		173670D100AF29927F000001 /* Maelstrom_Globals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Maelstrom_Globals.h; path = ../Maelstrom_Globals.h; sourceTree = SOURCE_ROOT; };
-		173670D300AF29927F000001 /* Maelstrom.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Maelstrom.h; path = ../Maelstrom.h; sourceTree = SOURCE_ROOT; };
-		173670D400AF29927F000001 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../main.cpp; sourceTree = SOURCE_ROOT; };
-		173670D500AF29927F000001 /* myerror.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = myerror.cpp; path = ../myerror.cpp; sourceTree = SOURCE_ROOT; };
-		173670D600AF29927F000001 /* myerror.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = myerror.h; path = ../myerror.h; sourceTree = SOURCE_ROOT; };
-		173670D700AF29927F000001 /* public_key.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = public_key.h; path = ../public_key.h; sourceTree = SOURCE_ROOT; };
-		173670D800AF29927F000001 /* rect.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = rect.cpp; path = ../rect.cpp; sourceTree = SOURCE_ROOT; };
-		173670D900AF29927F000001 /* rect.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = rect.h; path = ../rect.h; sourceTree = SOURCE_ROOT; };
-		173670DA00AF29927F000001 /* scores.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = scores.cpp; path = ../scores.cpp; sourceTree = SOURCE_ROOT; };
-		173670DB00AF29927F000001 /* scores.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = scores.h; path = ../scores.h; sourceTree = SOURCE_ROOT; };
+		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		173670BB00AF295B7F000001 /* buttonlist.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = buttonlist.h; sourceTree = "<group>"; };
+		173670BC00AF295B7F000001 /* checksum.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = checksum.cpp; sourceTree = "<group>"; };
+		173670BD00AF295B7F000001 /* checksum.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = checksum.h; sourceTree = "<group>"; };
+		173670BE00AF295B7F000001 /* colortable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = colortable.h; sourceTree = "<group>"; };
+		173670BF00AF295B7F000001 /* controls.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = controls.cpp; sourceTree = "<group>"; };
+		173670C000AF295B7F000001 /* controls.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = controls.h; sourceTree = "<group>"; };
+		173670C100AF295B7F000001 /* dialog.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = dialog.cpp; sourceTree = "<group>"; };
+		173670C200AF295B7F000001 /* dialog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = dialog.h; sourceTree = "<group>"; };
+		173670CB00AF29927F000001 /* fastrand.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = fastrand.cpp; sourceTree = "<group>"; };
+		173670CC00AF29927F000001 /* fastrand.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fastrand.h; sourceTree = "<group>"; };
+		173670CD00AF29927F000001 /* init.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = init.cpp; sourceTree = "<group>"; };
+		173670CE00AF29927F000001 /* load.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = load.cpp; sourceTree = "<group>"; };
+		173670CF00AF29927F000001 /* load.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = load.h; sourceTree = "<group>"; };
+		173670D000AF29927F000001 /* logic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = logic.h; sourceTree = "<group>"; };
+		173670D100AF29927F000001 /* Maelstrom_Globals.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Maelstrom_Globals.h; sourceTree = "<group>"; };
+		173670D300AF29927F000001 /* Maelstrom.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Maelstrom.h; sourceTree = "<group>"; };
+		173670D400AF29927F000001 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		173670D500AF29927F000001 /* myerror.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = myerror.cpp; sourceTree = "<group>"; };
+		173670D600AF29927F000001 /* myerror.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = myerror.h; sourceTree = "<group>"; };
+		173670D700AF29927F000001 /* public_key.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = public_key.h; sourceTree = "<group>"; };
+		173670D800AF29927F000001 /* rect.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = rect.cpp; sourceTree = "<group>"; };
+		173670D900AF29927F000001 /* rect.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rect.h; sourceTree = "<group>"; };
+		173670DA00AF29927F000001 /* scores.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = scores.cpp; sourceTree = "<group>"; };
+		173670DB00AF29927F000001 /* scores.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = scores.h; sourceTree = "<group>"; };
 		1736710800AF2A6D7F000001 /* pixel.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = pixel.cpp; sourceTree = "<group>"; };
 		1736710900AF2A6D7F000001 /* pixel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pixel.h; sourceTree = "<group>"; };
 		1736710B00AF2A6D7F000001 /* SDL_FrameBuf.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SDL_FrameBuf.cpp; sourceTree = "<group>"; };
@@ -142,17 +142,17 @@
 		1736712200AF2C7D7F000001 /* Mac_Wave.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Mac_Wave.cpp; sourceTree = "<group>"; };
 		1736712300AF2C7D7F000001 /* Mac_Wave.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Mac_Wave.h; sourceTree = "<group>"; };
 		1736716C00B03F027F000001 /* Maelstrom-netd.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; name = "Maelstrom-netd.c"; path = "../Maelstrom-netd.c"; sourceTree = SOURCE_ROOT; };
-		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
-		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		557258B519E5CC730073CDF2 /* SDLMain.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SDLMain.xib; sourceTree = "<group>"; };
 		55D127EF0F09D54000E06E2A /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = /Library/Frameworks/SDL2.framework; sourceTree = "<absolute>"; };
 		55D127F00F09D54000E06E2A /* SDL2_net.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_net.framework; path = /Library/Frameworks/SDL2_net.framework; sourceTree = "<absolute>"; };
 		55D128240F09D57F00E06E2A /* Maelstrom.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Maelstrom.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55D128260F09D57F00E06E2A /* Maelstrom-UB-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Maelstrom-UB-Info.plist"; sourceTree = "<group>"; };
-		55D128510F09D7B200E06E2A /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
-		55D128580F09D7DC00E06E2A /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
-		55D128590F09D7DC00E06E2A /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
-		55D1285A0F09D7DC00E06E2A /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
+		55D128510F09D7B200E06E2A /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
+		55D128580F09D7DC00E06E2A /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = System/Library/Frameworks/AGL.framework; sourceTree = SDKROOT; };
+		55D128590F09D7DC00E06E2A /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		55D1285A0F09D7DC00E06E2A /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		55D128720F09D9BD00E06E2A /* Maelstrom_Server */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Maelstrom_Server; sourceTree = BUILT_PRODUCTS_DIR; };
 		55D1287F0F09DA7200E06E2A /* Images */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Images; path = ../Images; sourceTree = SOURCE_ROOT; };
 		55D1289E0F09DAA400E06E2A /* Maelstrom_Fonts */ = {isa = PBXFileReference; lastKnownFileType = file; name = Maelstrom_Fonts; path = ../Maelstrom_Fonts; sourceTree = SOURCE_ROOT; };
@@ -206,9 +206,8 @@
 				00FF5C5900B0464B7F000001 /* protocol.h */,
 				00FF5C5A00B0464B7F000001 /* shinobi.h */,
 			);
-			name = netlogic;
-			path = ../netlogic;
-			sourceTree = SOURCE_ROOT;
+			path = netlogic;
+			sourceTree = "<group>";
 		};
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
@@ -275,6 +274,7 @@
 				1736710400AF2A6D7F000001 /* screenlib */,
 			);
 			name = "Maelstrom Sources";
+			path = ..;
 			sourceTree = "<group>";
 		};
 		1736710400AF2A6D7F000001 /* screenlib */ = {
@@ -285,9 +285,8 @@
 				1736710B00AF2A6D7F000001 /* SDL_FrameBuf.cpp */,
 				1736710C00AF2A6D7F000001 /* SDL_FrameBuf.h */,
 			);
-			name = screenlib;
-			path = ../screenlib;
-			sourceTree = SOURCE_ROOT;
+			path = screenlib;
+			sourceTree = "<group>";
 		};
 		1736711700AF2C7D7F000001 /* maclib */ = {
 			isa = PBXGroup;
@@ -304,9 +303,8 @@
 				1736712200AF2C7D7F000001 /* Mac_Wave.cpp */,
 				1736712300AF2C7D7F000001 /* Mac_Wave.h */,
 			);
-			name = maclib;
-			path = ../maclib;
-			sourceTree = SOURCE_ROOT;
+			path = maclib;
+			sourceTree = "<group>";
 		};
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
