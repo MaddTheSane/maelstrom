@@ -12,8 +12,15 @@ let VERSION = "3.0.6"
 let VERSION_STRING = VERSION + ".N"
 
 
-func InitLogicData() -> Int32 {
-	return -1
+func initLogicData() -> Bool {
+	#if MULTIPLAYER_SUPPORT
+	/* Initialize network player data */
+	guard initNetData() else {
+		return false;
+	}
+	gDeathMatch = 0;
+		#endif
+	return true;
 }
 
 func initLogic() -> Bool {
@@ -26,22 +33,23 @@ func logicUsage() {
 	print("\t-deathmatch [N]\t\t# Play deathmatch to N frags (default = 8)")
 }
 
-//int LogicParseArgs(char ***argvptr, int *argcptr)
 func logicParseArgs(inout argvptr: UnsafeMutablePointer<UnsafeMutablePointer<CChar>>, inout _ argcptr: Int32) -> Bool {
 	return false
 }
 
 func haltLogic() {
+	#if MULTIPLAYER_SUPPORT
 	haltNetData();
+	#endif
 }
 
 
 func getScore() -> Int32 {
+	#if MULTIPLAYER_SUPPORT
+		return(OurShip.GetScore());
+		#else
 	return 0
+	#endif
+	
+	//
 }
-/*
-int GetScore(void)
-	{
-		return(OurShip->GetScore());
-}*/
-

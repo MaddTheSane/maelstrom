@@ -234,7 +234,7 @@ private func drawMainScreen() {
 	var botDiv:UInt16 = 0
 	var rightDiv:UInt16 = 0
 	
-	var index :UInt16 = 0
+	var index: UInt16 = 0
 	var sRt:UInt16 = 0
 	var wRt:UInt16 = 0
 	var sw:UInt16 = 0
@@ -243,7 +243,7 @@ private func drawMainScreen() {
 	var clr: UInt32
 	var ltClr: UInt32
 	var ltrClr: UInt32
-	var buffer  = ""
+	var buffer = ""
 	var offset = 0
 	
 	gUpdateBuffer = false;
@@ -473,7 +473,7 @@ func SDL_main(var argc: Int32, var _ argv: UnsafeMutablePointer<UnsafeMutablePoi
 	loadControls();
 
 	/* Initialize game logic data structures */
-	if InitLogicData() < 0 {
+	if !initLogicData() {
 		exit(1);
 	}
 

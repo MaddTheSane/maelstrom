@@ -29,7 +29,6 @@ final class ButtonList {
 	}
 	
 	func activateButton(x x: UInt16, y: UInt16) {
-		
 		for belem in buttonList {
 			if (x >= belem.x1) && (x <= belem.x2) &&
 				(y >= belem.y1) && (y <= belem.y2) {

@@ -17,3 +17,4 @@
 #include "bitesex.h"
 #include "fastrand.h"
 #include "pixel.h"
+#include "protocol.h"
