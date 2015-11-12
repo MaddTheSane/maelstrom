@@ -240,9 +240,6 @@ private func drawMainScreen() {
 	var sw:UInt16 = 0
 	
 	
-	var clr: UInt32
-	var ltClr: UInt32
-	var ltrClr: UInt32
 	var buffer = ""
 	var offset = 0
 	
@@ -260,9 +257,9 @@ private func drawMainScreen() {
 		//exit(255);
 	}
 	
-	clr = screen.mapRGB(red: UInt8(30000>>8), green: UInt8(30000>>8), blue: 0xFF);
-	ltClr = screen.mapRGB(red: UInt8(40000>>8), green: UInt8(40000>>8), blue: 0xFF);
-	ltrClr = screen.mapRGB(red: UInt8(50000>>8), green: UInt8(50000>>8), blue: 0xFF);
+	let clr = screen.mapRGB(red: UInt8(30000>>8), green: UInt8(30000>>8), blue: 0xFF);
+	let ltClr = screen.mapRGB(red: UInt8(40000>>8), green: UInt8(40000>>8), blue: 0xFF);
+	let ltrClr = screen.mapRGB(red: UInt8(50000>>8), green: UInt8(50000>>8), blue: 0xFF);
 	
 	screen.lock();
 	screen.clear();
@@ -270,10 +267,10 @@ private func drawMainScreen() {
 	//screen.
 	screen.drawRect(x: Int16(xOff)-1, y: Int16(yOff)-1, width: Int16(width+2), height: Int16(height+2), color: clr);
 	screen.drawRect(x: Int16(xOff)-2, y: Int16(yOff)-2, width: Int16(width+4), height: Int16(height+4), color: clr);
-	screen.drawRect(x: Int16(xOff)-3, y: Int16(yOff)-3, width: Int16(width+6), height: Int16(height+6), color: clr);
-	screen.drawRect(x: Int16(xOff)-4, y: Int16(yOff)-4, width: Int16(width+8), height: Int16(height+8), color: clr);
-	screen.drawRect(x: Int16(xOff)-5, y: Int16(yOff)-5, width: Int16(width+10), height: Int16(height+10), color: clr);
-	screen.drawRect(x: Int16(xOff)-6, y: Int16(yOff)-6, width: Int16(width+12), height: Int16(height+12), color: clr);
+	screen.drawRect(x: Int16(xOff)-3, y: Int16(yOff)-3, width: Int16(width+6), height: Int16(height+6), color: ltClr);
+	screen.drawRect(x: Int16(xOff)-4, y: Int16(yOff)-4, width: Int16(width+8), height: Int16(height+8), color: ltClr);
+	screen.drawRect(x: Int16(xOff)-5, y: Int16(yOff)-5, width: Int16(width+10), height: Int16(height+10), color: ltrClr);
+	screen.drawRect(x: Int16(xOff)-6, y: Int16(yOff)-6, width: Int16(width+12), height: Int16(height+12), color: ltClr);
 	screen.drawRect(x: Int16(xOff)-7, y: Int16(yOff)-7, width: Int16(width+14), height: Int16(height+14), color: clr);
 	
 	/* -- Draw the dividers */
@@ -292,7 +289,7 @@ private func drawMainScreen() {
 	/* -- Draw the high scores */
 	
 	/* -- First the headings  -- fontserv() isn't elegant, but hey.. */
-	guard let bigfont = fontserv.newFont("New York", pointSize: 18) else {
+	guard let bigfont = try? fontserv.newFont("New York", pointSize: 18) else {
 		fatalError("Can't use New York (18) font! -- Exiting.");
 		//exit(255);
 	}
@@ -309,7 +306,7 @@ private func drawMainScreen() {
 	
 	/* -- Now the scores */
 	loadScores();
-	guard var font = fontserv.newFont("New York", pointSize: 14) else {
+	guard var font = try? fontserv.newFont("New York", pointSize: 14) else {
 		fatalError("Can't use New York (14) font! -- Exiting.");
 		//exit(255);
 	}
@@ -377,7 +374,7 @@ private func drawMainScreen() {
 	pt.v += offset;
 	drawKey(&pt, key: "0", text: " ", callback: decrementSound);
 	
-	guard let afont = fontserv.newFont("Geneva", pointSize: 9) else {
+	guard let afont = try? fontserv.newFont("Geneva", pointSize: 9) else {
 		fatalError("Can't use Geneva font! -- Exiting.\n");
 	}
 	font = afont
@@ -699,7 +696,7 @@ private func runQuitGame() {
 
 private func drawKey(inout pt: MPoint, key: String, text: String, callback: (()-> Void)?)
 {
-	guard let geneva = fontserv.newFont("Geneva", pointSize: 9) else {
+	guard let geneva = try? fontserv.newFont("Geneva", pointSize: 9) else {
 		fatalError("Can't use Geneva font! -- Exiting.\n");
 		//exit(255);
 	}
@@ -722,13 +719,11 @@ private var drawSoundLevelOnce: dispatch_once_t = 0
 /// Draw the current sound volume
 private func drawSoundLevel() {
 	dispatch_once(&drawSoundLevelOnce) { () -> Void in
-		guard let geneva = fontserv.newFont("Geneva", pointSize: 9) else {
+		guard let geneva = try? fontserv.newFont("Geneva", pointSize: 9) else {
 			fatalError("Can't use Geneva font! -- Exiting.");
 		}
 		geneva9 = geneva
 	}
-	//drawText(xOff+309-7, yOff+240-6, text, geneva9, STYLE_BOLD,
-	//	0x00, 0x00, 0x00);
 	let text = String(gSoundLevel)
 	drawText(x: xOff+309-7, y: yOff+240-6, text: text, font: geneva9, style: .Bold,
 		R: UInt8(30000>>8), G: UInt8(30000>>8), B: 0xFF);

@@ -169,6 +169,10 @@ class FrameBuf {
 	
 	///Simple, slow, line drawing algorithm.  Improvement, anyone? :-)
 	
+	func drawLine(x1 x1: Int32, y1: Int32, x2: Int32, y2: Int32, color: UInt32) {
+		drawLine(x1: Int16(x1), y1: Int16(y1), x2: Int16(x2), y2: Int16(y2), color: color)
+	}
+	
 	func drawLine(x1 x1: UInt16, y1: UInt16, x2: UInt16, y2: UInt16, color: UInt32) {
 		drawLine(x1: Int16(x1), y1: Int16(y1), x2: Int16(x2), y2: Int16(y2), color: color)
 	}
@@ -275,6 +279,10 @@ AddDirtyRect(&dirty);
 }
 	
 	*/
+	func drawRect(x x: Int32, y: Int32, width: Int32, height: Int32, color: UInt32) {
+		drawRect(x: Int16(x), y: Int16(y), width: Int16(width), height: Int16(height), color: color)
+	}
+	
 	func drawRect(x x: Int16, y: Int16, width: Int16, height: Int16, color: UInt32) {
 		
 	}
@@ -327,6 +335,18 @@ dirty.w = w;
 dirty.h = h;
 AddDirtyRect(&dirty);
 }
+	*/
+	
+	func fillRect(x x: Int32, y: Int32, w: Int32, h: Int32, color: UInt32) {
+		fillRect(x: Int16(x), y: Int16(y), w: Int16(w), h: Int16(h), color: color)
+	}
+	
+	func fillRect(x x: Int16, y: Int16, w: Int16, h: Int16, color: UInt32) {
+		
+	}
+	
+	/*
+	
 void
 FrameBuf:: FillRect(Sint16 x, Sint16 y, Uint16 w, Uint16 h, Uint32 color)
 {
@@ -638,4 +658,8 @@ the new area, instead adding another update rectangle.
 	private var BGrgb: (red: UInt8, green: UInt8, blue: UInt8) = (0, 0, 0)
 	private var BGcolor: UInt32 = 0
 	private var image_map = [UInt32](count: 256, repeatedValue: 0)
+	
+	func grabArea(x x: UInt16, y: UInt16, w: UInt16, h: UInt16) -> UnsafeMutablePointer<SDL_Surface> {
+		return nil
+	}
 }

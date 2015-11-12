@@ -23,93 +23,66 @@ let BOX_HEIGHT = 20
 let EXPAND_STEPS = 50
 
 
+/* Utility routines for dialogs */
+private func isSensitive(area: SDL_Rect, x: Int32, y: Int32) -> Bool {
+	if (y > area.y) && (y < (area.y+area.h)) &&
+		(x > area.x) && (x < (area.x+area.w)) {
+			return true
+	}
+	return false
+}
+
+
 class MacDialog {
 	private static var textEnabled = false
+	private var screen: FrameBuf!
+	private var position: (x: Int32, y: Int32)
+	typealias ButtonCallbackFunc = (x: Int32, y: Int32, button: UInt8, inout done: Bool) -> Void
+	typealias KeyCallbackFunc = (key: SDL_Keysym, inout doneflag: Bool) -> Void
+	
+	private var buttonCallback: ButtonCallbackFunc?
+	private var keyCallback: KeyCallbackFunc?
+	
+	private(set) var error: String?
+	
+	init(x: Int32, y: Int32) {
+		position = (x, y)
+	}
+	
+	//MARK: - Input handling
+	
+	func setButtonPress(newButtonCallback: ButtonCallbackFunc?) {
+		buttonCallback = newButtonCallback
+	}
+	
+	func handleButtonPress(x x: Int32, y: Int32, button: UInt8, inout doneFlag: Bool) {
+		buttonCallback?(x: x, y: y, button: button, done: &doneFlag)
+	}
+	
+	func setKeyPress(newKeyCallback: KeyCallbackFunc?) {
+		keyCallback = newKeyCallback
+	}
+	
+	func handleKeyPress(key: SDL_Keysym, inout done doneflag: Bool) {
+		keyCallback?(key: key, doneflag: &doneflag)
+	}
+	
+	//MARK: - Display handling
+	
+	func map(offset offset: (x: Int32, y: Int32), screen: FrameBuf, background: (red: UInt8, green: UInt8, blue: UInt8), foreground: (red: UInt8, green: UInt8, blue: UInt8)) {
+		position.x += offset.x
+		position.y += offset.y
+		self.screen = screen
+	}
+	
+	final func map(xOff xOff: Int32, yOff: Int32, screen: FrameBuf, r_bg: UInt8, g_bg: UInt8, b_bg: UInt8, r_fg: UInt8, g_fg: UInt8, b_fg: UInt8) {
+		self.map(offset: (xOff, yOff), screen: screen, background: (r_bg, g_bg, b_bg), foreground: (r_fg, g_fg, b_fg))
+	}
+	
+	func show() {
+		//empty, for subclassing
+	}
 }
-
-/*
-class Mac_Dialog {
-
-public:
-Mac_Dialog(int x, int y);
-virtual ~Mac_Dialog() { }
-
-/* Input handling */
-virtual void SetButtonPress(void (*new_button_callback)
-(int x, int y, int button, int *doneflag)) {
-button_callback = new_button_callback;
-}
-virtual void HandleButtonPress(int x, int y, int button,
-int *doneflag) {
-if ( button_callback ) {
-(*button_callback)(x, y, button, doneflag);
-}
-}
-virtual void SetKeyPress(void (*new_key_callback)
-(SDL_Keysym key, int *doneflag)) {
-key_callback = new_key_callback;
-}
-virtual void HandleKeyPress(SDL_Keysym key, int *doneflag) {
-if ( key_callback ) {
-(*key_callback)(key, doneflag);
-}
-}
-
-/* Display handling */
-virtual void Map(int Xoff, int Yoff, FrameBuf *screen,
-Uint8 R_bg, Uint8 G_bg, Uint8 B_bg,
-Uint8 R_fg, Uint8 G_fg, Uint8 B_fg) {
-X += Xoff;
-Y += Yoff;
-Screen = screen;
-}
-virtual void Show(void) {
-}
-
-static void EnableText(void) {
-if ( text_enabled++ == 0 ) {
-//SDL_EnableUNICODE(1);
-}
-}
-static void DisableText(void) {
-if ( --text_enabled == 0 ) {
-//SDL_EnableUNICODE(0);
-}
-}
-
-/* Error message routine */
-virtual char *Error(void) {
-return(errstr);
-}
-
-protected:
-static int text_enabled;
-FrameBuf *Screen;
-int  X, Y;
-void (*button_callback)(int x, int y, int button, int *doneflag);
-void (*key_callback)(SDL_Keysym key, int *doneflag);
-
-/* Utility routines for dialogs */
-int IsSensitive(SDL_Rect *area, int x, int y) {
-if ( (y > area->y) && (y < (area->y+area->h)) &&
-(x > area->x) && (x < (area->x+area->w)) )
-return(1);
-return(0);
-}
-
-/* Error message */
-virtual void SetError(const char *fmt, ...) {
-va_list ap;
-
-va_start(ap, fmt);
-vsnprintf(errbuf, sizeof(errbuf), fmt, ap);
-va_end(ap);
-errstr = errbuf;
-}
-char *errstr;
-char  errbuf[1024];
-};
-*/
 
 /** The button callbacks should return 1 if they finish the dialog,
 or 0 if they do not.
@@ -498,12 +471,6 @@ FontServ *Fontserv;
 MFont *Font;
 Uint32 Fg, Bg;
 int *radiovar;
-struct radio {
-SDL_Surface *label;
-int x, y;
-SDL_Rect sensitive;
-struct radio *next;
-} radio_list;
 
 void Circle(int x, int y) {
 x += 5;
@@ -739,7 +706,20 @@ entry->x+entry->end, entry->y+entry->height-1, Fg);
 */
 /** Class of numeric entry boxes */
 class MacNumericEntry: MacDialog {
+	private var entry_list = [NumericEntry]()
 	
+	private struct NumericEntry {
+		var text: UnsafeMutablePointer<SDL_Surface>
+		var variable: UnsafeMutablePointer<Int>
+		var sensitive: SDL_Rect
+		var x: Int32
+		var y: Int32
+		var width: Int32
+		var height: Int32
+		var end: Int32
+		var hilite: Bool
+	}
+
 }
 
 
@@ -980,8 +960,128 @@ final class MaclikeDialog {
 		dialogList.append(dialog)
 	}
 	
-	func run(expandSteps: Bool = true) {
+	/// The big Kahones
+	func run(expandSteps: Int = 1) {
+		var savedfg = UnsafeMutablePointer<SDL_Surface>()
+		var savedbg = UnsafeMutablePointer<SDL_Surface>()
+		var event = SDL_Event()
+		var maxX: Int32 = 0
+		var maxY: Int32 = 0
+		var XX = 0.0
+		var YY = 0.0
+		var H = 0.0
+		var Hstep = 0.0
+		var V = 0.0
+		var Vstep = 0.0
 		
+		/* Save the area behind the dialog box */
+		savedfg = screen.grabArea(x: UInt16(location.x), y: UInt16(location.y), w: UInt16(size.width), h: UInt16(size.height))
+		//savedfg = Screen->GrabArea(X, Y, Width, Height);
+		screen.focusBG()
+		savedbg = screen.grabArea(x: UInt16(location.x), y: UInt16(location.y), w: UInt16(size.width), h: UInt16(size.height))
+		
+		/* Show the dialog box with the nice Mac border */
+		let black = screen.mapRGB(red: 0x00, green: 0x00, blue: 0x00);
+		let dark = screen.mapRGB(red: 0x66, green: 0x66, blue: 0x99);
+		let medium = screen.mapRGB(red: 0xBB, green: 0xBB, blue: 0xBB);
+		let light = screen.mapRGB(red: 0xCC, green: 0xCC, blue: 0xFF);
+		let white = screen.mapRGB(red: 0xFF, green: 0xFF, blue: 0xFF);
+		maxX = location.x+size.width-1;
+		maxY = location.y+size.height-1;
+		screen.drawLine(x1: location.x, y1: location.y, x2: maxX, y2: location.y, color: light);
+		screen.drawLine(x1: location.x, y1: location.y, x2: location.x, y2: maxY, color: light);
+		screen.drawLine(x1: location.x, y1: maxY, x2: maxX, y2: maxY, color: dark);
+		screen.drawLine(x1: maxX, y1: location.y, x2: maxX, y2: maxY, color: dark);
+		screen.drawRect(x: location.x+1, y: location.y+1, width: size.width-2, height: size.height-2, color: medium);
+		screen.drawLine(x1: location.x+2, y1: location.y+2, x2: maxX-2, y2: location.y+2, color: dark);
+		screen.drawLine(x1: location.x+2, y1: location.y+2, x2: location.x+2, y2: maxY-2, color: dark);
+		screen.drawLine(x1: location.x+3, y1: maxY-2, x2: maxX-2, y2: maxY-2, color: light);
+		screen.drawLine(x1: maxX-2, y1: location.y+3, x2: maxX-2, y2: maxY-2, color: light);
+		screen.drawRect(x: location.x+3, y: location.y+3, width: size.width-6, height: size.height-6, color: black);
+		screen.fillRect(x: location.x+4, y: location.y+4, w: size.width-8, h: size.height-8, color: white);
+		screen.focusFG()
+		
+		/* Allow the dialog to expand slowly */
+		XX = Double(location.x+size.width/2);
+		YY = Double(location.y+size.height/2);
+		Hstep = Double(size.width) / Double(expandSteps)
+		Vstep = Double(size.height) / Double(expandSteps)
+		for _ in 0..<expandSteps /*( H=0, V=0, i=0; i<expand_steps; ++i )*/ {
+			H += Hstep;
+			XX -= Hstep/2;
+			V += Vstep;
+			YY -= Vstep/2;
+			if XX < Double(location.x) {
+				XX = Double(location.x)
+			}
+			if YY < Double(location.y) {
+				YY = Double(location.y)
+			}
+			if ( H > Double(size.width) ) {
+				H = Double(size.width)
+			}
+			if V > Double(size.height) {
+				V = Double(size.height)
+			}
+			screen.clear(x: Int16(XX), y: Int16(YY), w: UInt16(size.width), h: UInt16(size.height))
+			screen.update();
+		}
+		screen.clear(x: Int16(location.x), y: Int16(location.y), w: UInt16(size.width), h: UInt16(size.height))
+		screen.update();
+		
+		/* Draw the dialog elements (after the slow expand) */
+		for relem in rectList {
+			screen.drawRect(x: location.x+4+Int32(relem.x), y: location.y+4+Int32(relem.y),
+				width: Int32(relem.w), height: Int32(relem.h), color: relem.color);
+		}
+		for ielem in imageList {
+			screen.queueBlit(x: location.x + 4 + ielem.x, y: location.y + 4 + ielem.y, src: ielem.image, do_clip: .NOCLIP)
+		}
+		for delem in dialogList {
+			//delem.map(xOff: location.x + 4, yOff: location.y + 4, screen: screen, r_bg: 0xFF, g_bg: 0xFF, b_bg: 0xFF, r_fg: 0x00, g_fg: 0x00, b_fg: 0x00)
+			delem.map(offset: (location.x + 4, location.y + 4), screen: screen,
+				background: (0xFF,  0xFF, 0xFF), foreground: (0x00, 0x00, 0x00))
+			delem.show()
+		}
+		screen.update();
+		
+		var done = false
+		/* Wait until the dialog box is done */
+		for ( done = false; !done; ) {
+			screen.waitEvent(&event);
+			
+			switch (event.type) {
+				/* -- Handle mouse clicks */
+			case SDL_MOUSEBUTTONDOWN.rawValue:
+				
+				for dialog in dialogList {
+					dialog.handleButtonPress(x: event.button.x,
+						y: event.button.y, button: event.button.button, doneFlag: &done)
+				}
+				/* -- Handle key presses */
+			case SDL_KEYDOWN.rawValue:
+				for dialog in dialogList {
+					dialog.handleKeyPress(event.key.keysym, done: &done)
+				}
+				
+			default:
+				break;
+			}
+		}
+		
+		/* Replace the old section of screen */
+		if savedbg != nil {
+			screen.focusBG();
+			screen.queueBlit(x: location.x, y: location.y, src: savedbg, do_clip: .NOCLIP);
+			screen.update();
+			screen.focusFG();
+			screen.freeImage(savedbg);
+		}
+		if savedfg != nil {
+			screen.queueBlit(x: location.x, y: location.y, src: savedfg, do_clip: .NOCLIP);
+			screen.update();
+			screen.freeImage(savedfg);
+		}
 	}
 	
 	private struct RectElement {

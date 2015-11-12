@@ -126,7 +126,7 @@ class FontServ {
 		/* The Kerning Table */
 	};
 
-	struct MFont {
+	final class MFont {
 		///The NFNT header!
 		var header: FontHdr = FontHdr()
 		
@@ -143,7 +143,7 @@ class FontServ {
 		//MARK: -
 		
 		/// The Raw Data
-		var nfnt: NSData = NSData()
+		//private weak var nfnt: NSData! = NSData()
 		
 		var textHeight: UInt16 {
 			return header.fRectHeight
@@ -187,6 +187,9 @@ class FontServ {
 
 	enum Errors: ErrorType {
 		case NoFONDResource
+		case FontFamilyNotFound
+		case FontFamilyLacksPointSize
+		case BadFontMagicNumber(UInt16)
 	}
 
 	private var text_allocated = 0
@@ -200,16 +203,15 @@ class FontServ {
 		}
 	}
 	
-	func newFont(fontName: String, pointSize ptsize: Int32) -> MFont? {
+	func newFont(fontName: String, pointSize ptsize: Int32) throws -> MFont {
 		var fond: NSData!
 		var fondStruct = FOND()
 		var fent = FontEntry()
 		do {
 			/* Get the font family */
-		fond = try fontres.resource(type: MaelOSType(stringValue: "FOND")!, name: fontName)
+			fond = try fontres.resource(type: MaelOSType(stringValue: "FOND")!, name: fontName)
 		} catch _ {
-			error = "Warning: Font family '\(fontName)' not found"
-			return nil
+			throw Errors.FontFamilyNotFound
 		}
 		
 		/* Find out what font ID we need */
@@ -247,25 +249,18 @@ class FontServ {
 		}
 		
 		if i == Int(fondStruct.num_fonts) {
-			error = "Warning: Font family '\(fontName)' doesn't have \(ptsize) pt fonts"
-			return nil
+			throw Errors.FontFamilyLacksPointSize
 		}
 
 		/* Now, fent.ID is the ID of the correct NFNT resource */
 		var font = MFont()
-		do {
-		font.nfnt = try fontres.resource(type: MaelOSType(stringValue: "NFNT")!, id: fent.ID)
-		} catch _ {
-			error =
-				"Warning: Can't find NFNT resource for \(ptsize) pt \(fontName) font"
-			return nil
-		}
+		var fontData = try fontres.resource(type: MaelOSType(stringValue: "NFNT")!, id: fent.ID)
 		
 		/* Now that we have the resource, fiddle with the font structure
 		so we can use it.  (Code taken from 'mac2bdf' -- Thanks! :)
 	 */
 		var swapFont = false
-		font.header = UnsafePointer<FontHdr>(font.nfnt.bytes).memory
+		font.header = UnsafePointer<FontHdr>(fontData.bytes).memory
 		if ( ((font.header.fontType & ~3) != FontHdr.PropFont) &&
 			((font.header.fontType & ~3) != FontHdr.FixedFont) ) {
 				swapFont = true
@@ -282,12 +277,10 @@ class FontServ {
 		use these to indicate the presence of optional 'width' and 'height'
 		tables, which are for fractional character spacing (unused).
 	 */
-		font.header = UnsafePointer<FontHdr>(font.nfnt.bytes).memory
+		font.header = UnsafePointer<FontHdr>(fontData.bytes).memory
 		if ( ((font.header.fontType & ~3) != FontHdr.PropFont) &&
 			((font.header.fontType & ~3) != FontHdr.FixedFont) ) {
-				error = String(format: "Warning: Bad font Magic number: 0x%04x",
-					font.header.fontType)
-				return nil
+				throw Errors.BadFontMagicNumber(font.header.fontType)
 		}
 
 		let nchars = font.header.lastChar - (font.header.firstChar + 1) + 1
@@ -295,7 +288,7 @@ class FontServ {
 		let nwords = font.header.rowWords * font.header.fRectHeight
 		
 		do {
-			let tmpBitImage = UnsafePointer<UInt16>(font.nfnt.bytes.advancedBy(sizeof(FontHdr)))
+			let tmpBitImage = UnsafePointer<UInt16>(fontData.bytes.advancedBy(sizeof(FontHdr)))
 			let tmpLocTable = tmpBitImage.advancedBy(Int(nwords))
 			let tmpOwTable = UnsafePointer<Int16>(tmpLocTable.advancedBy(Int(nchars) + 1))
 			let tmpBufBitImage = UnsafeBufferPointer(start: tmpBitImage, count: Int(nwords))
