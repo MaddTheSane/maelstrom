@@ -19,6 +19,7 @@
 		555968631BE6EBCB003A3001 /* Mac_Compat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555968621BE6EBCB003A3001 /* Mac_Compat.swift */; };
 		555968651BE6ED5D003A3001 /* Mac_Wave.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555968641BE6ED5D003A3001 /* Mac_Wave.swift */; };
 		557258B619E5CC730073CDF2 /* SDLMain.xib in Resources */ = {isa = PBXBuildFile; fileRef = 557258B519E5CC730073CDF2 /* SDLMain.xib */; };
+		55732AFF1BF4806600CAFFE4 /* Dialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55732AFE1BF4806600CAFFE4 /* Dialog.swift */; };
 		55836C651BF3CBA6001605AB /* SwiftLoad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55836C631BF3CBA6001605AB /* SwiftLoad.cpp */; };
 		55836C671BF3D409001605AB /* NetPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55836C661BF3D409001605AB /* NetPlay.swift */; };
 		5596588A1BEACEA400D8BB39 /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559658891BEACEA400D8BB39 /* Object.swift */; };
@@ -216,6 +217,7 @@
 		555968621BE6EBCB003A3001 /* Mac_Compat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mac_Compat.swift; sourceTree = "<group>"; };
 		555968641BE6ED5D003A3001 /* Mac_Wave.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mac_Wave.swift; sourceTree = "<group>"; };
 		557258B519E5CC730073CDF2 /* SDLMain.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SDLMain.xib; sourceTree = "<group>"; };
+		55732AFE1BF4806600CAFFE4 /* Dialog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dialog.swift; sourceTree = "<group>"; };
 		55836C631BF3CBA6001605AB /* SwiftLoad.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SwiftLoad.cpp; sourceTree = "<group>"; };
 		55836C661BF3D409001605AB /* NetPlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetPlay.swift; sourceTree = "<group>"; };
 		559658891BEACEA400D8BB39 /* Object.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Object.swift; sourceTree = "<group>"; };
@@ -492,17 +494,18 @@
 		5515E82B1BE60A3F0048605C /* Maelstrom Classes */ = {
 			isa = PBXGroup;
 			children = (
-				55836C621BF3CB77001605AB /* C++ specific */,
-				5515E82C1BE60A760048605C /* Rect.swift */,
-				55D4F8CA1BE9747500F31A0F /* Maelstrom.swift */,
 				55FF31A71BF2E783001977AD /* ButtonList.swift */,
+				55FF319D1BF2C5A7001977AD /* Controls.swift */,
+				55732AFE1BF4806600CAFFE4 /* Dialog.swift */,
 				55FF31AB1BF33444001977AD /* init.swift */,
 				55FF31A91BF321F9001977AD /* Load.swift */,
+				55D4F8CA1BE9747500F31A0F /* Maelstrom.swift */,
+				5515E82C1BE60A760048605C /* Rect.swift */,
 				55FF31A11BF2D070001977AD /* Scores.swift */,
-				55FF319D1BF2C5A7001977AD /* Controls.swift */,
+				55836C621BF3CB77001605AB /* C++ specific */,
 				5515E82F1BE6111C0048605C /* maclib */,
-				550CEC501BE8425400453C11 /* screenlib */,
 				559658881BEACE7600D8BB39 /* netlogic */,
+				550CEC501BE8425400453C11 /* screenlib */,
 			);
 			name = "Maelstrom Classes";
 			sourceTree = "<group>";
@@ -683,6 +686,7 @@
 				55D4F8CB1BE9747500F31A0F /* Maelstrom.swift in Sources */,
 				55FF31A41BF2E3A6001977AD /* About.swift in Sources */,
 				5515E8311BE611310048605C /* Mac_Resource.swift in Sources */,
+				55732AFF1BF4806600CAFFE4 /* Dialog.swift in Sources */,
 				5515E8341BE6878E0048605C /* MacBinary.swift in Sources */,
 				5515E82D1BE60A760048605C /* Rect.swift in Sources */,
 				5515E8361BE68A7D0048605C /* applefile.swift in Sources */,
