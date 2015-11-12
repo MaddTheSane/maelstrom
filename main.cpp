@@ -170,7 +170,7 @@ int SDL_main(int argc, char *argv[])
 	/* Command line flags */
 	int doprinthigh = 0;
 	int speedtest = 0;
-	int video_flags = 0;
+	Uint32 video_flags = 0;
 
 	/* Normal variables */
 	SDL_Event event;
