@@ -23,7 +23,7 @@ let BOX_HEIGHT = 20
 let EXPAND_STEPS = 50
 
 
-/* Utility routines for dialogs */
+/** Utility routine for dialogs */
 private func isSensitive(area: SDL_Rect, x: Int32, y: Int32) -> Bool {
 	if (y > area.y) && (y < (area.y+area.h)) &&
 		(x > area.x) && (x < (area.x+area.w)) {
@@ -84,191 +84,210 @@ class MacDialog {
 	}
 }
 
-/** The button callbacks should return 1 if they finish the dialog,
-or 0 if they do not.
+/** The button callbacks should return `1` if they finish the dialog,
+or `0` if they do not.
 */
 class MacButton : MacDialog {
+	private var size: (width: Int32, height: Int32)
+	//int Width, Height;
+	private var button: UnsafeMutablePointer<SDL_Surface>
+	private var callback: buttonCallback?
+	private var sensitive = SDL_Rect()
+	typealias buttonCallback = () -> Bool
 	
+	enum Errors: ErrorType {
+		case SDLError(String)
+	}
+	
+	init(x: Int32, y: Int32, width: Int32, height: Int32, text: String, font: FontServ.MFont, fontserv: FontServ, callback: buttonCallback?) throws {
+		size = (width, height)
+		button = SDL_CreateRGBSurface(0, width, height,
+			8, 0, 0, 0, 0);
+
+		super.init(x: x, y: y)
+
+		guard button != nil else {
+			throw Errors.SDLError(String(SDL_GetError()))
+		}
+		
+		//var textb = UnsafeMutablePointer<SDL_Surface>()
+		var dstrect = SDL_Rect()
+		
+		button.memory.format.memory.palette.memory.colors[0].r = 0xFF;
+		button.memory.format.memory.palette.memory.colors[0].g = 0xFF;
+		button.memory.format.memory.palette.memory.colors[0].b = 0xFF;
+		button.memory.format.memory.palette.memory.colors[1].r = 0x00;
+		button.memory.format.memory.palette.memory.colors[1].g = 0x00;
+		button.memory.format.memory.palette.memory.colors[1].b = 0x00;
+		
+		let textb = fontserv.newTextImage(text, font: font, style: [], foreground: (red: 0, green: 0, blue: 0))
+		if textb != nil {
+			if (textb.memory.w <= button.memory.w) &&
+				(textb.memory.h <= button.memory.h) {
+					dstrect.x = (button.memory.w-textb.memory.w)/2;
+					dstrect.y = (button.memory.h-textb.memory.h)/2;
+					dstrect.w = textb.memory.w;
+					dstrect.h = textb.memory.h;
+					SDL_UpperBlit(textb, nil, button, &dstrect);
+			}
+
+			fontserv.freeText(textb)
+		}
+		bevelButton(button);
+		
+		/* Set the callback */
+		self.callback = callback
+	}
+	
+	private func bevelButton(image: UnsafeMutablePointer<SDL_Surface>) {
+		var image_bits = UnsafeMutablePointer<UInt8>(image.memory.pixels)
+		
+		/* Bevel upper corners */
+		memset(image_bits+3, 0x01, image.memory.w-6);
+		image_bits += Int(image.memory.pitch)
+		memset(image_bits+1, 0x01, 2);
+		memset(image_bits.advancedBy(image.memory.w-3), 0x01, 2);
+		image_bits += Int(image.memory.pitch);
+		memset(image_bits+1, 0x01, 1);
+		memset(image_bits.advancedBy(image.memory.w-2), 0x01, 1);
+		image_bits += Int(image.memory.pitch);
+		
+		/* Draw sides */
+		//for ( h=3; h < Int(image.memory.h-3); ++h ) {
+		for _ in 3..<(image.memory.h - 3) {
+			image_bits[0] = 0x01;
+			image_bits[Int(image.memory.w-1)] = 0x01;
+			image_bits += Int(image.memory.pitch)
+		}
+		
+		/* Bevel bottom corners */
+		memset(image_bits+1, 0x01, 1);
+		memset(image_bits.advancedBy(image.memory.w - 2), 0x01, 1);
+		image_bits += Int(image.memory.pitch)
+		memset(image_bits+1, 0x01, 2);
+		memset(image_bits+Int(image.memory.w-3), 0x01, 2);
+		image_bits += Int(image.memory.pitch);
+		memset(image_bits+3, 0x01, image.memory.w-6);
+	}
+	
+	override func show() {
+		screen.queueBlit(x: position.x, y: position.y, src: button, do_clip: .NOCLIP);
+	}
+	
+	override func map(offset offset: (x: Int32, y: Int32), screen: FrameBuf, background: (red: UInt8, green: UInt8, blue: UInt8), foreground: (red: UInt8, green: UInt8, blue: UInt8)) {
+		super.map(offset: offset, screen: screen, background: background, foreground: foreground)
+		
+		/* Set up the button sensitivity */
+		sensitive.x = position.x;
+		sensitive.y  = position.y;
+		sensitive.w = size.width;
+		sensitive.h = size.height;
+		
+		/* Map the bitmap image */
+		button.memory.format.memory.palette.memory.colors[0].r = background.red;
+		button.memory.format.memory.palette.memory.colors[0].g = background.green;
+		button.memory.format.memory.palette.memory.colors[0].b = background.blue;
+		button.memory.format.memory.palette.memory.colors[1].r = foreground.red;
+		button.memory.format.memory.palette.memory.colors[1].g = foreground.green;
+		button.memory.format.memory.palette.memory.colors[1].b = foreground.blue;
+	}
+	
+	final private func invertImage() {
+		let buttonPixels = UnsafeMutableBufferPointer(start: UnsafeMutablePointer<UInt8>(button.memory.pixels), count: Int(button.memory.h * button.memory.pitch))
+		
+		for (i,buf) in buttonPixels.enumerate() {
+			if buf == 0 {
+				buttonPixels[i] = 1
+			} else {
+				buttonPixels[i] = 0
+			}
+		}
+	}
+	
+	override final func handleButtonPress(x x: Int32, y: Int32, button: UInt8, inout doneFlag: Bool) {
+		if isSensitive(sensitive, x: x, y: y) {
+			activateButton(&doneFlag)
+		}
+	}
+	
+	private func activateButton(inout doneFlag: Bool) {
+		/* Flash the button */
+		invertImage();
+		show();
+		screen.update()
+		SDL_Delay(50);
+		invertImage();
+		show();
+		screen.update()
+		/* Run the callback */
+		if let callback = callback {
+			doneFlag = callback()
+		} else {
+			doneFlag = true
+		}
+	}
+	
+	deinit {
+		SDL_FreeSurface(button);
+	}
 }
 
-/*
-class Mac_Button : public Mac_Dialog {
-
-public:
-Mac_Button(int x, int y, int width, int height,
-const char *text, MFont *font, FontServ *fontserv,
-int (*callback)(void));
-virtual ~Mac_Button() {
-SDL_FreeSurface(button);
-}
-
-virtual void Map(int Xoff, int Yoff, FrameBuf *screen,
-Uint8 R_bg, Uint8 G_bg, Uint8 B_bg,
-Uint8 R_fg, Uint8 G_fg, Uint8 B_fg) {
-/* Do the normal dialog mapping */
-Mac_Dialog::Map(Xoff, Yoff, screen,
-R_bg, G_bg, B_bg, R_fg, G_fg, B_fg);
-
-/* Set up the button sensitivity */
-sensitive.x = X;
-sensitive.y  = Y;
-sensitive.w = Width;
-sensitive.h = Height;
-
-/* Map the bitmap image */
-button->format->palette->colors[0].r = R_bg;
-button->format->palette->colors[0].g = G_bg;
-button->format->palette->colors[0].b = B_bg;
-button->format->palette->colors[1].r = R_fg;
-button->format->palette->colors[1].g = G_fg;
-button->format->palette->colors[1].b = B_fg;
-}
-virtual void Show(void) {
-Screen->QueueBlit(X, Y, button, NOCLIP);
-}
-
-virtual void HandleButtonPress(int x, int y, int button,
-int *doneflag) {
-if ( IsSensitive(&sensitive, x, y) )
-ActivateButton(doneflag);
-}
-
-protected:
-int Width, Height;
-SDL_Surface *button;
-SDL_Rect sensitive;
-int (*Callback)(void);
-
-virtual void Bevel_Button(SDL_Surface *image) {
-Uint16 h;
-Uint8 *image_bits;
-
-image_bits = (Uint8 *)image->pixels;
-
-/* Bevel upper corners */
-memset(image_bits+3, 0x01, image->w-6);
-image_bits += image->pitch;
-memset(image_bits+1, 0x01, 2);
-memset(image_bits+image->w-3, 0x01, 2);
-image_bits += image->pitch;
-memset(image_bits+1, 0x01, 1);
-memset(image_bits+image->w-2, 0x01, 1);
-image_bits += image->pitch;
-
-/* Draw sides */
-for ( h=3; h<(image->h-3); ++h ) {
-image_bits[0] = 0x01;
-image_bits[image->w-1] = 0x01;
-image_bits += image->pitch;
-}
-
-/* Bevel bottom corners */
-memset(image_bits+1, 0x01, 1);
-memset(image_bits+image->w-2, 0x01, 1);
-image_bits += image->pitch;
-memset(image_bits+1, 0x01, 2);
-memset(image_bits+image->w-3, 0x01, 2);
-image_bits += image->pitch;
-memset(image_bits+3, 0x01, image->w-6);
-}
-virtual void InvertImage(void) {
-int i;
-Uint8 *buf;
-
-for ( i=button->h*button->pitch, buf=(Uint8 *)button->pixels;
-i > 0; --i, ++buf ) {
-*buf = !*buf;
-}
-}
-virtual void ActivateButton(int *doneflag) {
-/* Flash the button */
-InvertImage();
-Show();
-Screen->Update();
-SDL_Delay(50);
-InvertImage();
-Show();
-Screen->Update();
-/* Run the callback */
-if ( Callback )
-*doneflag = (*Callback)();
-else
-*doneflag = 1;
-}
-};
-*/
-/** The only difference between this button and the Mac_Button is that
+/** The only difference between this button and the `MacButton` is that
 if <Return> is pressed, this button is activated.
 */
 final class MacDefaultButton : MacButton {
+	private var fg: UInt32 = 0
 	
-}
-/*
-class Mac_DefaultButton : public Mac_Button {
-
-public:
-Mac_DefaultButton(int x, int y, int width, int height,
-const char *text, MFont *font, FontServ *fontserv,
-int (*callback)(void));
-virtual ~Mac_DefaultButton() { }
-
-virtual void HandleKeyPress(SDL_Keysym key, int *doneflag) {
-if ( key.sym == SDLK_RETURN )
-ActivateButton(doneflag);
-}
-
-virtual void Map(int Xoff, int Yoff, FrameBuf *screen,
-Uint8 R_bg, Uint8 G_bg, Uint8 B_bg,
-Uint8 R_fg, Uint8 G_fg, Uint8 B_fg) {
-Mac_Button::Map(Xoff, Yoff, screen,
-R_bg, G_bg, B_bg, R_fg, G_fg, B_fg);
-Fg = Screen->MapRGB(R_fg, G_fg, B_fg);
-}
-virtual void Show(void) {
-int x, y, maxx, maxy;
-
-/* Show the normal button */
-Mac_Button::Show();
-
-/* Show the thick edge */
-x = X-4;
-maxx = x+4+Width+4-1;
-y = Y-4;
-maxy = y+4+Height+4-1;
-
-Screen->DrawLine(x+5, y, maxx-5, y, Fg);
-Screen->DrawLine(x+3, y+1, maxx-3, y+1, Fg);
-Screen->DrawLine(x+2, y+2, maxx-2, y+2, Fg);
-Screen->DrawLine(x+1, y+3, x+5, y+3, Fg);
-Screen->DrawLine(maxx-5, y+3, maxx-1, y+3, Fg);
-Screen->DrawLine(x+1, y+4, x+3, y+4, Fg);
-Screen->DrawLine(maxx-3, y+4, maxx-1, y+4, Fg);
-Screen->DrawLine(x, y+5, x+3, y+5, Fg);
-Screen->DrawLine(maxx-3, y+5, maxx, y+5, Fg);
-
-Screen->DrawLine(x, y+6, x, maxy-6, Fg);
-Screen->DrawLine(maxx, y+6, maxx, maxy-6, Fg);
-Screen->DrawLine(x+1, y+6, x+1, maxy-6, Fg);
-Screen->DrawLine(maxx-1, y+6, maxx-1, maxy-6, Fg);
-Screen->DrawLine(x+2, y+6, x+2, maxy-6, Fg);
-Screen->DrawLine(maxx-2, y+6, maxx-2, maxy-6, Fg);
-
-Screen->DrawLine(x, maxy-5, x+3, maxy-5, Fg);
-Screen->DrawLine(maxx-3, maxy-5, maxx, maxy-5, Fg);
-Screen->DrawLine(x+1, maxy-4, x+3, maxy-4, Fg);
-Screen->DrawLine(maxx-3, maxy-4, maxx-1, maxy-4, Fg);
-Screen->DrawLine(x+1, maxy-3, x+5, maxy-3, Fg);
-Screen->DrawLine(maxx-5, maxy-3, maxx-1, maxy-3, Fg);
-Screen->DrawLine(x+2, maxy-2, maxx-2, maxy-2, Fg);
-Screen->DrawLine(x+3, maxy-1, maxx-3, maxy-1, Fg);
-Screen->DrawLine(x+5, maxy, maxx-5, maxy, Fg);
+	override func map(offset offset: (x: Int32, y: Int32), screen: FrameBuf, background: (red: UInt8, green: UInt8, blue: UInt8), foreground: (red: UInt8, green: UInt8, blue: UInt8)) {
+		super.map(offset: offset, screen: screen, background: background, foreground: foreground)
+		fg = screen.mapRGB(rgb: foreground)
+	}
+	
+	override func handleKeyPress(key: SDL_Keysym, inout done doneflag: Bool) {
+		if Int(key.sym) == SDLK_RETURN {
+			activateButton(&doneflag)
+		}
+	}
+	
+	override func show() {
+		/* Show the normal button */
+		super.show()
+		
+		/* Show the thick edge */
+		let x = position.x-4;
+		let maxx = x+4+size.width+4-1;
+		let y = position.y-4;
+		let maxy = y+4+size.height+4-1;
+		
+		screen.drawLine(x1: x+5, y1: y, x2: maxx-5, y2: y, color: fg);
+		screen.drawLine(x1: x+3, y1: y+1, x2: maxx-3, y2: y+1, color: fg);
+		screen.drawLine(x1: x+2, y1: y+2, x2: maxx-2, y2: y+2, color: fg);
+		screen.drawLine(x1: x+1, y1: y+3, x2: x+5, y2: y+3, color: fg);
+		screen.drawLine(x1: maxx-5, y1: y+3, x2: maxx-1, y2: y+3, color: fg);
+		screen.drawLine(x1: x+1, y1: y+4, x2: x+3, y2: y+4, color: fg);
+		screen.drawLine(x1: maxx-3, y1: y+4, x2: maxx-1, y2: y+4, color: fg);
+		screen.drawLine(x1: x, y1: y+5, x2: x+3, y2: y+5, color: fg);
+		screen.drawLine(x1: maxx-3, y1: y+5, x2: maxx, y2: y+5, color: fg);
+		
+		screen.drawLine(x1: x, y1: y+6, x2: x, y2: maxy-6, color: fg);
+		screen.drawLine(x1: maxx, y1: y+6, x2: maxx, y2: maxy-6, color: fg);
+		screen.drawLine(x1: x+1, y1: y+6, x2: x+1, y2: maxy-6, color: fg);
+		screen.drawLine(x1: maxx-1, y1: y+6, x2: maxx-1, y2: maxy-6, color: fg);
+		screen.drawLine(x1: x+2, y1: y+6, x2: x+2, y2: maxy-6, color: fg);
+		screen.drawLine(x1: maxx-2, y1: y+6, x2: maxx-2, y2: maxy-6, color: fg);
+		
+		screen.drawLine(x1: x, y1: maxy-5, x2: x+3, y2: maxy-5, color: fg);
+		screen.drawLine(x1: maxx-3, y1: maxy-5, x2: maxx, y2: maxy-5, color: fg);
+		screen.drawLine(x1: x+1, y1: maxy-4, x2: x+3, y2: maxy-4, color: fg);
+		screen.drawLine(x1: maxx-3, y1: maxy-4, x2: maxx-1, y2: maxy-4, color: fg);
+		screen.drawLine(x1: x+1, y1: maxy-3, x2: x+5, y2: maxy-3, color: fg);
+		screen.drawLine(x1: maxx-5, y1: maxy-3, x2: maxx-1, y2: maxy-3, color: fg);
+		screen.drawLine(x1: x+2, y1: maxy-2, x2: maxx-2, y2: maxy-2, color: fg);
+		screen.drawLine(x1: x+3, y1: maxy-1, x2: maxx-3, y2: maxy-1, color: fg);
+		screen.drawLine(x1: x+5, y1: maxy, x2: maxx-5, y2: maxy, color: fg);
+	}
 }
 
-protected:
-Uint32 Fg;		/* The foreground color of the dialog */
-
-};
-*/
 /* Class of checkboxes */
 
 let CHECKBOX_SIZE = 12
@@ -355,7 +374,7 @@ X+CHECKBOX_SIZE-1, Y, color);
 
 /** Class of radio buttons */
 final class MacRadioList : MacDialog {
-	private var radio_list = [Radio]()
+	private var radioList = [Radio]()
 	private struct Radio {
 		var label: UnsafeMutablePointer<SDL_Surface>
 		var x: Int32
@@ -705,7 +724,7 @@ entry->x+entry->end, entry->y+entry->height-1, Fg);
 
 */
 /** Class of numeric entry boxes */
-class MacNumericEntry: MacDialog {
+final class MacNumericEntry: MacDialog {
 	private var entry_list = [NumericEntry]()
 	
 	private struct NumericEntry {
@@ -928,7 +947,7 @@ entry->x+entry->end, entry->y+entry->height-1, Fg);
 /* Finally, the macintosh-like dialog class */
 
 final class MaclikeDialog {
-	private weak var screen: FrameBuf!
+	private var screen: FrameBuf
 	private var location: (x: Int32, y: Int32)
 	private var size: (width: Int32, height: Int32)
 	
@@ -976,7 +995,6 @@ final class MaclikeDialog {
 		
 		/* Save the area behind the dialog box */
 		savedfg = screen.grabArea(x: UInt16(location.x), y: UInt16(location.y), w: UInt16(size.width), h: UInt16(size.height))
-		//savedfg = Screen->GrabArea(X, Y, Width, Height);
 		screen.focusBG()
 		savedbg = screen.grabArea(x: UInt16(location.x), y: UInt16(location.y), w: UInt16(size.width), h: UInt16(size.height))
 		
