@@ -49,7 +49,7 @@ func loadTitle(screen: FrameBuf, title_id: Int32) -> UnsafeMutablePointer<SDL_Su
 	var title: UnsafeMutablePointer<SDL_Surface> = nil
 
 	/* Open the title file -- we know its colormap is our global one */
-	let file = "Images/Maelstrom_Titles#\(title_id).bmp"
+	let file = ("Images" as NSString).stringByAppendingPathComponent("Maelstrom_Titles#\(title_id).bmp")
 	bmp = SDL_LoadBMP(path.path(file)!.fileSystemRepresentation);
 	if bmp == nil {
 		return nil;
@@ -71,7 +71,7 @@ func getCIcon(screen: FrameBuf, cicn_id: Int16) -> UnsafeMutablePointer<SDL_Surf
 	var cicn: UnsafeMutablePointer<SDL_Surface> = nil
 	
 	/* Open the cicn sprite file.. */
-	let file = "Images/Maelstrom_Icon#\(cicn_id).cicn"
+	let file = ("Images" as NSString).stringByAppendingPathComponent("Maelstrom_Icon#\(cicn_id).bmp")
 	cicn_src = SDL_RWFromFile(path.path(file)!.fileSystemRepresentation, "r")
 	if ( cicn_src == nil ) {
 		//error("GetCIcon(%hd): Can't open CICN %s: ",

@@ -10,7 +10,6 @@ import Foundation
 
 /* The high scores structure */
 struct Score {
-	//var name: (Int8, Int8)
 	//char name[20];
 	var name = ""
 	var wave: UInt32
@@ -40,3 +39,6 @@ func loadScores() {
 	
 }
 
+func saveScores() {
+	
+}
