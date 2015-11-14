@@ -305,7 +305,7 @@ private func drawMainScreen() {
 	wRt += fontserv.textWidth("Wave", font: bigfont, style: .Underline)-10;
 	
 	/* -- Now the scores */
-	loadScores();
+	hScores.loadScores();
 	guard var font = try? fontserv.newFont("New York", pointSize: 14) else {
 		fatalError("Can't use New York (14) font! -- Exiting.");
 		//exit(255);
@@ -407,7 +407,7 @@ private func drawMainScreen() {
 private func runZapScores() {
 	Delay(SOUND_DELAY);
 	sound.playSound(.MultShot, priority: 5);
-	if zapHighScores() {
+	if hScores.zapHighScores() {
 		/* Fade the screen and redisplay scores */
 		screen.fade();
 		Delay(SOUND_DELAY);
@@ -531,7 +531,7 @@ func SDL_main(var argc: Int32, var _ argv: UnsafeMutablePointer<UnsafeMutablePoi
 			else if ( strcmp(argv[1], "-printscores") == 0 ) {
 				doprinthigh = true;
 			} else if ( strcmp(argv[1], "-netscores") == 0 ) {
-				gNetScores = true;
+				HighScores.netScores = true;
 			} else if ( strcmp(argv[1], "-speedtest") == 0 ) {
 				speedtest = true;
 			} else if ( logicParseArgs(&argv, &argc) ) {
@@ -546,7 +546,7 @@ func SDL_main(var argc: Int32, var _ argv: UnsafeMutablePointer<UnsafeMutablePoi
 	
 	/* Do we just want the high scores? */
 	if doprinthigh {
-		printHighScores();
+		hScores.printHighScores();
 		exit(0);
 	}
 	
@@ -616,7 +616,7 @@ func SDL_main(var argc: Int32, var _ argv: UnsafeMutablePointer<UnsafeMutablePoi
 			case SDLK_l:
 				Delay(SOUND_DELAY);
 				sound.playSound(.Lucky, priority: 5);
-				gStartLevel = getStartLevel();
+				gStartLevel = hScores.beginCustomLevel()
 				if ( gStartLevel > 0 ) {
 					Delay(SOUND_DELAY);
 					sound.playSound(.NewLife, priority: 5);

@@ -152,7 +152,7 @@ func doInitializations(video_flags: SDL_WindowFlags) -> Bool {
 	gLastHigh = -1;
 	
 	// -- Create our scores file
-	loadScores();
+	hScores.loadScores();
 	
 	//#ifdef SDL_INIT_JOYSTICK
 	/* Initialize the first joystick */
