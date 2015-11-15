@@ -17,8 +17,8 @@ import Foundation
 let BUTTON_WIDTH = 75
 let BUTTON_HEIGHT = 19
 
-let BOX_WIDTH = 170
-let BOX_HEIGHT = 20
+let BOX_WIDTH: Int32 = 170
+let BOX_HEIGHT: Int32 = 20
 
 let EXPAND_STEPS = 50
 
@@ -240,7 +240,7 @@ final class MacDefaultButton : MacButton {
 	
 	override func map(offset offset: (x: Int32, y: Int32), screen: FrameBuf, background: (red: UInt8, green: UInt8, blue: UInt8), foreground: (red: UInt8, green: UInt8, blue: UInt8)) {
 		super.map(offset: offset, screen: screen, background: background, foreground: foreground)
-		fg = screen.mapRGB(rgb: foreground)
+		fg = screen.mapRGB(foreground)
 	}
 	
 	override func handleKeyPress(key: SDL_Keysym, inout done doneflag: Bool) {
@@ -306,6 +306,7 @@ final class MacCheckBox : MacDialog {
 		label = fontserv.newTextImage(text, font: font, style: [], foreground: (red: 0, green: 0, blue: 0))
 		super.init(x: x, y: y)
 	}
+	
 	override func map(offset offset: (x: Int32, y: Int32), screen: FrameBuf, background: (red: UInt8, green: UInt8, blue: UInt8), foreground: (red: UInt8, green: UInt8, blue: UInt8)) {
 		super.map(offset: offset, screen: screen, background: background, foreground: foreground)
 		
@@ -316,8 +317,8 @@ final class MacCheckBox : MacDialog {
 		sensitive.h = Int32(CHECKBOX_SIZE);
 		
 		/* Get the screen colors */
-		fg = screen.mapRGB(rgb: foreground)
-		bg = screen.mapRGB(rgb: background)
+		fg = screen.mapRGB(foreground)
+		bg = screen.mapRGB(background)
 		
 		/* Map the checkbox text */
 		label.memory.format.memory.palette.memory.colors[1].r = foreground.red;
@@ -364,6 +365,12 @@ final class MacCheckBox : MacDialog {
 /** Class of radio buttons */
 final class MacRadioList : MacDialog {
 	private var radioList = [Radio]()
+	private let fontServ: FontServ
+	private let font: FontServ.MFont
+	private var fg: UInt32 = 0
+	private var bg: UInt32 = 0
+	private var radiovar: UnsafeMutablePointer<Int>
+	
 	private struct Radio {
 		var label: UnsafeMutablePointer<SDL_Surface>
 		var x: Int32
@@ -372,166 +379,107 @@ final class MacRadioList : MacDialog {
 	}
 	
 	init(variable: UnsafeMutablePointer<Int>, x: Int32, y: Int32, font: FontServ.MFont, fontserv: FontServ) {
+		radiovar = variable
+		fontServ = fontserv
+		self.font = font
 		super.init(x: x, y: y)
 	}
-
-	/*
-Mac_RadioList::Mac_RadioList(int *variable, int x, int y,
-MFont *font, FontServ *fontserv) : Mac_Dialog(x, y)
-{
-Fontserv = fontserv;
-Font = font;
-radiovar = variable;
-*radiovar = 0;
-radio_list.next = NULL;
+	
+	override func handleButtonPress(x x: Int32, y: Int32, button: UInt8, inout doneFlag: Bool) {
+		let oldRadio = radioList[radiovar.memory]
+		
+		for (n, radio) in radioList.enumerate() {
+			if isSensitive(radio.sensitive, x: x, y: y) {
+				spot(x: oldRadio.x, y: oldRadio.y, color: bg)
+				radiovar.memory = n
+				spot(x: radio.x, y: radio.y, color: fg)
+				screen.update()
+				return
+			}
+		}
+	}
+	
+	override func show() {
+		for (n,radio) in radioList.enumerate() {
+			circle(x: radio.x, y: radio.y)
+			if n == radiovar.memory {
+				spot(x: radio.x, y: radio.y, color: fg)
+			}
+			if radio.label != nil {
+				screen.queueBlit(x: radio.x + 21, y: radio.y + 3, src: radio.label, do_clip: .NOCLIP)
+			}
+		}
+	}
+	
+	override func map(offset offset: (x: Int32, y: Int32), screen: FrameBuf, background: (red: UInt8, green: UInt8, blue: UInt8), foreground: (red: UInt8, green: UInt8, blue: UInt8)) {
+		/* Do the normal dialog mapping */
+		super.map(offset: offset, screen: screen, background: background, foreground: foreground)
+		
+		/* Get the screen colors */
+		fg = screen.mapRGB(foreground);
+		bg = screen.mapRGB(background);
+		
+		/* Adjust sensitivity and map the radiobox text */
+		for i in 0..<radioList.count {
+			radioList[i].x += offset.x
+			radioList[i].y += offset.y
+			radioList[i].sensitive.x += offset.x
+			radioList[i].sensitive.y += offset.y
+			radioList[i].label.memory.format.memory.palette.memory.colors[1].r = foreground.red
+			radioList[i].label.memory.format.memory.palette.memory.colors[1].g = foreground.green
+			radioList[i].label.memory.format.memory.palette.memory.colors[1].b = foreground.blue
+		}
+	}
+	
+	func addRadio(x x: Int32, y: Int32, text: String) {
+		var radio = Radio(label: fontServ.newTextImage(text, font: font, style: [],
+			foreground: (red: 0, green: 0, blue: 0)), x: x, y: y, sensitive: SDL_Rect())
+		radio.sensitive.x = x
+		radio.sensitive.y = y
+		radio.sensitive.w = 20 + radio.label.memory.w
+		radio.sensitive.h = BOX_HEIGHT
+		radioList.append(radio)
+	}
+	
+	private func spot(var x x: Int32, var y: Int32, color: UInt32) {
+		x += 8;
+		y += 8;
+		screen.drawLine(x1: x+1, y1: y, x2: x+4, y2: y, color: color)
+		++y
+		screen.drawLine(x1: x, y1: y, x2: x+5, y2: y, color: color)
+		++y;
+		screen.drawLine(x1: x, y1: y, x2: x+5, y2: y, color: color);
+		++y;
+		screen.drawLine(x1: x, y1: y, x2: x+5, y2: y, color: color);
+		++y;
+		screen.drawLine(x1: x, y1: y, x2: x+5, y2: y, color: color);
+		++y;
+		screen.drawLine(x1: x+1, y1: y, x2: x+4, y2: y, color: color);
+	}
+	
+	private func circle(var x x: Int32, var y: Int32) {
+		x += 5;
+		y += 5;
+		screen.drawLine(x1: x+4, y1: y, x2: x+7, y2: y, color: fg);
+		screen.drawLine(x1: x+2, y1: y+1, x2: x+3, y2: y+1, color: fg);
+		screen.drawLine(x1: x+8, y1: y+1, x2: x+9, y2: y+1, color: fg);
+		screen.drawLine(x1: x+1, y1: y+2, x2: x+1, y2: y+3, color: fg);
+		screen.drawLine(x1: x+10, y1: y+2, x2: x+10, y2: y+3, color: fg);
+		screen.drawLine(x1: x, y1: y+4, x2: x, y2: y+7, color: fg);
+		screen.drawLine(x1: x+11, y1: y+4, x2: x+11, y2: y+7, color: fg);
+		screen.drawLine(x1: x+1, y1: y+8, x2: x+1, y2: y+9, color: fg);
+		screen.drawLine(x1: x+10, y1: y+8, x2: x+10, y2: y+9, color: fg);
+		screen.drawLine(x1: x+2, y1: y+10, x2: x+3, y2: y+10, color: fg);
+		screen.drawLine(x1: x+8, y1: y+10, x2: x+9, y2: y+10, color: fg);
+		screen.drawLine(x1: x+4, y1: y+11, x2: x+7, y2: y+11, color: fg);
+	}
+	
+	deinit {
+		for radio in radioList {
+			fontServ.freeText(radio.label)
+		}
+	}
 }
-
-*/
-
-}
-/*
-class Mac_RadioList : public Mac_Dialog {
-
-public:
-Mac_RadioList(int *variable, int x, int y,
-MFont *font, FontServ *fontserv);
-virtual ~Mac_RadioList() {
-struct radio *radio, *old;
-
-for ( radio=radio_list.next; radio; ) {
-old = radio;
-radio = radio->next;
-if ( old->label )
-Fontserv->FreeText(old->label);
-delete old;
-}
-}
-
-virtual void HandleButtonPress(int x, int y, int button,
-int *doneflag) {
-int n;
-struct radio *radio, *oldradio;
-
-oldradio = radio_list.next;
-for (n=0, radio=radio_list.next; radio; radio=radio->next, ++n){
-if ( n == *radiovar ) {
-oldradio = radio;
-break;
-}
-}
-for (n=0, radio=radio_list.next; radio; radio=radio->next, ++n){
-if ( IsSensitive(&radio->sensitive, x, y) ) {
-Spot(oldradio->x, oldradio->y, Bg);
-*radiovar = n;
-Spot(radio->x, radio->y, Fg);
-Screen->Update();
-}
-}
-}
-
-virtual void Add_Radio(int x, int y, const char *text) {
-struct radio *radio;
-
-for ( radio=&radio_list; radio->next; radio=radio->next )
-/* Loop to end of radio box list */;
-/* Which is ANSI C++? */
-#ifdef linux
-radio->next = new struct Mac_RadioList::radio;
-#else
-radio->next = new struct radio;
-#endif
-radio = radio->next;
-radio->label = Fontserv->TextImage(text, Font,
-STYLE_NORM, 0, 0, 0);
-radio->x = x;
-radio->y = y;
-radio->sensitive.x = x;
-radio->sensitive.y = y;
-radio->sensitive.w = 20+radio->label->w;
-radio->sensitive.h = BOX_HEIGHT;
-radio->next = NULL;
-}
-
-virtual void Map(int Xoff, int Yoff, FrameBuf *screen,
-Uint8 R_bg, Uint8 G_bg, Uint8 B_bg,
-Uint8 R_fg, Uint8 G_fg, Uint8 B_fg) {
-struct radio *radio;
-
-/* Do the normal dialog mapping */
-Mac_Dialog::Map(Xoff, Yoff, screen,
-R_bg, G_bg, B_bg, R_fg, G_fg, B_fg);
-
-/* Get the screen colors */
-Fg = Screen->MapRGB(R_fg, G_fg, B_fg);
-Bg = Screen->MapRGB(R_bg, G_bg, B_bg);
-
-/* Adjust sensitivity and map the radiobox text */
-for ( radio=radio_list.next; radio; radio=radio->next ) {
-radio->x += Xoff;
-radio->y += Yoff;
-radio->sensitive.x += Xoff;
-radio->sensitive.y += Yoff;
-radio->label->format->palette->colors[1].r = R_fg;
-radio->label->format->palette->colors[1].g = G_fg;
-radio->label->format->palette->colors[1].b = B_fg;
-}
-}
-virtual void Show(void) {
-int n;
-struct radio *radio;
-
-for (n=0, radio=radio_list.next; radio; radio=radio->next, ++n){
-Circle(radio->x, radio->y);
-if ( n == *radiovar ) {
-Spot(radio->x, radio->y, Fg);
-}
-if ( radio->label ) {
-Screen->QueueBlit(radio->x+21, radio->y+3,
-radio->label, NOCLIP);
-}
-}
-}
-
-private:
-FontServ *Fontserv;
-MFont *Font;
-Uint32 Fg, Bg;
-int *radiovar;
-
-void Circle(int x, int y) {
-x += 5;
-y += 5;
-Screen->DrawLine(x+4, y, x+7, y, Fg);
-Screen->DrawLine(x+2, y+1, x+3, y+1, Fg);
-Screen->DrawLine(x+8, y+1, x+9, y+1, Fg);
-Screen->DrawLine(x+1, y+2, x+1, y+3, Fg);
-Screen->DrawLine(x+10, y+2, x+10, y+3, Fg);
-Screen->DrawLine(x, y+4, x, y+7, Fg);
-Screen->DrawLine(x+11, y+4, x+11, y+7, Fg);
-Screen->DrawLine(x+1, y+8, x+1, y+9, Fg);
-Screen->DrawLine(x+10, y+8, x+10, y+9, Fg);
-Screen->DrawLine(x+2, y+10, x+3, y+10, Fg);
-Screen->DrawLine(x+8, y+10, x+9, y+10, Fg);
-Screen->DrawLine(x+4, y+11, x+7, y+11, Fg);
-}
-void Spot(int x, int y, Uint32 color)
-{
-x += 8;
-y += 8;
-Screen->DrawLine(x+1, y, x+4, y, color);
-++y;
-Screen->DrawLine(x, y, x+5, y, color);
-++y;
-Screen->DrawLine(x, y, x+5, y, color);
-++y;
-Screen->DrawLine(x, y, x+5, y, color);
-++y;
-Screen->DrawLine(x, y, x+5, y, color);
-++y;
-Screen->DrawLine(x+1, y, x+4, y, color);
-}
-};
-*/
 
 /** Class of text entry boxes */
 final class MacTextEntry : MacDialog {
@@ -555,7 +503,6 @@ EnableText();
 }
 
 */
-}
 
 /*
 class Mac_TextEntry : public Mac_Dialog {
@@ -749,6 +696,8 @@ entry->x+entry->end, entry->y+entry->height-1, Fg);
 };
 
 */
+}
+
 /** Class of numeric entry boxes */
 final class MacNumericEntry: MacDialog {
 	private var entry_list = [NumericEntry]()
@@ -781,8 +730,6 @@ entry_list.next = NULL;
 current = &entry_list;
 }
 */
-}
-
 
 /*
 class Mac_NumericEntry : public Mac_Dialog {
@@ -985,6 +932,7 @@ entry->x+entry->end, entry->y+entry->height-1, Fg);
 }
 };
 */
+}
 
 /** Finally, the macintosh-like dialog class */
 final class MaclikeDialog {

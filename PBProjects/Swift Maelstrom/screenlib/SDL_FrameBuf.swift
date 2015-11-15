@@ -116,10 +116,6 @@ class FrameBuf {
 		
 	}
 	
-	func mapRGB(rgb rgb: (red: UInt8, green: UInt8, blue: UInt8)) -> UInt32 {
-		return mapRGB(red: rgb.red, green: rgb.green, blue: rgb.blue)
-	}
-	
 	func mapRGB(red R: UInt8, green G: UInt8, blue B: UInt8) -> UInt32 {
 		return SDL_MapRGB(screenfg.memory.format, R, G, B)
 	}
