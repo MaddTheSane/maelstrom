@@ -290,87 +290,76 @@ final class MacDefaultButton : MacButton {
 
 /* Class of checkboxes */
 
-let CHECKBOX_SIZE = 12
+let CHECKBOX_SIZE: Int32 = 12
 
 final class MacCheckBox : MacDialog {
+	private var label: UnsafeMutablePointer<SDL_Surface>
+	private var fontServ: FontServ
+	private var fg: UInt32 = 0
+	private var bg: UInt32 = 0
+	private var sensitive = SDL_Rect()
+	private var checkval: UnsafeMutablePointer<Bool>
 	
+	init(toggle: UnsafeMutablePointer<Bool>, x: Int32, y: Int32, text: String, font: FontServ.MFont, fontserv: FontServ) {
+		fontServ = fontserv
+		checkval = toggle
+		label = fontserv.newTextImage(text, font: font, style: [], foreground: (red: 0, green: 0, blue: 0))
+		super.init(x: x, y: y)
+	}
+	override func map(offset offset: (x: Int32, y: Int32), screen: FrameBuf, background: (red: UInt8, green: UInt8, blue: UInt8), foreground: (red: UInt8, green: UInt8, blue: UInt8)) {
+		super.map(offset: offset, screen: screen, background: background, foreground: foreground)
+		
+		/* Set up the checkbox sensitivity */
+		sensitive.x = position.x;
+		sensitive.y = position.y;
+		sensitive.w = Int32(CHECKBOX_SIZE)
+		sensitive.h = Int32(CHECKBOX_SIZE);
+		
+		/* Get the screen colors */
+		fg = screen.mapRGB(rgb: foreground)
+		bg = screen.mapRGB(rgb: background)
+		
+		/* Map the checkbox text */
+		label.memory.format.memory.palette.memory.colors[1].r = foreground.red;
+		label.memory.format.memory.palette.memory.colors[1].g = foreground.green;
+		label.memory.format.memory.palette.memory.colors[1].b = foreground.blue;
+	}
+	
+	override func handleButtonPress(x x: Int32, y: Int32, button: UInt8, inout doneFlag: Bool) {
+		if isSensitive(sensitive, x: x, y: y) {
+			checkval.memory = !checkval.memory
+			checkBox(checkval.memory)
+			screen.update()
+		}
+	}
+	
+	override func show() {
+		screen.drawRect(x: position.x, y: position.y, width: CHECKBOX_SIZE, height: CHECKBOX_SIZE, color: fg)
+		if label != nil {
+			screen.queueBlit(x: position.x + CHECKBOX_SIZE + 4, y: position.y - 2, src: label, do_clip: .NOCLIP)
+		}
+		checkBox(checkval.memory)
+	}
+	
+	private func checkBox(checked: Bool) {
+		let color: UInt32
+		
+		if checked {
+			color = fg;
+		} else {
+			color = bg;
+		}
+		
+		screen.drawLine(x1: position.x, y1: position.y, x2: position.x + CHECKBOX_SIZE - 1, y2: position.y + CHECKBOX_SIZE - 1, color: color)
+		screen.drawLine(x1: position.x, y1: position.y + CHECKBOX_SIZE - 1, x2: position.x + CHECKBOX_SIZE - 1, y2: position.y, color: color)
+	}
+	
+	deinit {
+		if label != nil {
+			fontServ.freeText(label)
+		}
+	}
 }
-
-/*
-
-class Mac_CheckBox : public Mac_Dialog {
-
-public:
-Mac_CheckBox(int *toggle, int x, int y, const char *text,
-MFont *font, FontServ *fontserv);
-virtual ~Mac_CheckBox() {
-if ( label ) {
-Fontserv->FreeText(label);
-}
-}
-
-virtual void HandleButtonPress(int x, int y, int button,
-int *doneflag) {
-if ( IsSensitive(&sensitive, x, y) ) {
-*checkval = !*checkval;
-Check_Box(*checkval);
-Screen->Update();
-}
-}
-
-virtual void Map(int Xoff, int Yoff, FrameBuf *screen,
-Uint8 R_bg, Uint8 G_bg, Uint8 B_bg,
-Uint8 R_fg, Uint8 G_fg, Uint8 B_fg) {
-/* Do the normal dialog mapping */
-Mac_Dialog::Map(Xoff, Yoff, screen,
-R_bg, G_bg, B_bg, R_fg, G_fg, B_fg);
-
-/* Set up the checkbox sensitivity */
-sensitive.x = X;
-sensitive.y = Y;
-sensitive.w = CHECKBOX_SIZE;
-sensitive.h = CHECKBOX_SIZE;
-
-/* Get the screen colors */
-Fg = Screen->MapRGB(R_fg, G_fg, B_fg);
-Bg = Screen->MapRGB(R_bg, G_bg, B_bg);
-
-/* Map the checkbox text */
-label->format->palette->colors[1].r = R_fg;
-label->format->palette->colors[1].g = G_fg;
-label->format->palette->colors[1].b = B_fg;
-}
-virtual void Show(void) {
-Screen->DrawRect(X, Y, CHECKBOX_SIZE, CHECKBOX_SIZE, Fg);
-if ( label ) {
-Screen->QueueBlit(X+CHECKBOX_SIZE+4, Y-2, label,NOCLIP);
-}
-Check_Box(*checkval);
-}
-
-private:
-FontServ *Fontserv;
-SDL_Surface *label;
-Uint32 Fg, Bg;
-int *checkval;
-SDL_Rect sensitive;
-
-void Check_Box(int checked) {
-Uint32 color;
-
-if ( checked )
-color = Fg;
-else
-color = Bg;
-
-Screen->DrawLine(X, Y,
-X+CHECKBOX_SIZE-1, Y+CHECKBOX_SIZE-1, color);
-Screen->DrawLine(X, Y+CHECKBOX_SIZE-1,
-X+CHECKBOX_SIZE-1, Y, color);
-}
-};
-
-*/
 
 /** Class of radio buttons */
 final class MacRadioList : MacDialog {
@@ -381,6 +370,24 @@ final class MacRadioList : MacDialog {
 		var y: Int32
 		var sensitive: SDL_Rect
 	}
+	
+	init(variable: UnsafeMutablePointer<Int>, x: Int32, y: Int32, font: FontServ.MFont, fontserv: FontServ) {
+		super.init(x: x, y: y)
+	}
+
+	/*
+Mac_RadioList::Mac_RadioList(int *variable, int x, int y,
+MFont *font, FontServ *fontserv) : Mac_Dialog(x, y)
+{
+Fontserv = fontserv;
+Font = font;
+radiovar = variable;
+*radiovar = 0;
+radio_list.next = NULL;
+}
+
+*/
+
 }
 /*
 class Mac_RadioList : public Mac_Dialog {
@@ -529,6 +536,25 @@ Screen->DrawLine(x+1, y, x+4, y, color);
 /** Class of text entry boxes */
 final class MacTextEntry : MacDialog {
 	
+	
+	
+	init(x: Int32, y: Int32, font: FontServ.MFont, fontserv: FontServ) {
+		super.init(x: x, y: y)
+	}
+	/*
+Mac_TextEntry::Mac_TextEntry(int x, int y,
+MFont *font, FontServ *fontserv) : Mac_Dialog(x, y)
+{
+Fontserv = fontserv;
+Font = font;
+Cwidth = Fontserv->TextWidth("0", Font, STYLE_NORM);
+Cheight = Fontserv->TextHeight(font);
+entry_list.next = NULL;
+current = &entry_list;
+EnableText();
+}
+
+*/
 }
 
 /*
@@ -739,6 +765,22 @@ final class MacNumericEntry: MacDialog {
 		var hilite: Bool
 	}
 
+	init(x: Int32, y: Int32, font: FontServ.MFont, fontserv: FontServ) {
+		super.init(x: x, y: y)
+	}
+	/*
+
+Mac_NumericEntry::Mac_NumericEntry(int x, int y,
+MFont *font, FontServ *fontserv) : Mac_Dialog(x, y)
+{
+Fontserv = fontserv;
+Font = font;
+Cwidth = Fontserv->TextWidth("0", Font, STYLE_NORM);
+Cheight = Fontserv->TextHeight(font);
+entry_list.next = NULL;
+current = &entry_list;
+}
+*/
 }
 
 
@@ -944,8 +986,7 @@ entry->x+entry->end, entry->y+entry->height-1, Fg);
 };
 */
 
-/* Finally, the macintosh-like dialog class */
-
+/** Finally, the macintosh-like dialog class */
 final class MaclikeDialog {
 	private var screen: FrameBuf
 	private var location: (x: Int32, y: Int32)
