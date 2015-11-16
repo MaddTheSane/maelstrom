@@ -834,6 +834,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = YES;
+				OTHER_SWIFT_FLAGS = "-DWIDE_BOLD";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.maddthesane.Swift-Maelstrom";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Swift Maelstrom/bridge.h";
@@ -883,6 +884,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_SWIFT_FLAGS = "-DWIDE_BOLD";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.maddthesane.Swift-Maelstrom";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Swift Maelstrom/bridge.h";

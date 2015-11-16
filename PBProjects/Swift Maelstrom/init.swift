@@ -165,7 +165,7 @@ func doInitializations(video_flags: SDL_WindowFlags) -> Bool {
 	
 	/* Load the Font Server */
 	do {
-		fontserv = try FontServ(fontAtURL: library.path("Maelstrom Fonts")!)
+		fontserv = try FontServer(fontAtURL: library.path("Maelstrom Fonts")!)
 	} catch {
 		fatalError("Fatal: \(error)\n")
 		//return false

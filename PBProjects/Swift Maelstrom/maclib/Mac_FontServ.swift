@@ -79,7 +79,7 @@ private func copy_int(S: UnsafeMutablePointer<UInt32>, inout _ D: UnsafePointer<
 	D += 4
 }
 
-class FontServ {
+class FontServer {
 	private struct FontEntry {
 		var size: UInt16 = 0
 		var style: UInt16 = 0
@@ -174,11 +174,11 @@ class FontServ {
 					continue
 				}
 				let space_width = LoByte(UInt16(owTable[Int(uChar)]))
-				//#ifdef WIDE_BOLD
+				#if WIDE_BOLD
 				width += UInt16(space_width) + extra_width
-				//#else
-				//Width += space_width;
-				//#endif
+				#else
+				width += UInt16(space_width);
+				#endif
 			}
 			
 			return width
@@ -466,11 +466,11 @@ class FontServ {
 							GETBIT(src_scanline, Int(glyph_line_offset+bit)))
 					}
 				}
-				//#ifdef WIDE_BOLD
+				#if WIDE_BOLD
 				bit_offset += (Int(space_width)+Int(bold_offset));
-				//#else
-				//bit_offset += space_width;
-				//#endif
+				#else
+				bit_offset += Int(space_width)
+				#endif
 			}
 		}
 		if style.contains(.Underline) {

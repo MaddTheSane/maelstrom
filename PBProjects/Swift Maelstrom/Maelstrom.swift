@@ -148,7 +148,7 @@ extension Sound {
 }
 
 /// The Font Server :)
-var fontserv: FontServ!
+var fontserv: FontServer!
 
 /// The Sound Server *grin*
 var sound: Sound!
@@ -203,12 +203,12 @@ private func runSpeedTest() {
 	print("Graphics speed test took \((now-then)/test_reps) microseconds per cycle.");
 }
 
-func drawText(x x: UInt16, y: UInt16, text: String, font: FontServ.MFont, style: FontStyle,
+func drawText(x x: UInt16, y: UInt16, text: String, font: FontServer.MFont, style: FontStyle,
 	R: UInt8, G: UInt8, B: UInt8) -> Int32 {
 	return drawText(x: Int32(x), y: Int32(y), text: text, font: font, style: style, R: R, G: G, B: B)
 }
 
-func drawText(x x: Int32, y: Int32, text: String, font: FontServ.MFont, style: FontStyle,
+func drawText(x x: Int32, y: Int32, text: String, font: FontServer.MFont, style: FontStyle,
 	R: UInt8, G: UInt8, B: UInt8) -> Int32
 {
 	var width: Int32 = 0
@@ -713,7 +713,7 @@ private func drawKey(inout pt: MPoint, key: String, text: String, callback: (()-
 
 private let xOff = (SCREEN_WIDTH - 512) / 2;
 private let yOff = (SCREEN_HEIGHT - 384) / 2;
-private var geneva9: FontServ.MFont! = nil
+private var geneva9: FontServer.MFont! = nil
 private var drawSoundLevelOnce: dispatch_once_t = 0
 
 /// Draw the current sound volume
