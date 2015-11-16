@@ -20,4 +20,8 @@ for i in 0..<Process.argc {
 	ADD_ARG(Process.unsafeArgv[Int(i)])
 }
 
-NSApplicationMain(Process.argc, Process.unsafeArgv)
+//if Process.argc == 1 {
+	NSApplicationMain(Process.argc, Process.unsafeArgv)
+//} else {
+//	SDL_main(Process.argc, Process.unsafeArgv)
+//}

@@ -11,6 +11,10 @@ import Foundation
 private var scoreLocation: NSURL!
 private let NUM_SCORES			= 10		// Do not change this!
 
+private let CLR_DIALOG_WIDTH: Int32 =	281
+private let CLR_DIALOG_HEIGHT: Int32 =	111
+
+
 let hScores = HighScores()
 
 /// Best used for tuples of the same type, which Swift converts fixed-sized C arrays into.
@@ -104,6 +108,8 @@ final class HighScores {
 		let mutData = NSMutableData()
 		let archiver = NSKeyedArchiver(forWritingWithMutableData: mutData)
 		archiver.encodeObject(saveScoreArray as NSArray, forKey: "Scores")
+		archiver.finishEncoding()
+		mutData.writeToURL(scoreLocation, atomically: true)
 	}
 	
 	func beginCustomLevel() -> Int32 {
@@ -111,12 +117,61 @@ final class HighScores {
 	}
 	
 	func zapHighScores() -> Bool {
-		return false
+		let x: Int32
+		let y: Int32
+		var splash = UnsafeMutablePointer<SDL_Surface>()
+		var doClear = false
+		
+		/* Set up all the components of the dialog box */
+		#if CENTER_DIALOG
+			x=(SCREEN_WIDTH-CLR_DIALOG_WIDTH)/2;
+			y=(SCREEN_HEIGHT-CLR_DIALOG_HEIGHT)/2;
+		#else	/* The way it is on the original Maelstrom */
+			x=179;
+			y=89;
+		#endif
+		guard let chicago = try? fontserv.newFont("Chicago", pointSize: 12) else {
+			print("Can't use Chicago font!\n");
+			return false;
+		}
+		splash = loadTitle(screen, title_id: 102)
+		if splash == nil {
+			print("Can't load score zapping splash!");
+			return false;
+		}
+		let dialog = MaclikeDialog(x: x, y: y, width: CLR_DIALOG_WIDTH, height: CLR_DIALOG_HEIGHT,
+			screen: screen);
+		dialog.addImage(splash, x: 4, y: 4);
+		
+		let clear = try! MacButton(x: 99, y: 74, width: BUTTON_WIDTH, height: BUTTON_HEIGHT,
+			text: "Clear", font: chicago, fontserv: fontserv) { () -> Bool in
+				doClear = true
+				return true
+		}
+		dialog.addDialog(clear);
+		let cancel = try! MacDefaultButton(x: 99+BUTTON_WIDTH+14, y: 74,
+			width: BUTTON_WIDTH, height: BUTTON_HEIGHT,
+			text: "Cancel", font: chicago, fontserv: fontserv) { () -> Bool in
+				doClear = false
+				return true
+		}
+		dialog.addDialog(cancel);
+		
+		/* Run the dialog box */
+		dialog.run();
+		
+		/* Clean up and return */
+		screen.freeImage(splash);
+		if doClear {
+			clearScores()
+			saveScores()
+			gLastHigh = -1;
+		}
+		return doClear;
 	}
 
-	var anArr: Array<Int> = []
 	subscript (index: Int) -> Score {
-		return Score(name: "hi", wave: 0, score: 0)
+		return scoreList[index]
 	}
 
 	func loadScores() {
@@ -161,15 +216,38 @@ final class HighScores {
 				SDL_RWclose(scores_src);
 				
 				//import old scores
+				loadOldScores(oldScores)
 				
 				//save new scores
-				hScores.saveScores()
+				saveScores()
 				
 				return
 			}
 			
 			//Load new scores
-			
+			do {
+				let fileData = try NSData(contentsOfURL: scoreLocation, options: [])
+				let keyedUnarchiver = NSKeyedUnarchiver(forReadingWithData: fileData)
+				guard let preScores = keyedUnarchiver.decodeObjectForKey("Scores") as? [[String: NSObject]] else {
+					saveScores()
+					return
+				}
+				
+				assert(preScores.count == NUM_SCORES)
+				for (i,aDict) in preScores.enumerate() {
+					var aScore = Score()
+					aScore.name = aDict["name"] as! String
+					aScore.wave = UInt32(aDict["wave"] as! Int)
+					aScore.score = UInt32(aDict["score"] as! Int)
+					scoreList[i] = aScore
+				}
+				
+				scoreList.sortInPlace(<)
+			} catch {
+				print("Unable to load scores, error: \(error)")
+				saveScores()
+				return
+			}
 		} catch {
 			fatalError("Fatal error: \(error)")
 		}
@@ -182,5 +260,6 @@ final class HighScores {
 			let newScore = Score(name: aName, wave: oldscore.wave, score: oldscore.score)
 			scoreList[i] = newScore
 		}
+		scoreList.sortInPlace(<)
 	}
 }

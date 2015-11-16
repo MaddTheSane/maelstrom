@@ -16,6 +16,8 @@
 		5515E8341BE6878E0048605C /* MacBinary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5515E8331BE6878E0048605C /* MacBinary.swift */; };
 		5515E8361BE68A7D0048605C /* applefile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5515E8351BE68A7D0048605C /* applefile.swift */; };
 		554E20911BFA778200070D91 /* XattrResFork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 554E20901BFA778200070D91 /* XattrResFork.swift */; };
+		554E20921BFA896E00070D91 /* Images in Resources */ = {isa = PBXBuildFile; fileRef = 55D1287F0F09DA7200E06E2A /* Images */; };
+		554E20951BFA89DC00070D91 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 554E20971BFA89DC00070D91 /* InfoPlist.strings */; };
 		555968611BE6EB22003A3001 /* fastrand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 173670CB00AF29927F000001 /* fastrand.cpp */; };
 		555968631BE6EBCB003A3001 /* Mac_Compat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555968621BE6EBCB003A3001 /* Mac_Compat.swift */; };
 		555968651BE6ED5D003A3001 /* Mac_Wave.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555968641BE6ED5D003A3001 /* Mac_Wave.swift */; };
@@ -216,6 +218,7 @@
 		5515E8331BE6878E0048605C /* MacBinary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacBinary.swift; sourceTree = "<group>"; };
 		5515E8351BE68A7D0048605C /* applefile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = applefile.swift; sourceTree = "<group>"; };
 		554E20901BFA778200070D91 /* XattrResFork.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XattrResFork.swift; sourceTree = "<group>"; };
+		554E20961BFA89DC00070D91 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		555968621BE6EBCB003A3001 /* Mac_Compat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mac_Compat.swift; sourceTree = "<group>"; };
 		555968641BE6ED5D003A3001 /* Mac_Wave.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mac_Wave.swift; sourceTree = "<group>"; };
 		557258B519E5CC730073CDF2 /* SDLMain.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SDLMain.xib; sourceTree = "<group>"; };
@@ -488,6 +491,7 @@
 				5515E81F1BE609700048605C /* Assets.xcassets */,
 				5515E8211BE609700048605C /* MainMenu.xib */,
 				5515E8241BE609700048605C /* Info.plist */,
+				554E20971BFA89DC00070D91 /* InfoPlist.strings */,
 				5515E82A1BE609B40048605C /* bridge.h */,
 			);
 			path = "Swift Maelstrom";
@@ -654,7 +658,9 @@
 				55D4F8C91BE973A400F31A0F /* SDLMain.xib in Resources */,
 				5515E8201BE609700048605C /* Assets.xcassets in Resources */,
 				55D4F8C41BE96FC400F31A0F /* Maelstrom-Scores in Resources */,
+				554E20921BFA896E00070D91 /* Images in Resources */,
 				55D4F8C31BE96FC400F31A0F /* Maelstrom_Sprites in Resources */,
+				554E20951BFA89DC00070D91 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -787,6 +793,14 @@
 				5515E8221BE609700048605C /* Base */,
 			);
 			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		554E20971BFA89DC00070D91 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				554E20961BFA89DC00070D91 /* en */,
+			);
+			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

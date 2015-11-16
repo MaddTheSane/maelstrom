@@ -24,6 +24,22 @@ private func LOWER_PREC(X: Int32) -> Int16 {
 
 */
 
+private func memswap(var dst: UnsafeMutablePointer<UInt8>, var src: UnsafeMutablePointer<UInt8>, len: Int) {
+	#if SWAP_XOR
+		for _ in 0..<len {
+			dst.memory ^= src.memory
+			src.memory ^= dst.memory
+			dst.memory ^= src.memory
+			dst++;src++;
+		}
+	#else
+		for _ in 0..<len {
+			swap(&dst.memory, &src.memory)
+			dst++;src++;
+		}
+	#endif
+}
+
 class FrameBuf {
 	enum clipval {
 		case DOCLIP
@@ -101,7 +117,32 @@ class FrameBuf {
 	}
 	
 	func fade() {
-		
+		#if FADE_SCREEN
+		/*
+const int max = 32;
+Uint16 ramp[256];
+
+for ( int j = 1; j <= max; j++ ) {
+int v = faded ? j : max - j + 1;
+for ( int i = 0; i < 256; i++ ) {
+ramp[i] = (i * v / max) << 8;
+}
+SDL_SetWindowGammaRamp(window, ramp, ramp, ramp);
+SDL_Delay(10);
+}
+faded = !faded;
+
+if ( faded ) {
+for ( int i = 0; i < 256; i++ ) {
+ramp[i] = 0;
+}
+SDL_SetWindowGammaRamp(window, ramp, ramp, ramp);
+}
+*/
+		#else
+			SDL_Delay(320)
+			print("fade skipped")
+		#endif
 	}
 	
 	func toggleFullScreen() {

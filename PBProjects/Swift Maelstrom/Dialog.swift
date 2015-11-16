@@ -14,8 +14,8 @@ import Foundation
 
 /* Defaults for various dialog classes */
 
-let BUTTON_WIDTH = 75
-let BUTTON_HEIGHT = 19
+let BUTTON_WIDTH: Int32 = 75
+let BUTTON_HEIGHT: Int32 = 19
 
 let BOX_WIDTH: Int32 = 170
 let BOX_HEIGHT: Int32 = 20

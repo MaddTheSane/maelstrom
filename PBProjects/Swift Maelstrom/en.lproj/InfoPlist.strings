@@ -1,0 +1,6 @@
+/* Localized versions of Info.plist keys */
+
+CFBundleName = "Swift Maelstrom";
+CFBundleShortVersionString = "Swift Maelstrom version 1.0";
+CFBundleGetInfoString = "Swift Maelstrom version 1.0";
+NSHumanReadableCopyright = "©2015";
