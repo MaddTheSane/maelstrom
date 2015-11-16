@@ -32,9 +32,9 @@ private func isSensitive(area: SDL_Rect, x: Int32, y: Int32) -> Bool {
 	return false
 }
 
-
+/**  This is a class set for Macintosh-like dialogue boxes. :) */
 class MacDialog {
-	private static var textEnabled = false
+	private static var textEnabled = 0
 	private var screen: FrameBuf!
 	private var position: (x: Int32, y: Int32)
 	typealias ButtonCallbackFunc = (x: Int32, y: Int32, button: UInt8, inout done: Bool) -> Void
@@ -81,6 +81,18 @@ class MacDialog {
 	
 	func show() {
 		//empty, for subclassing
+	}
+	
+	private class func enableText() {
+		if textEnabled++ == 0 {
+			SDL_StartTextInput()
+		}
+	}
+	
+	private class func disableText() {
+		if --textEnabled == 0 {
+			SDL_StopTextInput()
+		}
 	}
 }
 
@@ -483,225 +495,186 @@ final class MacRadioList : MacDialog {
 
 /** Class of text entry boxes */
 final class MacTextEntry : MacDialog {
+	private let fontServ: FontServ
+	private let font: FontServ.MFont
+	private var fg: UInt32 = 0
+	private var bg: UInt32 = 0
+	private var cWidth: Int32
+	private var cHeight: Int32
+	private var foreground = SDL_Color(r: 0, g: 0, b: 0, a: 255)
+	private var background = SDL_Color(r: 0, g: 0, b: 0, a: 255)
+	private var entryList = [TextEntry]()
+	private var currentEntry = 0
 	
-	
+	private struct TextEntry {
+		var text: UnsafeMutablePointer<SDL_Surface> = nil
+		var variable: String = ""
+		var sensitive = SDL_Rect()
+		var location: (x: Int32, y: Int32) = (0,0)
+		var size: (width: Int32, height: Int32) = (0,0)
+		var end: Int32 = 0
+		var hilite: Bool = false
+	}
 	
 	init(x: Int32, y: Int32, font: FontServ.MFont, fontserv: FontServ) {
+		fontServ = fontserv
+		self.font = font
+		let tmpSize = fontserv.textSize("0", font: font, style: [])
+		(cWidth, cHeight) = (Int32(tmpSize.width), Int32(tmpSize.height))
 		super.init(x: x, y: y)
+		MacDialog.enableText()
 	}
-	/*
-Mac_TextEntry::Mac_TextEntry(int x, int y,
-MFont *font, FontServ *fontserv) : Mac_Dialog(x, y)
-{
-Fontserv = fontserv;
-Font = font;
-Cwidth = Fontserv->TextWidth("0", Font, STYLE_NORM);
-Cheight = Fontserv->TextHeight(font);
-entry_list.next = NULL;
-current = &entry_list;
-EnableText();
-}
+	
+	deinit {
+		for entry in entryList {
+			fontServ.freeText(entry.text)
+		}
+		MacDialog.disableText()
+	}
+	
+	override func handleButtonPress(x x: Int32, y: Int32, button: UInt8, inout doneFlag: Bool) {
+		for (i,entry) in entryList.enumerate() {
+			if isSensitive(entry.sensitive, x: x, y: y) {
+				entryList[currentEntry].hilite = false
+				
+				updateEntry(&entryList[currentEntry])
+				currentEntry = i
+				drawCursor(entry);
+				screen.update()
+			}
+		}
+	}
+	
+	override func handleKeyPress(key: SDL_Keysym, inout done doneflag: Bool) {
+		switch Int(key.sym) {
+		case SDLK_TAB:
+			entryList[currentEntry].hilite = false;
+			updateEntry(&entryList[currentEntry]);
+			if currentEntry >= entryList.count {
+				currentEntry++
+			} else {
+				currentEntry = 0
+			}
+			entryList[currentEntry].hilite = true;
+			updateEntry(&entryList[currentEntry]);
+			
+		case SDLK_DELETE, SDLK_BACKSPACE:
+			if entryList[currentEntry].hilite {
+				entryList[currentEntry].variable = ""
+				entryList[currentEntry].hilite = false
+			} else if entryList[currentEntry].variable.characters.count > 0 {
+				entryList[currentEntry].variable = String(entryList[currentEntry].variable.characters.dropLast())
+			}
+			updateEntry(&entryList[currentEntry]);
+			drawCursor(entryList[currentEntry]);
+			
+		default:
+			if ( (entryList[currentEntry].end+cWidth) > entryList[currentEntry].size.width ) {
+				return;
+			}
+			entryList[currentEntry].hilite = false
+			entryList[currentEntry].variable += String([Int8(key.sym),0])
+			updateEntry(&entryList[currentEntry])
+			drawCursor(entryList[currentEntry])
+		}
+		
+		screen.update()
+	}
+	
+	func addEntry(x x: Int32, y: Int32, width: Int32, isDefault: Bool, variable: UnsafeMutablePointer<Int8>) {
+		var entry = TextEntry()
+		
+		if isDefault {
+			currentEntry = entryList.count
+			entry.hilite = true;
+		} else {
+			entry.hilite = false;
+		}
 
-*/
-
-/*
-class Mac_TextEntry : public Mac_Dialog {
-
-public:
-Mac_TextEntry(int x, int y, MFont *font, FontServ *fontserv);
-virtual ~Mac_TextEntry() {
-struct text_entry *entry, *old;
-
-for ( entry=entry_list.next; entry; ) {
-old = entry;
-entry = entry->next;
-if ( old->text )
-Fontserv->FreeText(old->text);
-delete old;
-}
-DisableText();
-}
-
-virtual void HandleButtonPress(int x, int y, int button,
-int *doneflag) {
-struct text_entry *entry;
-
-for ( entry=entry_list.next; entry; entry=entry->next ) {
-if ( IsSensitive(&entry->sensitive, x, y) ) {
-current->hilite = 0;
-Update_Entry(current);
-current = entry;
-DrawCursor(current);
-Screen->Update();
-}
-}
-}
-virtual void HandleKeyPress(SDL_Keysym key, int *doneflag) {
-int n;
-
-switch (key.sym) {
-case SDLK_TAB:
-current->hilite = 0;
-Update_Entry(current);
-if ( current->next )
-current=current->next;
-else
-current=entry_list.next;
-current->hilite = 1;
-Update_Entry(current);
-break;
-
-case SDLK_DELETE:
-case SDLK_BACKSPACE:
-if ( current->hilite ) {
-*current->variable = '\0';
-current->hilite = 0;
-} else if ( *current->variable ) {
-n = strlen(current->variable);
-current->variable[n-1] = '\0';
-}
-Update_Entry(current);
-DrawCursor(current);
-break;
-
-default:
-if ( (current->end+Cwidth) > current->width )
-return;
-//if ( key.unicode ) {
-current->hilite = 0;
-n = strlen(current->variable);
-current->variable[n] = (char)key.sym;
-current->variable[n+1] = '\0';
-Update_Entry(current);
-DrawCursor(current);
-//}
-break;
-}
-Screen->Update();
-}
-
-virtual void Add_Entry(int x, int y, int width, int is_default,
-char *variable) {
-struct text_entry *entry;
-
-for ( entry=&entry_list; entry->next; entry=entry->next )
-/* Loop to end of entry list */;
-entry->next = new struct text_entry;
-entry = entry->next;
-
-entry->variable = variable;
-if ( is_default ) {
-current = entry;
-entry->hilite = 1;
-} else
-entry->hilite = 0;
-entry->x = x+3;
-entry->y = y+3;
-entry->width = width*Cwidth;
-entry->height = Cheight;
-entry->sensitive.x = x;
-entry->sensitive.y = y;
-entry->sensitive.w = 3+(width*Cwidth)+3;
-entry->sensitive.h = 3+Cheight+3;
-entry->text = NULL;
-entry->next = NULL;
-}
-
-virtual void Map(int Xoff, int Yoff, FrameBuf *screen,
-Uint8 R_bg, Uint8 G_bg, Uint8 B_bg,
-Uint8 R_fg, Uint8 G_fg, Uint8 B_fg) {
-struct text_entry *entry;
-
-/* Do the normal dialog mapping */
-Mac_Dialog::Map(Xoff, Yoff, screen,
-R_bg, G_bg, B_bg, R_fg, G_fg, B_fg);
-
-/* Get the screen colors */
-foreground.r = R_fg;
-foreground.g = G_fg;
-foreground.b = B_fg;
-background.r = R_bg;
-background.g = G_bg;
-background.b = B_bg;
-Fg = Screen->MapRGB(R_fg, G_fg, B_fg);
-Bg = Screen->MapRGB(R_bg, G_bg, B_bg);
-
-/* Adjust sensitivity and map the radiobox text */
-for ( entry=entry_list.next; entry; entry=entry->next ) {
-entry->x += Xoff;
-entry->y += Yoff;
-entry->sensitive.x += Xoff;
-entry->sensitive.y += Yoff;
-}
-}
-virtual void Show(void) {
-struct text_entry *entry;
-
-for ( entry=entry_list.next; entry; entry=entry->next ) {
-Screen->DrawRect(entry->x-3, entry->y-3,
-3+entry->width+3, 3+Cheight+3, Fg);
-Update_Entry(entry);
-}
-}
-
-private:
-FontServ *Fontserv;
-MFont *Font;
-Uint32 Fg, Bg;
-int Cwidth, Cheight;
-SDL_Color foreground;
-SDL_Color background;
-
-struct text_entry {
-SDL_Surface *text;
-char *variable;
-SDL_Rect sensitive;
-int  x, y;
-int  width, height;
-int  end;
-int  hilite;
-struct text_entry *next;
-} entry_list, *current;
-
-
-void Update_Entry(struct text_entry *entry) {
-Uint32 clear;
-
-/* Create the new entry text */
-if ( entry->text ) {
-Fontserv->FreeText(entry->text);
-}
-if ( entry->hilite ) {
-clear = Fg;
-entry->text = Fontserv->TextImage(entry->variable,
-Font, STYLE_NORM, background, foreground);
-} else {
-clear = Bg;
-entry->text = Fontserv->TextImage(entry->variable,
-Font, STYLE_NORM, foreground, background);
-}
-Screen->FillRect(entry->x, entry->y,
-entry->width, entry->height, clear);
-if ( entry->text ) {
-entry->end = entry->text->w;
-Screen->QueueBlit(entry->x, entry->y, entry->text, NOCLIP);
-} else {
-entry->end = 0;
-}
-}
-void DrawCursor(struct text_entry *entry) {
-Screen->DrawLine(entry->x+entry->end, entry->y,
-entry->x+entry->end, entry->y+entry->height-1, Fg);
-}
-};
-
-*/
+		entry.location.x = x+3;
+		entry.location.y = y+3;
+		entry.size.width = width*cWidth;
+		entry.size.height = cHeight;
+		entry.sensitive.x = x;
+		entry.sensitive.y = y;
+		entry.sensitive.w = 3+(width*cWidth)+3;
+		entry.sensitive.h = 3+cHeight+3;
+		entry.text = nil
+		entryList.append(entry)
+	}
+	
+	override func map(offset offset: (x: Int32, y: Int32), screen: FrameBuf, background backG: (red: UInt8, green: UInt8, blue: UInt8), foreground foreG: (red: UInt8, green: UInt8, blue: UInt8)) {
+		/* Do the normal dialog mapping */
+		super.map(offset: offset, screen: screen, background: backG, foreground: foreG)
+		
+		/* Get the screen colors */
+		(foreground.r, foreground.g, foreground.b) = foreG
+		(background.r, background.g, background.b) = backG
+		fg = screen.mapRGB(foreG)
+		bg = screen.mapRGB(backG)
+		
+		/* Adjust sensitivity and map the radiobox text */
+		for i in 0..<entryList.count {
+			entryList[i].location.x += offset.x
+			entryList[i].location.y += offset.y
+			entryList[i].sensitive.x += offset.x
+			entryList[i].sensitive.y += offset.y
+		}
+	}
+	
+	override func show() {
+		for (i, entry) in entryList.enumerate() {
+			screen.drawRect(x: entry.location.x - 3, y: entry.location.y - 3, width: 3 + entry.size.width, height: 3 + cHeight + 3, color: fg)
+			updateEntry(&entryList[i])
+		}
+	}
+	
+	private func updateEntry(inout entry: TextEntry) {
+		var clear: Uint32 = 0
+		
+		/* Create the new entry text */
+		if ( entry.text != nil ) {
+			fontServ.freeText(entry.text)
+			entry.text = nil
+		}
+		if entry.hilite {
+			clear = fg;
+			entry.text = fontServ.newTextImage(entry.variable, font: font,
+				style: [], foreground: background, background: foreground)
+		} else {
+			clear = bg;
+			entry.text = fontServ.newTextImage(entry.variable,
+			font: font, style: [], foreground: foreground, background: background);
+		}
+		screen.fillRect(x: entry.location.x, y: entry.location.y,
+		w: entry.size.width, h: entry.size.height, color: clear);
+		if ( entry.text != nil ) {
+			entry.end = entry.text.memory.w;
+			screen.queueBlit(x: entry.location.x, y: entry.location.y, src: entry.text, do_clip: .NOCLIP);
+		} else {
+			entry.end = 0;
+		}
+	}
+	
+	private func drawCursor(entry: TextEntry) {
+		screen.drawLine(x1: entry.location.x + entry.end, y1: entry.location.y,
+			x2: entry.location.x + entry.end, y2: entry.location.y + entry.size.height - 1,
+			color: fg)
+	}
 }
 
 /** Class of numeric entry boxes */
 final class MacNumericEntry: MacDialog {
 	private var entry_list = [NumericEntry]()
-	
+	private let fontServ: FontServ
+	private let font: FontServ.MFont
+	private var fg: UInt32 = 0
+	private var bg: UInt32 = 0
+	private var cWidth: Int32
+	private var cHeight: Int32
+	private var foreground = SDL_Color(r: 0, g: 0, b: 0, a: 255)
+	private var background = SDL_Color(r: 0, g: 0, b: 0, a: 255)
+
 	private struct NumericEntry {
 		var text: UnsafeMutablePointer<SDL_Surface>
 		var variable: UnsafeMutablePointer<Int>
@@ -715,6 +688,10 @@ final class MacNumericEntry: MacDialog {
 	}
 
 	init(x: Int32, y: Int32, font: FontServ.MFont, fontserv: FontServ) {
+		fontServ = fontserv
+		self.font = font
+		let tmpSize = fontserv.textSize("0", font: font, style: [])
+		(cWidth, cHeight) = (Int32(tmpSize.width), Int32(tmpSize.height))
 		super.init(x: x, y: y)
 	}
 	/*
