@@ -325,8 +325,8 @@ final class MacCheckBox : MacDialog {
 		/* Set up the checkbox sensitivity */
 		sensitive.x = position.x;
 		sensitive.y = position.y;
-		sensitive.w = Int32(CHECKBOX_SIZE)
-		sensitive.h = Int32(CHECKBOX_SIZE);
+		sensitive.w = CHECKBOX_SIZE
+		sensitive.h = CHECKBOX_SIZE
 		
 		/* Get the screen colors */
 		fg = screen.mapRGB(foreground)
@@ -570,7 +570,7 @@ final class MacTextEntry : MacDialog {
 			drawCursor(entryList[currentEntry]);
 			
 		default:
-			if ( (entryList[currentEntry].end+cWidth) > entryList[currentEntry].size.width ) {
+			guard (entryList[currentEntry].end + cWidth) <= entryList[currentEntry].size.width else {
 				return;
 			}
 			entryList[currentEntry].hilite = false
@@ -764,7 +764,6 @@ final class MacNumericEntry: MacDialog {
 	func addEntry(x x: Int32, y: Int32, width: Int32, isDefault: Bool, variable: UnsafeMutablePointer<Int>) {
 		let entry = NumericEntry()
 		entryList.append(entry)
-		//entryIndex
 		entry.variable = variable
 		if isDefault {
 			currentEntry = entryList.count - 1
@@ -809,7 +808,7 @@ final class MacNumericEntry: MacDialog {
 		var clear: Uint32
 		
 		/* Create the new entry text */
-		if ( entry.text != nil ) {
+		if entry.text != nil {
 			fontServ.freeText(entry.text);
 		}
 		buf = String(entry.variable.memory)
@@ -913,7 +912,7 @@ final class MaclikeDialog {
 		YY = Double(location.y+size.height/2);
 		Hstep = Double(size.width) / Double(expandSteps)
 		Vstep = Double(size.height) / Double(expandSteps)
-		for _ in 0..<expandSteps /*( H=0, V=0, i=0; i<expand_steps; ++i )*/ {
+		for _ in 0..<expandSteps {
 			H += Hstep;
 			XX -= Hstep/2;
 			V += Vstep;
@@ -945,7 +944,6 @@ final class MaclikeDialog {
 			screen.queueBlit(x: location.x + 4 + ielem.x, y: location.y + 4 + ielem.y, src: ielem.image, do_clip: .NOCLIP)
 		}
 		for delem in dialogList {
-			//delem.map(xOff: location.x + 4, yOff: location.y + 4, screen: screen, r_bg: 0xFF, g_bg: 0xFF, b_bg: 0xFF, r_fg: 0x00, g_fg: 0x00, b_fg: 0x00)
 			delem.map(offset: (location.x + 4, location.y + 4), screen: screen,
 				background: (0xFF,  0xFF, 0xFF), foreground: (0x00, 0x00, 0x00))
 			delem.show()
