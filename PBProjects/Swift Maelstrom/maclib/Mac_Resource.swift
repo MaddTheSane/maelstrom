@@ -137,7 +137,7 @@ private func openMacRes(inout original: NSURL, inout resbase: Int) -> UnsafeMuta
 	for iterations = 0; iterations < snr.count; iterations++ {
 		/* Translate ' ' into '_', etc */
 		/* Note that this translation is irreversible */
-			filename.replaceAllInstancesOfCharacter(snr[iterations].search, withCharacter: snr[iterations].replace)
+		filename.replaceAllInstancesOfCharacter(snr[iterations].search, withCharacter: snr[iterations].replace)
 		
 		/* First look for Executor (tm) resource forks */
 		var newName = "%\(filename)"
@@ -159,10 +159,32 @@ private func openMacRes(inout original: NSURL, inout resbase: Int) -> UnsafeMuta
 		
 		newURL = nil
 
+		/* Look for OS X-style metadata: it might have a resource fork */
+		newName = "._\(filename)"
+		newURL = urlByAddingPath(newName)
+		resfile = fopen(newURL!.fileSystemRepresentation, "rb")
+		if resfile != nil {
+			//Be a bit more strict when looking for resources in OS X metadata.
+			//Simply put, it might not have a resource fork.
+			var resbase2 = 0
+			checkAppleFile(resfile, resbase: &resbase2)
+			guard resbase2 != 0 else {
+				break
+			}
+		}
+		
+		newURL = nil
+		
 		/* Look for raw resource fork.. */
 		newName = filename
 		newURL = urlByAddingPath(newName)
 		resfile = fopen(newURL!.fileSystemRepresentation, "rb")
+		guard resfile == nil else {
+			break
+		}
+		
+		/* Look for actual resource fork on OS X */
+		resfile = fileFromResourceFork(newURL!)
 		guard resfile == nil else {
 			break
 		}
