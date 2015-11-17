@@ -24,7 +24,11 @@ func initLogicData() -> Bool {
 }
 
 func initLogic() -> Bool {
+	#if MULTIPLAYER_SUPPORT
 	return false
+	#else
+	return true
+	#endif
 }
 
 func logicUsage() {

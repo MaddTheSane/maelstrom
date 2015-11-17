@@ -18,6 +18,7 @@
 		554E20911BFA778200070D91 /* XattrResFork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 554E20901BFA778200070D91 /* XattrResFork.swift */; };
 		554E20921BFA896E00070D91 /* Images in Resources */ = {isa = PBXBuildFile; fileRef = 55D1287F0F09DA7200E06E2A /* Images */; };
 		554E20951BFA89DC00070D91 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 554E20971BFA89DC00070D91 /* InfoPlist.strings */; };
+		554E209A1BFA99D000070D91 /* SColorTable.c in Sources */ = {isa = PBXBuildFile; fileRef = 554E20981BFA99D000070D91 /* SColorTable.c */; };
 		555968611BE6EB22003A3001 /* fastrand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 173670CB00AF29927F000001 /* fastrand.cpp */; };
 		555968631BE6EBCB003A3001 /* Mac_Compat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555968621BE6EBCB003A3001 /* Mac_Compat.swift */; };
 		555968651BE6ED5D003A3001 /* Mac_Wave.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555968641BE6ED5D003A3001 /* Mac_Wave.swift */; };
@@ -219,6 +220,8 @@
 		5515E8351BE68A7D0048605C /* applefile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = applefile.swift; sourceTree = "<group>"; };
 		554E20901BFA778200070D91 /* XattrResFork.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XattrResFork.swift; sourceTree = "<group>"; };
 		554E20961BFA89DC00070D91 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		554E20981BFA99D000070D91 /* SColorTable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SColorTable.c; sourceTree = "<group>"; };
+		554E20991BFA99D000070D91 /* SColorTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SColorTable.h; sourceTree = "<group>"; };
 		555968621BE6EBCB003A3001 /* Mac_Compat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mac_Compat.swift; sourceTree = "<group>"; };
 		555968641BE6ED5D003A3001 /* Mac_Wave.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mac_Wave.swift; sourceTree = "<group>"; };
 		557258B519E5CC730073CDF2 /* SDLMain.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SDLMain.xib; sourceTree = "<group>"; };
@@ -536,6 +539,8 @@
 			isa = PBXGroup;
 			children = (
 				55836C631BF3CBA6001605AB /* SwiftLoad.cpp */,
+				554E20981BFA99D000070D91 /* SColorTable.c */,
+				554E20991BFA99D000070D91 /* SColorTable.h */,
 			);
 			name = "C++ specific";
 			sourceTree = "<group>";
@@ -708,6 +713,7 @@
 				55836C671BF3D409001605AB /* NetPlay.swift in Sources */,
 				55FF31A21BF2D070001977AD /* Scores.swift in Sources */,
 				555968631BE6EBCB003A3001 /* Mac_Compat.swift in Sources */,
+				554E209A1BFA99D000070D91 /* SColorTable.c in Sources */,
 				55FF31AC1BF33444001977AD /* init.swift in Sources */,
 				55FF31AE1BF33A5F001977AD /* Player.swift in Sources */,
 				55FF31A61BF2E3EE001977AD /* Game.swift in Sources */,

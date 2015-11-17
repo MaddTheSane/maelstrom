@@ -38,7 +38,7 @@ enum ReflectError: ErrorType {
 	case UnexpectedType(Any.Type)
 }
 
-private func arrayFromObjectByMirroring<X>(obj: Any, appendLastObject lastObj: X? = nil) throws -> [X] {
+private func arrayFromObject<X>(reflecting obj: Any, appendLastObject lastObj: X? = nil) throws -> [X] {
 	var anArray = [X]()
 	let mirror = Mirror(reflecting: obj)
 	for val in mirror.children {
@@ -73,7 +73,7 @@ final class HighScores {
 	private var scoreList = [Score](count: NUM_SCORES, repeatedValue: Score())
 	
 	/** The high scores structure */
-	struct Score: Comparable, Hashable {
+	struct Score: Comparable, Hashable, CustomStringConvertible {
 		///The name of the player
 		var name = ""
 		///The wave, or level, that the player reached
@@ -83,6 +83,10 @@ final class HighScores {
 		
 		var hashValue: Int {
 			return name.hashValue ^ wave.hashValue ^ score.hashValue
+		}
+		
+		var description: String {
+			return name + ": wave: \(wave), score: \(score)"
 		}
 	}
 	
@@ -185,14 +189,24 @@ final class HighScores {
 			scoreLocation = ourDir
 			
 			guard ourDir.checkResourceIsReachableAndReturnError(nil) else {
+				//Create the app support directory, just in case
+				
+				do {
+					try fm.createDirectoryAtURL(scoreLocation.URLByDeletingLastPathComponent!, withIntermediateDirectories: true, attributes: nil)
+				} catch _ {}
+				
 				//load old scores
 				let MAELSTROM_SCORES	= "Maelstrom-Scores"
+				
+				defer {
+					//save new scores
+					saveScores()
+				}
 				
 				guard let oldScorePath = NSBundle.mainBundle().URLForResource(MAELSTROM_SCORES, withExtension: nil) else {
 					//huh, okay...
 					
-					hScores.clearScores()
-					hScores.saveScores()
+					clearScores()
 					
 					return
 				}
@@ -201,10 +215,13 @@ final class HighScores {
 				guard scores_src != nil else {
 					//huh, okay...
 					
-					hScores.clearScores()
-					hScores.saveScores()
+					clearScores()
 					
 					return
+				}
+				
+				defer {
+					SDL_RWclose(scores_src);
 				}
 				
 				var oldScores = [OldScores](count: NUM_SCORES, repeatedValue: OldScores())
@@ -213,13 +230,9 @@ final class HighScores {
 					oldScores[i].wave = SDL_ReadBE32(scores_src)
 					oldScores[i].score = SDL_ReadBE32(scores_src)
 				}
-				SDL_RWclose(scores_src);
 				
 				//import old scores
 				loadOldScores(oldScores)
-				
-				//save new scores
-				saveScores()
 				
 				return
 			}
@@ -242,7 +255,7 @@ final class HighScores {
 					scoreList[i] = aScore
 				}
 				
-				scoreList.sortInPlace(<)
+				sortScores()
 			} catch {
 				print("Unable to load scores, error: \(error)")
 				saveScores()
@@ -255,11 +268,15 @@ final class HighScores {
 	
 	private func loadOldScores(oldScores: [OldScores]) {
 		for (i, oldscore) in oldScores.enumerate() {
-			let cChar: [Int8] = try! arrayFromObjectByMirroring(oldscore.name, appendLastObject: 0)
-			let aName = String(cChar)
+			let cChar: [Int8] = try! arrayFromObject(reflecting: oldscore.name, appendLastObject: 0)
+			let aName = String.fromCString(cChar)!
 			let newScore = Score(name: aName, wave: oldscore.wave, score: oldscore.score)
 			scoreList[i] = newScore
 		}
-		scoreList.sortInPlace(<)
+		sortScores()
+	}
+	
+	private func sortScores() {
+		scoreList.sortInPlace(>)
 	}
 }

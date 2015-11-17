@@ -18,3 +18,5 @@
 #include "fastrand.h"
 #include "pixel.h"
 #include "protocol.h"
+
+#include "SColorTable.h"

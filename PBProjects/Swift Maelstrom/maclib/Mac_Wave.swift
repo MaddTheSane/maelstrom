@@ -112,7 +112,7 @@ final class Wave {
 		
 		/* Load the WAVE file */
 		if ( SDL_LoadWAV(wavefile.fileSystemRepresentation, &spec, &samples, &soundDataLen) == nil ) {
-			throw Errors.SDLError(String(SDL_GetError()))
+			throw Errors.SDLError(String.fromCString(SDL_GetError())!)
 		}
 		/* Copy malloc()'d data to new'd data */
 		soundData = UnsafeMutablePointer<UInt8>(malloc(Int(soundDataLen)))

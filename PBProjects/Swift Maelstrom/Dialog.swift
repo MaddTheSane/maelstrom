@@ -119,7 +119,7 @@ class MacButton : MacDialog {
 		super.init(x: x, y: y)
 
 		guard button != nil else {
-			throw Errors.SDLError(String(SDL_GetError()))
+			throw Errors.SDLError(String.fromCString(SDL_GetError())!)
 		}
 		
 		//var textb = UnsafeMutablePointer<SDL_Surface>()
@@ -574,7 +574,7 @@ final class MacTextEntry : MacDialog {
 				return;
 			}
 			entryList[currentEntry].hilite = false
-			entryList[currentEntry].variable += String([Int8(key.sym),0])
+			entryList[currentEntry].variable += String.fromCString([Int8(key.sym),0])!
 			updateEntry(entryList[currentEntry])
 			drawCursor(entryList[currentEntry])
 		}

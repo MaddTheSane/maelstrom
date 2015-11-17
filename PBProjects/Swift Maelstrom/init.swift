@@ -158,7 +158,7 @@ func doInitializations(video_flags: SDL_WindowFlags) -> Bool {
 	/* Initialize the first joystick */
 	if ( SDL_NumJoysticks() > 0 ) {
 		if ( SDL_JoystickOpen(0) == nil ) {
-			print("Warning: Couldn't open joystick '\(String(SDL_JoystickName(nil)))' : \(String(SDL_GetError()))")
+			print("Warning: Couldn't open joystick '\(String.fromCString(SDL_JoystickName(nil))!)' : \(String.fromCString(SDL_GetError())!)")
 		}
 	}
 	//#endif
@@ -182,7 +182,7 @@ func doInitializations(video_flags: SDL_WindowFlags) -> Bool {
 	/* Load the Maelstrom icon */
 	icon = SDL_LoadBMP(library.path("icon.bmp")!.fileSystemRepresentation);
 	if icon == nil {
-		print("Fatal: Couldn't load icon: \(String(SDL_GetError()))");
+		print("Fatal: Couldn't load icon: \(String.fromCString(SDL_GetError())!)");
 		return false;
 	}
 	
