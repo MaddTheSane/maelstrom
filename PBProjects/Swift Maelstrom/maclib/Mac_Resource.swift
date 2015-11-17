@@ -176,16 +176,17 @@ private func openMacRes(inout original: NSURL, inout resbase: Int) -> UnsafeMuta
 		
 		newURL = nil
 		
-		/* Look for raw resource fork.. */
+		/* Look for actual resource fork on OS X */
+		//Has to be placed here, otherwise the empty file will be loaded instead
 		newName = filename
 		newURL = urlByAddingPath(newName)
-		resfile = fopen(newURL!.fileSystemRepresentation, "rb")
+		resfile = fileFromResourceFork(newURL!)
 		guard resfile == nil else {
 			break
 		}
-		
-		/* Look for actual resource fork on OS X */
-		resfile = fileFromResourceFork(newURL!)
+
+		/* Look for raw resource fork.. */
+		resfile = fopen(newURL!.fileSystemRepresentation, "rb")
 		guard resfile == nil else {
 			break
 		}
@@ -205,7 +206,7 @@ private func openMacRes(inout original: NSURL, inout resbase: Int) -> UnsafeMuta
 		checkMacBinary(resfile, resbase: &resbase)
 	}
 	#if APPLEDOUBLE_DEBUG
-		print(String(format: "Resfile base = %d", *resbase))
+		print(String(format: "Resfile base = %d", resbase))
 	#endif
 
 	return resfile

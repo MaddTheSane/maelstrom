@@ -261,7 +261,7 @@ final class Sound {
 		channels[Int(channel)].src = wave.data
 		channels[Int(channel)].callback = callback;
 		#if DEBUG_SOUND
-			printf("Playing sound %hu on channel %d\n", sndID, channel);
+			print(String(format:"Playing sound %hu on channel %d", sndID, channel))
 		#endif
 		return true;
 	}
@@ -292,7 +292,7 @@ final class Sound {
 					*/
 					if channels[i].len <= 0 {
 						#if DEBUG_SOUND
-							printf("Channel %d finished\n", i);
+							print(String(format:"Channel %d finished", i))
 						#endif
 						/* This is critical */
 						if let callback = channels[i].callback {
