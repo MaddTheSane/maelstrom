@@ -70,7 +70,7 @@ func ==(lhs: MaelOSType, rhs: MaelOSType) -> Bool {
 	return lhs.a == rhs.a && lhs.b == rhs.b && lhs.c == rhs.c && lhs.d == rhs.d
 }
 
-struct MaelOSType: Hashable {
+struct MaelOSType: Hashable, CustomStringConvertible {
 	//TODO: make this endian-safe
 	var a: UInt8
 	var b: UInt8
@@ -144,6 +144,10 @@ struct MaelOSType: Hashable {
 	
 	var hashValue: Int {
 		return rawOSType.hashValue
+	}
+	
+	var description: String {
+		return stringValue
 	}
 }
 

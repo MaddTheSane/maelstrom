@@ -30,10 +30,30 @@ final class LibPath {
 	}()
 	
 	func path(fileName: String) -> NSURL? {
+		//The SDL port of Maelstrom has some wonky file-name conventions due to different ways of storing Mac resource forks
+		let posibleFileNames: [String] = {
+			var toRet = [String]()
+			toRet.append(fileName)
+			toRet.append("%\(fileName)")
+			toRet.append("._\(fileName)")
+			toRet.append((fileName as NSString).stringByAppendingPathExtension("bin")!)
+			
+			let tmpRet = toRet.map({ (var tmpName) -> String in
+				tmpName.replaceAllInstancesOfCharacter(" ", withCharacter: "_")
+				return tmpName
+			})
+			
+			toRet.appendContentsOf(tmpRet)
+			
+			return toRet
+		}()
 		for url in LibPath.searchURLs {
-			let combined = url.URLByAppendingPathComponent(fileName)
-			if combined.checkResourceIsReachableAndReturnError(nil) {
-				return combined
+			for aFileName in posibleFileNames {
+				let combined = url.URLByAppendingPathComponent(aFileName)
+				if combined.checkResourceIsReachableAndReturnError(nil) {
+					//But the APIs still expect the base file name
+					return url.URLByAppendingPathComponent(fileName)
+				}
 			}
 		}
 		

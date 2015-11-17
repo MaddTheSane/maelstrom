@@ -166,6 +166,7 @@ private func openMacRes(inout original: NSURL, inout resbase: Int) -> UnsafeMuta
 		if resfile != nil {
 			//Be a bit more strict when looking for resources in OS X metadata.
 			//Simply put, it might not have a resource fork.
+			//...but it will always be an AppleSingle/AppleDouble file
 			var resbase2 = 0
 			checkAppleFile(resfile, resbase: &resbase2)
 			guard resbase2 != 0 else {
@@ -425,7 +426,7 @@ class Mac_Resource {
 			bytesex16(&typeEnt.Num_rez);
 			bytesex16(&typeEnt.Ref_offset);
 			typeEnt.Num_rez += 1;	/* Value in fork is one short */
-			typeEnt.Res_type.rawOSType = typeEnt.Res_type.rawOSType.bigEndian
+			//typeEnt.Res_type.rawOSType = typeEnt.Res_type.rawOSType.bigEndian
 			resources.append(ResourceList(entry: typeEnt))
 			ref_offsets.append(typeEnt.Ref_offset)
 		}
@@ -451,7 +452,7 @@ class Mac_Resource {
 				} else {
 					let cur_offset = ftell(filep);
 					fseek(filep,
-						base+Int(header.map_offset)+Int(resMap.names_offset)+Int(ref_ent.Name_offset),
+						base+Int(header.map_offset)+Int(resMap.names_offset)+Int(ref_ent.Name_offset) - 1,
 						SEEK_SET);
 					fread(&name_len, 1, 1, filep);
 					var aCharName = [UInt8](count: Int(name_len), repeatedValue: 0)

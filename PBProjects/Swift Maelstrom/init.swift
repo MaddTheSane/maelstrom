@@ -167,7 +167,7 @@ func doInitializations(video_flags: SDL_WindowFlags) -> Bool {
 	do {
 		fontserv = try FontServer(fontAtURL: library.path("Maelstrom Fonts")!)
 	} catch {
-		fatalError("Fatal: \(error)\n")
+		fatalError("Fatal: \(error)")
 		//return false
 	}
 	
@@ -175,7 +175,7 @@ func doInitializations(video_flags: SDL_WindowFlags) -> Bool {
 	do {
 		sound = try Sound(soundFileURL: library.path("Maelstrom Sounds")!, volume: gSoundLevel);
 	} catch {
-		fatalError("Fatal: \(error)\n")
+		fatalError("Fatal: \(error)")
 		//return false
 	}
 	
