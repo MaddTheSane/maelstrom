@@ -20,3 +20,4 @@
 #include "protocol.h"
 
 #include "SColorTable.h"
+#import "XattrResFork.h"

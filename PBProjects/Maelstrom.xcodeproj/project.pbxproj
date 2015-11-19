@@ -15,7 +15,6 @@
 		5515E8311BE611310048605C /* Mac_Resource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5515E8301BE611310048605C /* Mac_Resource.swift */; };
 		5515E8341BE6878E0048605C /* MacBinary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5515E8331BE6878E0048605C /* MacBinary.swift */; };
 		5515E8361BE68A7D0048605C /* applefile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5515E8351BE68A7D0048605C /* applefile.swift */; };
-		554E20911BFA778200070D91 /* XattrResFork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 554E20901BFA778200070D91 /* XattrResFork.swift */; };
 		554E20921BFA896E00070D91 /* Images in Resources */ = {isa = PBXBuildFile; fileRef = 55D1287F0F09DA7200E06E2A /* Images */; };
 		554E20951BFA89DC00070D91 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 554E20971BFA89DC00070D91 /* InfoPlist.strings */; };
 		554E209A1BFA99D000070D91 /* SColorTable.c in Sources */ = {isa = PBXBuildFile; fileRef = 554E20981BFA99D000070D91 /* SColorTable.c */; };
@@ -29,6 +28,7 @@
 		5596588A1BEACEA400D8BB39 /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559658891BEACEA400D8BB39 /* Object.swift */; };
 		55A616501BE55FEC00AD2049 /* SDLMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A6164F1BE55FEC00AD2049 /* SDLMain.swift */; };
 		55A616521BE5614600AD2049 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A616511BE5614600AD2049 /* main.swift */; };
+		55ADA3EA1BFE684400D78509 /* XattrResFork.m in Sources */ = {isa = PBXBuildFile; fileRef = 55ADA3E91BFE684400D78509 /* XattrResFork.m */; };
 		55D1282C0F09D59800E06E2A /* checksum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 173670BC00AF295B7F000001 /* checksum.cpp */; };
 		55D1282D0F09D59800E06E2A /* controls.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 173670BF00AF295B7F000001 /* controls.cpp */; };
 		55D1282E0F09D59800E06E2A /* dialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 173670C100AF295B7F000001 /* dialog.cpp */; };
@@ -218,7 +218,6 @@
 		5515E8321BE686AE0048605C /* macbinary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = macbinary.h; sourceTree = "<group>"; };
 		5515E8331BE6878E0048605C /* MacBinary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacBinary.swift; sourceTree = "<group>"; };
 		5515E8351BE68A7D0048605C /* applefile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = applefile.swift; sourceTree = "<group>"; };
-		554E20901BFA778200070D91 /* XattrResFork.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XattrResFork.swift; sourceTree = "<group>"; };
 		554E20961BFA89DC00070D91 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		554E20981BFA99D000070D91 /* SColorTable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SColorTable.c; sourceTree = "<group>"; };
 		554E20991BFA99D000070D91 /* SColorTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SColorTable.h; sourceTree = "<group>"; };
@@ -233,6 +232,8 @@
 		55A6164F1BE55FEC00AD2049 /* SDLMain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SDLMain.swift; sourceTree = "<group>"; };
 		55A616511BE5614600AD2049 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		55A616531BE575CA00AD2049 /* checksum-CC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "checksum-CC.cpp"; path = "PBProjects/checksum-CC.cpp"; sourceTree = "<group>"; };
+		55ADA3E91BFE684400D78509 /* XattrResFork.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XattrResFork.m; sourceTree = "<group>"; };
+		55ADA3EB1BFE68CD00D78509 /* XattrResFork.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XattrResFork.h; sourceTree = "<group>"; };
 		55D127EF0F09D54000E06E2A /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = /Library/Frameworks/SDL2.framework; sourceTree = "<absolute>"; };
 		55D127F00F09D54000E06E2A /* SDL2_net.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_net.framework; path = /Library/Frameworks/SDL2_net.framework; sourceTree = "<absolute>"; };
 		55D128240F09D57F00E06E2A /* Maelstrom.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Maelstrom.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -530,7 +531,8 @@
 				555968641BE6ED5D003A3001 /* Mac_Wave.swift */,
 				5515E8331BE6878E0048605C /* MacBinary.swift */,
 				55D4F8B51BE7F3DB00F31A0F /* SwiftHelping.swift */,
-				554E20901BFA778200070D91 /* XattrResFork.swift */,
+				55ADA3EB1BFE68CD00D78509 /* XattrResFork.h */,
+				55ADA3E91BFE684400D78509 /* XattrResFork.m */,
 			);
 			path = maclib;
 			sourceTree = "<group>";
@@ -693,7 +695,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				554E20911BFA778200070D91 /* XattrResFork.swift in Sources */,
+				55ADA3EA1BFE684400D78509 /* XattrResFork.m in Sources */,
 				55D4F8B81BE83ADB00F31A0F /* Mac_FontServ.swift in Sources */,
 				550CEC541BE842AC00453C11 /* SDL_FrameBuf.swift in Sources */,
 				555968611BE6EB22003A3001 /* fastrand.cpp in Sources */,

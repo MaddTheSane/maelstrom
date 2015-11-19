@@ -25,8 +25,8 @@ func SDL_LoadBMP(file: UnsafePointer<CChar>) -> UnsafeMutablePointer<SDL_Surface
 	return SDL_LoadBMP_RW(SDL_RWFromFile(file, "rb"), 1)
 }
 
-func SDL_LoadWAV(file: UnsafePointer<CChar>, inout _ spec: SDL_AudioSpec, _ audio_buf: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>>, inout _ audio_len: UInt32) -> UnsafeMutablePointer<SDL_AudioSpec> {
-	return SDL_LoadWAV_RW(SDL_RWFromFile(file, "rb"),1, &spec,audio_buf,&audio_len)
+func SDL_LoadWAV(file: UnsafePointer<CChar>, _ spec: UnsafeMutablePointer<SDL_AudioSpec>, _ audio_buf: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>>, _ audio_len: UnsafeMutablePointer<UInt32>) -> UnsafeMutablePointer<SDL_AudioSpec> {
+	return SDL_LoadWAV_RW(SDL_RWFromFile(file, "rb"), 1, spec, audio_buf, audio_len)
 }
 
 func SDL_RWsize(ctx: UnsafeMutablePointer<SDL_RWops>) -> Int64 {

@@ -111,7 +111,7 @@ final class Wave {
 		Init();
 		
 		/* Load the WAVE file */
-		if ( SDL_LoadWAV(wavefile.fileSystemRepresentation, &spec, &samples, &soundDataLen) == nil ) {
+		if SDL_LoadWAV(wavefile.fileSystemRepresentation, &spec, &samples, &soundDataLen) == nil {
 			throw Errors.SDLError(String.fromCString(SDL_GetError())!)
 		}
 		/* Copy malloc()'d data to new'd data */
@@ -238,18 +238,18 @@ final class Wave {
 					desired_rate = 11025;
 				}
 				num_samples =
-				Wave.convertRate(sample_rate>>16, rateOut: desired_rate,
-				samples: &samples, countOfSamples: num_samples, sampleSize: 1);
-				break;
+					convertRate(sample_rate>>16, rateOut: desired_rate,
+						samples: &samples, countOfSamples: num_samples, sampleSize: 1);
+				
 			case rate22khz:
 				/* Assuming 8-bit mono samples */
 				if ( desired_rate == 0 ) {
 					desired_rate = 22050;
 				}
 				num_samples =
-				Wave.convertRate(sample_rate>>16, rateOut: desired_rate,
+				convertRate(sample_rate>>16, rateOut: desired_rate,
 				samples: &samples, countOfSamples: num_samples, sampleSize: 1);
-				break;
+				
 			case rate44khz:
 				fallthrough
 			default:
@@ -258,7 +258,7 @@ final class Wave {
 					break;
 				}
 				num_samples =
-					Wave.convertRate(sample_rate>>16, rateOut: desired_rate,
+					convertRate(sample_rate>>16, rateOut: desired_rate,
 						samples: &samples, countOfSamples: num_samples, sampleSize: 1);
 				break;
 			}
@@ -315,11 +315,11 @@ final class Wave {
 				let samplesize = sampleSize
 				let datalen: UInt32
 				
-				datalen = Wave.convertRate(UInt32(spec.freq), rateOut: desired_rate,
+				datalen = convertRate(UInt32(spec.freq), rateOut: desired_rate,
 				samples: &samples, countOfSamples: soundDataLen/UInt32(samplesize), sampleSize: UInt8(samplesize));
 				if samples != soundData {
 					/* Create new sound data */
-					free(soundData)
+					//free(soundData)
 					soundData = samples
 					soundDataLen = datalen * UInt32(samplesize)
 					
@@ -349,7 +349,7 @@ final class Wave {
 	
 	private func Free() {
 		if soundData != nil {
-			free(soundData)
+			//free(soundData)
 			soundData = nil
 			soundDataLen = 0
 		}
@@ -362,36 +362,33 @@ final class Wave {
 		}
 	}
 	
-	///Utility function
-	private class func convertRate(rate_in: UInt32, rateOut rate_out: Int32,
-		samples: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>>, countOfSamples  n_samples: UInt32, sampleSize s_size: UInt8) -> UInt32 {
-			var iPos: Double = 0
-			var iSize = 0.0
-			var oPos: UInt32 = 0
-			var nIn: UInt32 = 0
-			var nOut: UInt32 = 0
-			var input: UnsafeMutablePointer<UInt8> = nil
-			var output: UnsafeMutablePointer<UInt8> = nil
-			
-			nIn = UInt32(n_samples)*UInt32(s_size)
-			input = samples.memory
-			nOut = (UInt32(Double(rate_out)/Double(rate_in))*n_samples)+1;
-			output = UnsafeMutablePointer<UInt8>(malloc(Int(nOut) * Int(s_size)))
-			iSize = Double(rate_in)/Double(rate_out)*Double(s_size)
-			#if CONVERTRATE_DEBUG
-				print(String(format: "%g seconds of input", Double(n_samples) / Double(rate_in)))
-				print(String(format: "Input rate: %hu, Output rate: %hu, Input increment: %g\n", rate_in, rate_out, i_size/s_size))
-				print(String(format: "%g seconds of output\n", Double(nOut)/Double(rate_out)))
-			#endif
-			for ( iPos = 0, oPos = 0; Uint32(iPos) < nIn; ) {
-				#if CONVERTRATE_DEBUG
-					if ( opos >= n_out*s_size ) {print("Warning: buffer output overflow!");}
-				#endif
-				memcpy(&output[Int(oPos)], &input[Int(iPos)], Int(s_size));
-				iPos += iSize;
-				oPos += UInt32(s_size);
-			}
-			samples.memory = output;
-			return oPos/UInt32(s_size)
-	}
 }
+
+///Utility function
+private func convertRate(rate_in: UInt32, rateOut rate_out: Int32, inout
+	samples: UnsafeMutablePointer<UInt8>, countOfSamples  n_samples: UInt32, sampleSize s_size: UInt8) -> UInt32 {
+		var iPos: Double = 0
+		var oPos: UInt32 = 0
+		
+		let nIn = UInt32(n_samples)*UInt32(s_size)
+		let input = samples
+		var nOut = (UInt32(Double(rate_out)/Double(rate_in))*n_samples)+1;
+		let output = UnsafeMutablePointer<UInt8>(malloc(Int(nOut) * Int(s_size)))
+		let iSize = Double(rate_in)/Double(rate_out)*Double(s_size)
+		#if CONVERTRATE_DEBUG
+			print(String(format: "%g seconds of input", Double(n_samples) / Double(rate_in)))
+			print(String(format: "Input rate: %hu, Output rate: %hu, Input increment: %g\n", rate_in, rate_out, i_size/s_size))
+			print(String(format: "%g seconds of output\n", Double(nOut)/Double(rate_out)))
+		#endif
+		for ( iPos = 0, oPos = 0; UInt32(iPos) < nIn; ) {
+			#if CONVERTRATE_DEBUG
+				if ( opos >= n_out*s_size ) {print("Warning: buffer output overflow!");}
+			#endif
+			memcpy(output.advancedBy(Int(oPos)), input.advancedBy(Int(iPos)), Int(s_size));
+			iPos += iSize;
+			oPos += UInt32(s_size);
+		}
+		samples = output;
+		return oPos/UInt32(s_size)
+}
+
