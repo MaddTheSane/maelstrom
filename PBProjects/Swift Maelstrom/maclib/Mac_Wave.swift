@@ -150,12 +150,12 @@ final class Wave {
 			/* Initialization option (unused) */
 			var init_op: UInt32 = 0
 			
-			sndCopy(&n_types, &data);
-			if ( n_types != 1 ) {
+			sndCopy(&n_types, &data)
+			if n_types != 1 {
 				throw Errors.MultiTypeSound
 			}
-			sndCopy(&f_type, &data);
-			if ( f_type != SAMPLED_SND ) {
+			sndCopy(&f_type, &data)
+			if f_type != SAMPLED_SND {
 				throw Errors.NotSampledSound
 			}
 			sndCopy(&init_op, &data);

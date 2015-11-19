@@ -111,7 +111,6 @@ private func checkMacBinary(resfile: UnsafeMutablePointer<FILE>, inout resbase: 
 	fseek(resfile, 0, SEEK_SET)
 }
 
-
 private func openMacRes(inout original: NSURL, inout resbase: Int) -> UnsafeMutablePointer<FILE> {
 	var resfile: UnsafeMutablePointer<FILE> = nil
 	let directory = original.URLByDeletingLastPathComponent
@@ -213,85 +212,66 @@ private func openMacRes(inout original: NSURL, inout resbase: Int) -> UnsafeMuta
 }
 
 // MARK: - These are the data structures that make up the Macintosh Resource Fork
-private struct Resource_Header {
+private struct ResourceHeader {
 	///Offset of resources in file
-	var res_offset: UInt32
+	var res_offset: UInt32 = 0
 	///Offset of resource map in file
-	var map_offset: UInt32
+	var map_offset: UInt32 = 0
 	///Length of the resource data
-	var res_length: UInt32
+	var res_length: UInt32 = 0
 	///Length of the resource map
-	var map_length: UInt32
-	
-	init() {
-		res_offset = 0
-		map_offset = 0
-		res_length = 0
-		map_length = 0
-	}
+	var map_length: UInt32 = 0
 }
 
 private struct Resource_Data {
 	///Length of the resources data
-	var Data_length: UInt32
-	#if SHOW_VARLENGTH_FIELDS
+	var Data_length: UInt32 = 0
+	//#if SHOW_VARLENGTH_FIELDS
 	///The Resource Data
-	var Data: [UInt8]
-	#endif
-	
-	init() {
-		Data_length = 0
-	}
-};
+	//var Data: [UInt8]
+	//#endif
+}
 
-private struct Type_entry {
+private struct TypeEntry {
 	///Resource type
-	var Res_type: MaelOSType
+	var Res_type: MaelOSType = MaelOSType()
 	///number of this type resources in map - 1
-	var Num_rez: UInt16
+	var Num_rez: UInt16 = 0
 	/** Offset from type list, of reference
 	list for this type */
-	var Ref_offset: UInt16
-	
-	init() {
-		Res_type = MaelOSType()
-		Num_rez = 0
-		Ref_offset = 0
-	}
-};
+	var Ref_offset: UInt16 = 0
+}
 
-private struct Ref_entry {
+private struct ReferenceEntry {
 	///The ID for this resource
-	var Res_id: UInt16
+	var Res_id: UInt16 = 0
 	/** Offset in name list of resource
 	name, or -1 if no name */
-	var Name_offset: UInt16
+	var nameOffset: UInt16 = 0
 	///Resource attributes
-	var Res_attrs: UInt8
+	var resourceAttrs: UInt8 = 0
 	///3-byte offset from Resource data
-	var Res_offset: (UInt8, UInt8, UInt8)
+	var Res_offset: (UInt8, UInt8, UInt8) = (0,0,0)
 	///Reserved for use in-core
-	var Reserved: UInt32
+	var reserved: UInt32 = 0
 	
-	init() {
-		Res_id = 0
-		Name_offset = 0
-		Res_attrs = 0
-		Res_offset = (0,0,0)
-		Reserved = 0
+	var resourceOffset: UInt32 {
+		return ((UInt32(Res_offset.0)<<16) |
+			(UInt32(Res_offset.1)<<8) |
+			UInt32(Res_offset.2))
 	}
 };
 
-private struct Name_entry {
+private struct NameEntry {
 	///Length of the following name
 	var Name_len: UInt8
-	#if SHOW_VARLENGTH_FIELDS
+	//#if SHOW_VARLENGTH_FIELDS
 	/// Variable length resource name
-	var name: (UInt8)
-	#endif
+	//var name: (UInt8)
+	//#endif
 };
 
-private struct Resource_Map {
+private struct ResourceMap {
 	///Reserved for use in-core
 	var Reserved: (UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8)
 	///Map attributes
@@ -348,7 +328,7 @@ class Mac_Resource {
 		let offset: UInt32
 		private(set) var data: NSData? = nil
 		
-		private init(entry ref_ent: Ref_entry, name: String) {
+		private init(entry ref_ent: ReferenceEntry, name: String) {
 			offset =
 				((UInt32(ref_ent.Res_offset.0)<<16) |
 					(UInt32(ref_ent.Res_offset.1)<<8) |
@@ -363,7 +343,7 @@ class Mac_Resource {
 		private var intCount: UInt16
 		private(set) var list = [Resource]()
 		
-		private init(entry: Type_entry) {
+		private init(entry: TypeEntry) {
 			type = entry.Res_type
 			intCount = entry.Num_rez
 		}
@@ -375,9 +355,9 @@ class Mac_Resource {
 	
 	init(fileURL: NSURL) throws {
 		var filename = fileURL
-		var header = Resource_Header()
-		var resMap = Resource_Map()
-		var typeEnt = Type_entry()
+		var header = ResourceHeader()
+		var resMap = ResourceMap()
+		var typeEnt = TypeEntry()
 		//Uint16                *ref_offsets;
 		var name_len: UInt8 = 0
 		//int i, n;
@@ -394,7 +374,7 @@ class Mac_Resource {
 		}
 		fseek(filep, base, SEEK_SET);
 		
-		guard fread(&header, sizeofValue(header), 1, filep) != 0 else {
+		guard fread(&header, sizeof(ResourceHeader), 1, filep) != 0 else {
 			throw Errors.CouldNotOpenResource
 			//error("Couldn't read resource info from '%s'", filename);
 		}
@@ -405,7 +385,7 @@ class Mac_Resource {
 		bytesex32(&header.map_offset);
 		
 		fseek(filep, base+Int(header.map_offset), SEEK_SET);
-		guard fread(&resMap, sizeofValue(resMap), 1, filep) != 0 else {
+		guard fread(&resMap, sizeof(ResourceMap), 1, filep) != 0 else {
 			throw Errors.CouldNotOpenResource
 			//error("Couldn't read resource info from '%s'", filename);
 		}
@@ -417,10 +397,11 @@ class Mac_Resource {
 		/* Fill in our class members */
 		num_types = resMap.num_types;
 		
-		var ref_offsets = [UInt16](count: Int(num_types), repeatedValue: 0)
+		var ref_offsets = [UInt16]()
+		ref_offsets.reserveCapacity(Int(num_types))
 		fseek(filep, base+Int(header.map_offset)+Int(resMap.types_offset)+2, SEEK_SET)
 		for _ in 0..<num_types {
-			guard fread(&typeEnt, sizeofValue(typeEnt), 1, filep) != 0 else {
+			guard fread(&typeEnt, sizeof(TypeEntry), 1, filep) != 0 else {
 				throw Errors.CouldNotOpenResource
 			}
 			
@@ -437,23 +418,23 @@ class Mac_Resource {
 				base + Int(header.map_offset) + Int(resMap.types_offset) + Int(ref_offsets[i]),
 				SEEK_SET);
 			for _ in 0..<Int(aRes.intCount) {
-				var ref_ent = Ref_entry()
+				var ref_ent = ReferenceEntry()
 				
 				guard fread(&ref_ent, sizeofValue(ref_ent), 1, filep) != 0 else {
 					throw Errors.CouldNotOpenResource
 				}
 				
 				bytesex16(&ref_ent.Res_id)
-				bytesex16(&ref_ent.Name_offset)
+				bytesex16(&ref_ent.nameOffset)
 				
 				var entName: String
 				/* Grab the name, while we're here... */
-				if ( ref_ent.Name_offset == 0xFFFF ) {
+				if ( ref_ent.nameOffset == 0xFFFF ) {
 					entName = ""
 				} else {
 					let cur_offset = ftell(filep);
 					fseek(filep,
-						base+Int(header.map_offset)+Int(resMap.names_offset)+Int(ref_ent.Name_offset) - 1,
+						base+Int(header.map_offset)+Int(resMap.names_offset)+Int(ref_ent.nameOffset) - 1,
 						SEEK_SET);
 					fread(&name_len, 1, 1, filep);
 					var aCharName = [UInt8](count: Int(name_len), repeatedValue: 0)
@@ -502,7 +483,7 @@ class Mac_Resource {
 				for aTyp in aRes.list {
 					toRet.append(aTyp.id)
 				}
-				return toRet.sort(>)
+				return toRet.sort(<)
 			}
 		}
 		throw Errors.CouldNotFindResourceType(type: type)
@@ -522,7 +503,7 @@ class Mac_Resource {
 	}
 
 	private func loadData(resource: Resource) throws {
-		fseek(filep, base+Int(res_offset + resource.offset), SEEK_SET);
+		fseek(filep, base + Int(res_offset + resource.offset), SEEK_SET);
 		
 		var len: UInt32 = 0
 		fread(&len, 4, 1, filep);

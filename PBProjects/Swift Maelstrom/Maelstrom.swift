@@ -10,6 +10,10 @@ import Foundation
 
 private let Version = "Maelstrom v1.4.3 (GPL version 3.0.6) -- 10/19/2002 by Sam Lantinga\n"
 
+func error(err: String, line: Int = __LINE__, file: StaticString = __FILE__) {
+	print("\(file):\(line), \(err)")
+}
+
 // Sound resource definitions...
 enum SoundResource: UInt16 {
 	case Shot = 100
