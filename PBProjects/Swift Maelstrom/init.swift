@@ -134,9 +134,9 @@ func doInitializations(video_flags: SDL_WindowFlags) -> Bool {
 	//#ifdef SDL_INIT_JOYSTICK
 	init_flags |= SDL_INIT_JOYSTICK;
 	//#endif
-	if ( SDL_Init(UInt32(init_flags)) < 0 ) {
+	if SDL_Init(UInt32(init_flags)) < 0 {
 		init_flags &= ~SDL_INIT_JOYSTICK;
-		if ( SDL_Init(UInt32(init_flags)) < 0 ) {
+		if SDL_Init(UInt32(init_flags)) < 0 {
 			error("Couldn't initialize SDL: \(String.fromCString(SDL_GetError())!)");
 			return false;
 		}

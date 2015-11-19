@@ -372,17 +372,19 @@ private func convertRate(rate_in: UInt32, rateOut rate_out: Int32, inout
 		
 		let nIn = UInt32(n_samples)*UInt32(s_size)
 		let input = samples
-		var nOut = (UInt32(Double(rate_out)/Double(rate_in))*n_samples)+1;
+		let nOut = UInt32((Double(rate_out)/Double(rate_in))*Double(n_samples))+1;
 		let output = UnsafeMutablePointer<UInt8>(malloc(Int(nOut) * Int(s_size)))
 		let iSize = Double(rate_in)/Double(rate_out)*Double(s_size)
 		#if CONVERTRATE_DEBUG
 			print(String(format: "%g seconds of input", Double(n_samples) / Double(rate_in)))
-			print(String(format: "Input rate: %hu, Output rate: %hu, Input increment: %g\n", rate_in, rate_out, i_size/s_size))
-			print(String(format: "%g seconds of output\n", Double(nOut)/Double(rate_out)))
+			print(String(format: "Input rate: %hu, Output rate: %hu, Input increment: %g", rate_in, rate_out, iSize/Double(s_size)))
+			print(String(format: "%g seconds of output", Double(nOut)/Double(rate_out)))
 		#endif
 		for ( iPos = 0, oPos = 0; UInt32(iPos) < nIn; ) {
 			#if CONVERTRATE_DEBUG
-				if ( opos >= n_out*s_size ) {print("Warning: buffer output overflow!");}
+				if oPos >= nOut * UInt32(s_size) {
+					print("Warning: buffer output overflow!")
+				}
 			#endif
 			memcpy(output.advancedBy(Int(oPos)), input.advancedBy(Int(iPos)), Int(s_size));
 			iPos += iSize;
