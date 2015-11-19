@@ -61,7 +61,6 @@ static fpos_t seekfn(void *handler, fpos_t offset, int whence)
 	
 	mem->pos = pos;
 	return (fpos_t)pos;
-
 }
 
 static int closefn(void *handler)

@@ -66,15 +66,15 @@ struct FInfo {
 	}
 	
 	/// File type, 4 ASCII chars
-	var fdType: MaelOSType
+	var fdType: MaelOSType = MaelOSType()
 	/// File's creator, 4 ASCII chars
-	var fdCreator: MaelOSType
+	var fdCreator: MaelOSType = MaelOSType()
 	/// Finder flag bits
-	var fdFlags: FinderFlags
+	var fdFlags: FinderFlags = []
 	/// file's location in folder
-	var fdLocation: Point
-	/// file 's folder (aka window)
-	var fdFldr: Int16
+	var fdLocation: Point = Point(v: 0, h: 0)
+	/// file's folder (aka window)
+	var fdFldr: Int16 = 0
 }
 
 /* See older Inside Macintosh, Volume IV, page 105.
@@ -83,17 +83,17 @@ struct FInfo {
 /// Extended finder information
 struct FXInfo {
 	/// icon ID number
-	var fdIconID: Int16
+	var fdIconID: Int16 = 0
 	/// spare
-	var fdUnused: (Int16, Int16, Int16)
+	var fdUnused: (Int16, Int16, Int16) = (0,0,0)
 	/// scrip flag and code
-	var fdScript: Int8
+	var fdScript: Int8 = 0
 	/// reserved
-	var fdXFlags: Int8
+	var fdXFlags: Int8 = 0
 	/// comment ID number
-	var fdComment: Int16
+	var fdComment: Int16 = 0
 	/// home directory ID
-	var fdPutAway: Int32
+	var fdPutAway: Int32 = 0
 }; /* FXInfo */
 
 
@@ -101,30 +101,25 @@ struct FXInfo {
 
 /// header portion of AppleSingle
 struct AppleSingleHeader {
-	init() {
-		magicNum = 0
-		versionNum = 0
-		filler = (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
-		numEntries = 0
-	}
-/* AppleSingle = 0x00051600; AppleDouble = 0x00051607 */
+	
+	/// AppleSingle = 0x00051600;
+	static let AppleSingle: UInt32 = 0x00051600
+	
+	/// AppleDouble = 0x00051607
+	static let AppleDouble: UInt32 = 0x00051607
+	
 	/// internal file type tag
-	var magicNum: UInt32
+	var magicNum: UInt32 = 0
 	/// format version: 2 = 0x00020000
-	var versionNum: UInt32
+	var versionNum: UInt32 = 0
 	/// filler, currently all bits 0
-	var filler: (UInt8,UInt8,UInt8,UInt8,UInt8,UInt8,UInt8,UInt8,UInt8,UInt8,UInt8,UInt8,UInt8,UInt8,UInt8,UInt8)
+	var filler: (UInt8,UInt8,UInt8,UInt8,UInt8,UInt8,UInt8,UInt8,UInt8,UInt8,UInt8,UInt8,UInt8,UInt8,UInt8,UInt8) = (0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
 	/// number of entries which follow
-	var numEntries: UInt16
+	var numEntries: UInt16 = 0
 } /* ASHeader */
 
 /// one AppleSingle entry descriptor
 struct AppleSingleEntry {
-	init() {
-		entryIDValue = 0
-		entryOffset = 0
-		entryLength = 0
-	}
 	/// Apple reserves the range of entry IDs from `1` to `0x7FFFFFFF`.
 	/// Entry ID 0 is invalid.  The rest of the range is available
 	/// for applications to define their own entry types.  "Apple does
@@ -239,13 +234,13 @@ struct AppleSingleEntry {
 	/// (earliest reasonable time).
 	struct FileDates {
 		/// file creation date/time
-		var create: Int32
+		var create: Int32 = Int32(bitPattern: 0x80000000)
 		/// last modification date/time
-		var modify: Int32
+		var modify: Int32 = Int32(bitPattern: 0x80000000)
 		/// last backup date/time
-		var backup: Int32
+		var backup: Int32 = Int32(bitPattern: 0x80000000)
 		/// last access date/time
-		var access: Int32
+		var access: Int32 = Int32(bitPattern: 0x80000000)
 	}; /* ASFileDates */
 
 
@@ -255,9 +250,9 @@ struct AppleSingleEntry {
 	/// `PBGetFileInfo()`, and Volume IV, page 155, for `PBGetCatInfo()`.
 	struct ASFinderInfo {
 		/// `PBGetFileInfo()` or `PBGetCatInfo()`
-		var ioFlFndrInfo: FInfo
+		var ioFlFndrInfo: FInfo = FInfo()
 		/// `PBGetCatInfo()` (HFS only)
-		var ioFlXFndrInfo: FXInfo
+		var ioFlXFndrInfo: FXInfo = FXInfo()
 	}
 	
 	/// entry ID 10, Macintosh file information
@@ -275,9 +270,9 @@ struct AppleSingleEntry {
 			static let Locked = Attributes(rawValue: 1 << 0)
 		}
 		/// filler, currently all bits 0
-		var filler: (UInt8, UInt8, UInt8)
+		var filler: (UInt8, UInt8, UInt8) = (0,0,0)
 		/// `PBGetFileInfo()` or `PBGetCatInfo()`
-		var ioFlAttrib: Attributes
+		var ioFlAttrib: Attributes = []
 	}
 	
 	
@@ -288,11 +283,11 @@ struct AppleSingleEntry {
 	/// in auxtype); remainder of each field should be zero filled.
 	struct ProDOSInfo {
 		/// access word
-		var access: UInt16
+		var access: UInt16 = 0
 		/// file type of original file
-		var filetype: UInt16
+		var filetype: UInt16 = 0
 		/// auxiliary type of the orig file
-		var auxtype: UInt32
+		var auxtype: UInt32 = 0
 	}; /* ASProDosInfo */
 	
 	
@@ -325,10 +320,10 @@ struct AppleSingleEntry {
 			static let Archive = DOSAttributes(rawValue: 1 << 5)
 		}
 		/// filler, currently all bits 0
-		var filler: UInt8
+		var filler: UInt8 = 0
 		/// `_dos_getfileattr()`, MS-DOS
 		/// interrupt 21h function 4300h
-		var attr: DOSAttributes
+		var attr: DOSAttributes = .Normal
 	}
 	
 	/// entry ID 14, AFP server file information
@@ -351,15 +346,15 @@ struct AppleSingleEntry {
 		}
 		
 		/// filler, currently all bits 0
-		var filler: (UInt8, UInt8, UInt8)
+		var filler: (UInt8, UInt8, UInt8) = (0,0,0)
 		/// file attributes
-		var attr: Attributes
+		var attr: Attributes = []
 	}
 	
 	/// entry ID 15, AFP server directory ID
 	struct AFPDirId {
 		/// file's directory ID on AFP server
-		var dirid: UInt32
+		var dirid: UInt32 = 0
 	}; /* ASAfpDirId */
 
 	
@@ -368,12 +363,12 @@ struct AppleSingleEntry {
 	}
 	
 	/// entry type: see list, 0 invalid
-	var entryIDValue: UInt32
+	var entryIDValue: UInt32 = 0
 	/// offset, in octets, from beginning
 	/// of file to this entry's data
-	var entryOffset: UInt32
+	var entryOffset: UInt32 = 0
 	/// length of data in octets
-	var entryLength: UInt32
+	var entryLength: UInt32 = 0
 }; /* ASEntry */
 
 /// format of disk file
