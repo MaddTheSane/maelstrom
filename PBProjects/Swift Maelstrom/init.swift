@@ -187,15 +187,12 @@ func doInitializations(video_flags: SDL_WindowFlags) -> Bool {
 	}
 	
 	/* Initialize the screen */
-	screen = FrameBuf()
-	/*
-	if (screen->Init(SCREEN_WIDTH, SCREEN_HEIGHT, video_flags,
-	colors[gGammaCorrect], icon) < 0){
-	error("Fatal: %s\n", screen->Error());
-	return(-1);
+	do {
+		screen = try FrameBuf(width: Int32(SCREEN_WIDTH), height: Int32(SCREEN_HEIGHT), videoFlags: video_flags.rawValue, colors: colorsAtGamma(Int32(gGammaCorrect)), icon: icon)
+	} catch {
+		fatalError("\(error)")
 	}
-	screen->SetCaption("Maelstrom");
-	*/
+	screen.caption = "Maelstrom"
 	//atexit(CleanUp);		// Need to reset this under X11 DGA
 	SDL_FreeSurface(icon);
 	

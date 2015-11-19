@@ -87,32 +87,32 @@ func getCIcon(screen: FrameBuf, cicn_id: Int16) -> UnsafeMutablePointer<SDL_Surf
 	var h: UInt16 = 0
 	var pixels: [UInt8]
 	var mask: [UInt8]
-	var cicn_src: UnsafeMutablePointer<SDL_RWops> = nil
 	var cicn: UnsafeMutablePointer<SDL_Surface> = nil
 	
 	/* Open the cicn sprite file.. */
 	let file = ("Images" as NSString).stringByAppendingPathComponent("Maelstrom_Icon#\(cicn_id).bmp")
-	cicn_src = SDL_RWFromFile(path.path(file)!.fileSystemRepresentation, "r")
-	if ( cicn_src == nil ) {
+	let cicn_src = SDL_RWFromFile(path.path(file)!.fileSystemRepresentation, "r")
+	if cicn_src == nil {
 		print("GetCIcon(\(cicn_id)): Can't open CICN \(path.path(file)!): ");
 		return nil;
+	}
+	
+	defer {
+		SDL_RWclose(cicn_src);
 	}
 	
 	w = SDL_ReadBE16(cicn_src);
 	h = SDL_ReadBE16(cicn_src);
 	pixels = [UInt8](count: Int(w*h), repeatedValue: 0)
-	if ( SDL_RWread(cicn_src, &pixels, 1, Int(w*h)) != Int(w*h) ) {
+	if SDL_RWread(cicn_src, &pixels, 1, Int(w*h)) != Int(w*h) {
 		print("GetCIcon(\(cicn_id)): Corrupt CICN!");
-		SDL_RWclose(cicn_src);
 		return nil;
 	}
 	mask = [UInt8](count: Int(w/8*h), repeatedValue: 0)
-	if ( SDL_RWread(cicn_src, &mask, 1, Int((w/8)*h)) != Int((w/8)*h) ) {
+	if SDL_RWread(cicn_src, &mask, 1, Int((w/8)*h)) != Int((w/8)*h) {
 		print("GetCIcon(\(cicn_id)): Corrupt CICN!");
-		SDL_RWclose(cicn_src);
 		return nil;
 	}
-	SDL_RWclose(cicn_src);
 	
 	cicn = screen.loadImage(w: w, h: h, pixels: &pixels, mask: &mask)
 	if cicn == nil {

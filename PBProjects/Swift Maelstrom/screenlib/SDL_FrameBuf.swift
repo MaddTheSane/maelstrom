@@ -112,8 +112,98 @@ class FrameBuf {
 		screen = screenbg;
 	}
 	
-	init() {
+	enum Errors: ErrorType {
+		case CouldNotCreateWindow(SDLError: String)
+		case SettingVideoMode(width: Int32, height: Int32, SDLError: String)
+		case CouldNotCreateBackground(SDLError: String)
+		case InvalidPixelFormat(UInt8)
+	}
 	
+	var caption: String {
+		get {
+			return String.fromCString(SDL_GetWindowTitle(window))!
+		}
+		set {
+			SDL_SetWindowTitle(window, newValue);
+		}
+	}
+	
+	init(width: Int32, height: Int32, videoFlags: UInt32, colors: UnsafePointer<SDL_Color> = nil, icon: UnsafeMutablePointer<SDL_Surface> = nil) throws {
+		window = SDL_CreateWindow("title", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, videoFlags);
+		if window == nil {
+			error = String(format: "Couldn't create window: %s", SDL_GetError())
+			throw Errors.CouldNotCreateWindow(SDLError: String.fromCString(SDL_GetError())!)
+		}
+		/* Set the icon, if any */
+		if icon != nil {
+			SDL_SetWindowIcon(window, icon);
+		}
+		
+		/* old comment: */
+		/* Try for the 8-bit video mode that was requested, accept any depth */
+		screenfg = SDL_GetWindowSurface(window);
+		if screenfg == nil {
+			throw Errors.SettingVideoMode(width: width, height: height, SDLError: String.fromCString(SDL_GetError())!)
+		}
+		printSurface("Created foreground", surface: screenfg);
+		screen = screenfg
+		
+		/* Create the background */
+		screenbg = SDL_CreateRGBSurface(screen.memory.flags, screen.memory.w, screen.memory.h,
+			Int32(screen.memory.format.memory.BitsPerPixel),
+			screen.memory.format.memory.Rmask,
+			screen.memory.format.memory.Gmask,
+			screen.memory.format.memory.Bmask, 0);
+		if screenbg == nil {
+			throw Errors.CouldNotCreateBackground(SDLError: String.fromCString(SDL_GetError())!)
+		}
+		printSurface("Created background", surface: screenbg);
+		
+		/* Create a dirty rectangle map of the screen */
+		dirtypitch = UInt16(LOWER_PREC(width))
+		dirtymaplen = UInt16(LOWER_PREC(height)) * dirtypitch;
+		dirtymap   = [UnsafeMutablePointer<SDL_Rect>](count: Int(dirtymaplen), repeatedValue: nil)
+		
+		/* Create the update list */
+		updatelist = [SDL_Rect](count: FrameBuf.UPDATE_CHUNK, repeatedValue:SDL_Rect())
+		clearDirtyList();
+		updatemax = FrameBuf.UPDATE_CHUNK;
+		
+		/* Create the blit list */
+		blitQ = [BlitQ](count: FrameBuf.QUEUE_CHUNK, repeatedValue: BlitQ())
+		blitQlen = 0;
+		blitQmax = FrameBuf.QUEUE_CHUNK;
+		
+		/* Set the blit clipping rectangle */
+		clip.x = 0;
+		clip.y = 0;
+		clip.w = screen.memory.w;
+		clip.h = screen.memory.h;
+		
+		/* Copy the image colormap and set a black background */
+		setBackground(R: 0, G: 0, B: 0);
+		if colors != nil {
+			setPalette(colors);
+		}
+		
+		/* Figure out what putpixel routine to use */
+		switch (screen.memory.format.memory.BytesPerPixel) {
+		case 1:
+			putPixel = PutPixel1;
+			break;
+		case 2:
+			putPixel = PutPixel2;
+			break;
+		case 3:
+			putPixel = PutPixel3;
+			break;
+		case 4:
+			putPixel = PutPixel4;
+			break;
+			
+		default:
+			throw Errors.InvalidPixelFormat(screen.memory.format.memory.BytesPerPixel)
+		}
 	}
 	
 	func fade() {
@@ -193,10 +283,10 @@ SDL_SetWindowGammaRamp(window, ramp, ramp, ramp);
 		var dirty = SDL_Rect()
 		
 		/* Adjust the bounds */
-		if ( x < 0 ) {return;}
-		if ( Int32(x) > screen.memory.w ) {return;}
-		if ( y < 0 ) {return;}
-		if ( Int32(y) > screen.memory.h ) {return;}
+		if x < 0 {return;}
+		if Int32(x) > screen.memory.w {return;}
+		if y < 0 {return;}
+		if Int32(y) > screen.memory.h {return;}
 		
 		performBlits();
 		LOCK_IF_NEEDED();
@@ -421,89 +511,6 @@ screen_loc += skip;
 }
 AddDirtyRect(&dirty);
 }*/
-
-	func setUp(width width: Int32, height: Int32, videoFlags: UInt32, colors: UnsafePointer<SDL_Color> = nil, icon: UnsafeMutablePointer<SDL_Surface> = nil) -> Bool {
-		window = SDL_CreateWindow("title", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, videoFlags);
-		if window == nil {
-			error = String(format: "Couldn't create window: %s", SDL_GetError())
-			return false
-		}
-		/* Set the icon, if any */
-		if icon != nil {
-			SDL_SetWindowIcon(window, icon);
-		}
-		
-		/* old comment: */
-		/* Try for the 8-bit video mode that was requested, accept any depth */
-		screenfg = SDL_GetWindowSurface(window);
-		if screenfg == nil {
-			error = String(format: "Couldn't set %dx%d video mode: %s",
-				width, height, SDL_GetError());
-
-			return false
-		}
-		printSurface("Created foreground", surface: screenfg);
-
-		/* Create the background */
-		screenbg = SDL_CreateRGBSurface(screen.memory.flags, screen.memory.w, screen.memory.h,
-			Int32(screen.memory.format.memory.BitsPerPixel),
-			screen.memory.format.memory.Rmask,
-			screen.memory.format.memory.Gmask,
-			screen.memory.format.memory.Bmask, 0);
-		if screenbg == nil {
-			error = String(format: "Couldn't create background: %s", SDL_GetError())
-			//SetError("Couldn't create background: %s", SDL_GetError());
-			return false
-		}
-		printSurface("Created background", surface: screenbg);
-
-		/* Create a dirty rectangle map of the screen */
-		dirtypitch = UInt16(LOWER_PREC(width))
-		dirtymaplen = UInt16(LOWER_PREC(height)) * dirtypitch;
-		dirtymap   = [UnsafeMutablePointer<SDL_Rect>](count: Int(dirtymaplen), repeatedValue: nil)
-		
-		/* Create the update list */
-		updatelist = [SDL_Rect](count: FrameBuf.UPDATE_CHUNK, repeatedValue:SDL_Rect())
-		clearDirtyList();
-		updatemax = FrameBuf.UPDATE_CHUNK;
-		
-		/* Create the blit list */
-		blitQ = [BlitQ](count: FrameBuf.QUEUE_CHUNK, repeatedValue: BlitQ())
-		blitQlen = 0;
-		blitQmax = FrameBuf.QUEUE_CHUNK;
-		
-		/* Set the blit clipping rectangle */
-		clip.x = 0;
-		clip.y = 0;
-		clip.w = screen.memory.w;
-		clip.h = screen.memory.h;
-
-		/* Copy the image colormap and set a black background */
-		setBackground(R: 0, G: 0, B: 0);
-		if colors != nil {
-			setPalette(colors);
-		}
-		
-		/* Figure out what putpixel routine to use */
-		switch (screen.memory.format.memory.BytesPerPixel) {
-		case 1:
-			putPixel = PutPixel1;
-			break;
-		case 2:
-			putPixel = PutPixel2;
-			break;
-		case 3:
-			putPixel = PutPixel3;
-			break;
-		case 4:
-			putPixel = PutPixel4;
-			break;
-			
-		default:
-			return false
-		}
-		return true;
-	}
 	
 	/* Setup routines */
 	func setPalette(colors: UnsafePointer<SDL_Color>) {
@@ -536,7 +543,7 @@ AddDirtyRect(&dirty);
 	func clear(x x: Int16, y: Int16, w w1: UInt16, h h1: UInt16,
 		do_clip: clipval = .NOCLIP) {
 			var w = Int(w1)
-			var h = h1
+			var h = Int32(h1)
 			/* If we're focused on the foreground, copy from background */
 			if ( screen == screenfg ) {
 				queueBlit(dstx: Int32(x), dsty: Int32(y), src: screenbg, srcx: Int32(x), srcy: Int32(y), w: Int32(w), h: Int32(h), do_clip: do_clip);
@@ -553,7 +560,7 @@ AddDirtyRect(&dirty);
 					the background is a different color than black on a
 					HiColor or TrueColor display.
 					*/
-					memset(screen_loc, Int32(BGcolor), w);
+					memset(screen_loc, Int32(bitPattern: BGcolor), w);
 					screen_loc += Int(screen.memory.pitch)
 				}
 			}
