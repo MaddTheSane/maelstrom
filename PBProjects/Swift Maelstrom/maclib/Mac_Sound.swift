@@ -178,7 +178,7 @@ final class Sound {
 
 	init(soundFileURL soundfile: NSURL, volume vol: UInt8 = 4) throws {
 		let sndResType = MaelOSType(stringValue: "snd ")!
-		let soundres = try Mac_Resource(fileURL: soundfile)
+		let soundres = try MacResource(fileURL: soundfile)
 		var p = 0
 		if soundres.countOfResources(type: sndResType) == 0 {
 			throw Errors.NoSoundResources

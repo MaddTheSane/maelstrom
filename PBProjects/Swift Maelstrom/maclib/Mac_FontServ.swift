@@ -193,10 +193,10 @@ class FontServer {
 	}
 
 	private var text_allocated = 0
-	private var fontres: Mac_Resource!
+	private var fontres: MacResource!
 
 	init(fontAtURL fontfile: NSURL) throws {
-		fontres = try Mac_Resource(fileURL: fontfile);
+		fontres = try MacResource(fileURL: fontfile);
 
 		if fontres.countOfResources(type: MaelOSType(stringValue: "FOND")!) == 0 {
 			throw Errors.NoFONDResource

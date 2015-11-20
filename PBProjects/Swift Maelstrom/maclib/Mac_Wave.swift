@@ -349,7 +349,7 @@ final class Wave {
 	
 	private func Free() {
 		if soundData != nil {
-			//free(soundData)
+			free(soundData)
 			soundData = nil
 			soundDataLen = 0
 		}

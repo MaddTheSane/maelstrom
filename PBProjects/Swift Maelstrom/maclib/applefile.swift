@@ -352,7 +352,7 @@ struct AppleSingleEntry {
 	}
 	
 	/// entry ID 15, AFP server directory ID
-	struct AFPDirId {
+	struct AFPDirID {
 		/// file's directory ID on AFP server
 		var dirid: UInt32 = 0
 	}; /* ASAfpDirId */

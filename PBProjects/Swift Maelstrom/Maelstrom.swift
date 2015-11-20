@@ -144,7 +144,7 @@ class Blit {
 		}
 	}
 	
-	init(smallSprite: (), resource spriteres: Mac_Resource, baseID: Int32, frames numFrames: Int32) throws {
+	init(smallSprite: (), resource spriteres: MacResource, baseID: Int32, frames numFrames: Int32) throws {
 		isSmall = true
 		
 		var left = 16
@@ -205,7 +205,7 @@ class Blit {
 		}
 	}
 	
-	init(largeSprite: (), resource spriteres: Mac_Resource, baseID: Int32, frames numFrames: Int32) throws {
+	init(largeSprite: (), resource spriteres: MacResource, baseID: Int32, frames numFrames: Int32) throws {
 		isSmall = true
 		
 		var left = 32

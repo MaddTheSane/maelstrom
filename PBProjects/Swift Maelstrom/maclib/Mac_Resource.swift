@@ -16,11 +16,11 @@ private let MACBINARY_MASK: UInt16 = 0xFCFF
 private let MACBINARY_MAGIC: UInt16 = 0x8081
 
 
-private func ==(lhs: Mac_Resource.Resource, rhs: Mac_Resource.Resource) -> Bool {
+private func ==(lhs: MacResource.Resource, rhs: MacResource.Resource) -> Bool {
 	return lhs.id == rhs.id
 }
 
-private func <(lhs: Mac_Resource.Resource, rhs: Mac_Resource.Resource) -> Bool {
+private func <(lhs: MacResource.Resource, rhs: MacResource.Resource) -> Bool {
 	return lhs.id < rhs.id
 }
 
@@ -223,15 +223,6 @@ private struct ResourceHeader {
 	var map_length: UInt32 = 0
 }
 
-private struct Resource_Data {
-	///Length of the resources data
-	var Data_length: UInt32 = 0
-	//#if SHOW_VARLENGTH_FIELDS
-	///The Resource Data
-	//var Data: [UInt8]
-	//#endif
-}
-
 private struct TypeEntry {
 	///Resource type
 	var Res_type: MaelOSType = MaelOSType()
@@ -298,7 +289,7 @@ private struct ResourceMap {
 	}
 }
 
-class Mac_Resource {
+final class MacResource {
 	enum Errors: ErrorType {
 		case FileNotFound
 		case CouldNotOpenResource

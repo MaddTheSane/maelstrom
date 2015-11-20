@@ -78,7 +78,7 @@ private func doIntroScreen() {
 }
 
 ///Load in the blits
-private func loadBlits(spriteres: Mac_Resource) -> Bool {
+private func loadBlits(spriteres: MacResource) -> Bool {
 	
 	
 	return false
@@ -262,7 +262,7 @@ func doInitializations(video_flags: SDL_WindowFlags) -> Bool {
 	/* -- Load in our sprites and other needed resources */
 	do {
 		do {
-		let spriteres = try Mac_Resource(fileURL: library.path("Maelstrom Sprites")!)
+		let spriteres = try MacResource(fileURL: library.path("Maelstrom Sprites")!)
 
 			if !loadBlits(spriteres) {
 				return false;
