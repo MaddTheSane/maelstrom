@@ -73,7 +73,7 @@ let SPRITES_WIDTH	= 32
 ///internal <--> screen precision
 let SPRITE_PRECISION	= 4
 let VEL_FACTOR			= 4
-let VEL_MAX				= 8 << SPRITE_PRECISION
+let VEL_MAX				= Int32(8 << SPRITE_PRECISION)
 let SCALE_FACTOR		= 16
 let SHAKE_FACTOR		= 256
 let MIN_BAD_DISTANCE	= 64
@@ -89,10 +89,10 @@ let STATUS_HEIGHT	= 14
 let SHIELD_WIDTH	= 55
 let INITIAL_BONUS	= 2000
 
-let ENEMY_HITS		= 3
-let HOMING_HITS		= 9
-let STEEL_SPECIAL	= 10
-let DEFAULT_HITS	= 1
+let ENEMY_HITS			= 3
+let HOMING_HITS			= 9
+let STEEL_SPECIAL		= 10
+let DEFAULT_HITS:Int32	= 1
 
 let NEW_LIFE: Int32			= 50000
 let SMALL_ROID_PTS: Int32	= 300
@@ -130,14 +130,141 @@ typealias StarPtr = UnsafeMutablePointer<Star>
 
 ///Sprite blitting information structure
 class Blit {
-	typealias BitMask = (UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8)
-	typealias Surfaces = (SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface, SDL_Surface)
-	var numFrames: Int32 = 0
-	var isSmall: Bool = false
+	var isSmall: Bool
 	var hitRect: Rect = Rect()
-	var mask: [BitMask] = []
-	var sprite = [SDL_Surface]()
-	//SDL_Surface *sprite[MAX_SPRITE_FRAMES];
+	var sprites: [(mask: [UInt8], sprite: UnsafeMutablePointer<SDL_Surface>)] = []
+
+	enum Errors: ErrorType {
+		case CouldNotCreateImage
+	}
+	
+	deinit {
+		for aSprite in sprites {
+			screen.freeImage(aSprite.sprite)
+		}
+	}
+	
+	init(smallSprite: (), resource spriteres: Mac_Resource, baseID: Int32, frames numFrames: Int32) throws {
+		isSmall = true
+		
+		var left = 16
+		var right = 0
+		var top = 16
+		var bottom = 0
+		
+		for index in 0..<numFrames {
+			let m = try spriteres.resource(type: MaelOSType(stringValue: "ics#")!, id: UInt16(baseID+index))
+			var mask = Array(UnsafeBufferPointer(start: UnsafePointer<UInt8>(m.bytes).advancedBy(32), count: 32))
+			
+			let S = try spriteres.resource(type: MaelOSType(stringValue: "ics8")!, id: UInt16(baseID+index))
+			
+			/* -- Figure out the hit rectangle */
+			/* -- Do the top/left first */
+			for row in 0..<16 {
+				for col in 0..<16 {
+					let offset = (row*16)+col;
+					if ((mask[Int(offset/8)] >> UInt8(7-(offset%8))) & 0x01) == 0x01 {
+						if row < top {
+							top = row;
+						}
+						if col < left {
+							left = col;
+						}
+					}
+				}
+			}
+			for var row=15; row>top; --row {
+				for var col=15; col>left; --col {
+					let offset = (row*16)+col;
+					if ((mask[offset/8] >> UInt8(7-(offset%8))) & 0x01) == 0x01 {
+						if row > bottom {
+							bottom = row;
+						}
+						if col > right {
+							right = col;
+						}
+					}
+				}
+			}
+			hitRect = Rect(top: Int16(top), left: Int16(left), bottom: Int16(bottom), right: Int16(right))
+			
+			/* Load the image */
+			let aSprite = screen.loadImage(w: 16, h: 16, pixels: UnsafeMutablePointer<UInt8>(S.bytes), mask: &mask)
+			guard aSprite != nil else {
+				throw Errors.CouldNotCreateImage
+			}
+			
+			/* Create the bytemask */
+			let maskLen = (m.length - 32) * 8
+			var blitMask = [UInt8](count: maskLen, repeatedValue: 0)
+			for offset in 0 ..< m.length {
+				blitMask[offset] =
+					((mask[offset/8]>>UInt8(7-(offset%8)))&0x01);
+			}
+			sprites.append((mask: blitMask, sprite: aSprite))
+		}
+	}
+	
+	init(largeSprite: (), resource spriteres: Mac_Resource, baseID: Int32, frames numFrames: Int32) throws {
+		isSmall = true
+		
+		var left = 32
+		var right = 0
+		var top = 32
+		var bottom = 0
+		
+		for index in 0..<numFrames {
+			let m = try spriteres.resource(type: MaelOSType(stringValue: "ics#")!, id: UInt16(baseID+index))
+			var mask = Array(UnsafeBufferPointer(start: UnsafePointer<UInt8>(m.bytes).advancedBy(128), count: 128))
+			
+			let S = try spriteres.resource(type: MaelOSType(stringValue: "ics8")!, id: UInt16(baseID+index))
+			
+			/* -- Figure out the hit rectangle */
+			/* -- Do the top/left first */
+			for row in 0..<32 {
+				for col in 0..<32 {
+					let offset = (row*32)+col;
+					if ((mask[Int(offset/8)] >> UInt8(7-(offset%8))) & 0x01) == 0x01 {
+						if row < top {
+							top = row;
+						}
+						if col < left {
+							left = col;
+						}
+					}
+				}
+			}
+			for var row=31; row>top; --row {
+				for var col=31; col>left; --col {
+					let offset = (row*32)+col;
+					if ((mask[offset/8] >> UInt8(7-(offset%8))) & 0x01) == 0x01 {
+						if row > bottom {
+							bottom = row;
+						}
+						if col > right {
+							right = col;
+						}
+					}
+				}
+			}
+			hitRect = Rect(top: Int16(top), left: Int16(left), bottom: Int16(bottom), right: Int16(right))
+			
+			/* Load the image */
+			let aSprite = screen.loadImage(w: 32, h: 32, pixels: UnsafeMutablePointer<UInt8>(S.bytes), mask: &mask)
+			guard aSprite != nil else {
+				throw Errors.CouldNotCreateImage
+			}
+			
+			/* Create the bytemask */
+			let maskLen = (m.length - 128) * 8
+			var blitMask = [UInt8](count: maskLen, repeatedValue: 0)
+			for offset in 0 ..< m.length {
+				blitMask[offset] =
+					((mask[offset/8]>>UInt8(7-(offset%8)))&0x01);
+			}
+			sprites.append((mask: blitMask, sprite: aSprite))
+		}
+	}
 }
 
 var gUpdateBuffer = false
@@ -199,7 +326,7 @@ private func runSpeedTest() {
 			} else {
 				onscreen = true
 			}
-			//screen.queueBlit(x, y, gPlayerShip.sprite[frame]);
+			screen.queueBlit(x: Int32(x), y: Int32(y), src: gPlayerShip.sprites[frame].sprite);
 			screen.update();
 		}
 	}

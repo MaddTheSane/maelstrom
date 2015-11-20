@@ -38,6 +38,35 @@ var gTripleFireIcon: UnsafeMutablePointer<SDL_Surface> = nil
 var gKeyIcon: UnsafeMutablePointer<SDL_Surface> = nil
 var gShieldIcon: UnsafeMutablePointer<SDL_Surface> = nil
 
+var gRock1R: Blit!
+var gRock2R: Blit!
+var gRock3R: Blit!
+var gDamagedShip: Blit!
+var gRock1L: Blit!
+var gRock2L: Blit!
+var gRock3L: Blit!
+var gShipExplosion: Blit!
+var gPlayerShip: Blit!
+var gExplosion: Blit!
+var gNova: Blit!
+var gEnemyShip: Blit!
+var gEnemyShip2: Blit!
+var gSteelRoidL: Blit!
+var gSteelRoidR: Blit!
+var gPrize: Blit!
+var gBonusBlit: Blit!
+var gPointBlit: Blit!
+var gVortexBlit: Blit!
+var gMineBlitL: Blit!
+var gMineBlitR: Blit!
+var gShieldBlit: Blit!
+var gThrust1: Blit!
+var gThrust2: Blit!
+var gShrapnel1: Blit!
+var gShrapnel2: Blit!
+var gMult: [Blit]!
+
+
 /// Put up an Ambrosia Software splash screen
 private func doSplash() {
 	
