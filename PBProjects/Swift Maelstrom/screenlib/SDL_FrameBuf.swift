@@ -251,6 +251,7 @@ SDL_SetWindowGammaRamp(window, ramp, ramp, ramp);
 		return SDL_MapRGB(screenfg.memory.format, R, G, B)
 	}
 
+	/// Load and convert an 8-bit image with the given mask
 	func loadImage(w w: UInt16, h: UInt16, pixels: UnsafeMutablePointer<UInt8>, mask: UnsafeMutablePointer<UInt8> = nil) -> UnsafeMutablePointer<SDL_Surface> {
 		return nil
 	}

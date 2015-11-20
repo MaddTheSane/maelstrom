@@ -84,11 +84,10 @@ func drawLoadBar(aVar: Int) {
 }
 
 ///Load in the blits
-private func loadBlits(spriteres: MacResource) -> Bool {
+private func loadBlits(spriteres: MacResource) throws {
 	
 	drawLoadBar(1);
 	
-	do {
 		/* -- Load in the thrusters */
 		
 		gThrust1 = try Blit(smallSprite: (), resource: spriteres, baseID: 400, frames: SHIP_FRAMES)
@@ -213,11 +212,6 @@ private func loadBlits(spriteres: MacResource) -> Bool {
 		
 		gEnemyShip2 = try Blit(largeSprite: (), resource: spriteres, baseID: 2100, frames: 40)
 		drawLoadBar(0);
-		
-		return true;
-	} catch _ {
-		return false
-	}
 }
 
 private func loadCICNS() -> Bool {
@@ -824,11 +818,8 @@ func doInitializations(video_flags: SDL_WindowFlags) -> Bool {
 	/* -- Load in our sprites and other needed resources */
 	do {
 		do {
-		let spriteres = try MacResource(fileURL: library.path("Maelstrom Sprites")!)
-
-			if !loadBlits(spriteres) {
-				return false;
-			}
+			let spriteres = try MacResource(fileURL: library.path("Maelstrom Sprites")!)
+			try loadBlits(spriteres)
 		} catch {
 			print(error)
 			return false
