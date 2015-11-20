@@ -85,3 +85,10 @@ func getScore() -> Int32 {
 	
 	//
 }
+
+func initPlayerSprites() -> Bool {
+	
+	
+	return true
+}
+

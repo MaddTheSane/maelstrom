@@ -64,7 +64,7 @@ var gThrust1: Blit!
 var gThrust2: Blit!
 var gShrapnel1: Blit!
 var gShrapnel2: Blit!
-var gMult: [Blit]!
+var gMult = [Blit]()
 
 
 /// Put up an Ambrosia Software splash screen
@@ -77,11 +77,145 @@ private func doIntroScreen() {
 	
 }
 
+func drawLoadBar(aVar: Int) {
+	
+}
+
 ///Load in the blits
 private func loadBlits(spriteres: MacResource) -> Bool {
 	
+	drawLoadBar(1);
 	
-	return false
+	do {
+		/* -- Load in the thrusters */
+		
+		gThrust1 = try Blit(smallSprite: (), resource: spriteres, baseID: 400, frames: SHIP_FRAMES)
+		drawLoadBar(0);
+		
+		gThrust2 = try Blit(smallSprite: (), resource: spriteres, baseID: 500, frames: SHIP_FRAMES)
+		drawLoadBar(0);
+		
+		/* -- Load in the player's ship */
+		
+		gPlayerShip = try Blit(largeSprite: (), resource: spriteres, baseID: 500, frames: SHIP_FRAMES)
+		drawLoadBar(0);
+		
+		/* -- Load in the large rock */
+		
+		gRock1R = try Blit(largeSprite: (), resource: spriteres, baseID: 500, frames: 60)
+		gRock1L = gRock1R.backwardsSprite()
+		drawLoadBar(0);
+		
+		/* -- Load in the medium rock */
+		
+		gRock2R = try Blit(largeSprite: (), resource: spriteres, baseID: 500, frames: 60)
+		gRock2L = gRock2R.backwardsSprite()
+		drawLoadBar(0);
+		
+		/* -- Load in the small rock */
+		
+		gRock3R = try Blit(smallSprite: (), resource: spriteres, baseID: 300, frames: 20)
+		gRock3L = gRock3R.backwardsSprite()
+		drawLoadBar(0);
+		
+		/* -- Load in the explosion */
+		
+		gExplosion = try Blit(largeSprite: (), resource: spriteres, baseID: 600, frames: 12)
+		drawLoadBar(0);
+		
+		/* -- Load in the 2x multiplier */
+		
+		gMult.append(try Blit(largeSprite: (), resource: spriteres, baseID: 2000, frames: 1))
+		drawLoadBar(0);
+		
+		/* -- Load in the 3x multiplier */
+		
+		gMult.append(try Blit(largeSprite: (), resource: spriteres, baseID: 2003, frames: 1))
+		drawLoadBar(0);
+		
+		/* -- Load in the 4x multiplier */
+		
+		gMult.append(try Blit(largeSprite: (), resource: spriteres, baseID: 2004, frames: 1))
+		drawLoadBar(0);
+		
+		/* -- Load in the 5x multiplier */
+		
+		gMult.append(try Blit(largeSprite: (), resource: spriteres, baseID: 2006, frames: 1))
+		drawLoadBar(0);
+		
+		/* -- Load in the steel asteroid */
+		
+		gSteelRoidL = try Blit(largeSprite: (), resource: spriteres, baseID: 700, frames: 40)
+		gSteelRoidR = gSteelRoidL.backwardsSprite()
+		drawLoadBar(0);
+		
+		/* -- Load in the prize */
+		gPrize = try Blit(largeSprite: (), resource: spriteres, baseID: 800, frames: 30)
+		drawLoadBar(0);
+		
+		/* -- Load in the bonus */
+		
+		gBonusBlit = try Blit(largeSprite: (), resource: spriteres, baseID: 900, frames: 10)
+		drawLoadBar(0);
+		
+		/* -- Load in the bonus */
+		
+		gPointBlit = try Blit(largeSprite: (), resource: spriteres, baseID: 1000, frames: 6)
+		drawLoadBar(0);
+		
+		/* -- Load in the vortex */
+		
+		gVortexBlit = try Blit(largeSprite: (), resource: spriteres, baseID: 1100, frames: 10)
+		drawLoadBar(0);
+		
+		/* -- Load in the homing mine */
+		
+		gMineBlitR = try Blit(largeSprite: (), resource: spriteres, baseID: 1200, frames: 40)
+		gMineBlitL = gMineBlitR.backwardsSprite()
+		drawLoadBar(0);
+		
+		/* -- Load in the shield */
+		
+		gShieldBlit = try Blit(largeSprite: (), resource: spriteres, baseID: 1300, frames: 2)
+		drawLoadBar(0);
+		
+		/* -- Load in the nova */
+		
+		gNova = try Blit(largeSprite: (), resource: spriteres, baseID: 1400, frames: 18)
+		drawLoadBar(0);
+		
+		/* -- Load in the ship explosion */
+		
+		gShipExplosion = try Blit(largeSprite: (), resource: spriteres, baseID: 1500, frames: 21)
+		drawLoadBar(0);
+		
+		/* -- Load in the shrapnel */
+		gShrapnel1 = try Blit(largeSprite: (), resource: spriteres, baseID: 1800, frames: 50)
+		
+		drawLoadBar(0);
+		
+		gShrapnel2 = try Blit(largeSprite: (), resource: spriteres, baseID: 1900, frames: 42)
+		drawLoadBar(0);
+		
+		/* -- Load in the damaged ship */
+		
+		gDamagedShip = try Blit(largeSprite: (), resource: spriteres, baseID: 1600, frames: 10)
+		drawLoadBar(0);
+		
+		/* -- Load in the enemy ship */
+		
+		gEnemyShip2 = try Blit(largeSprite: (), resource: spriteres, baseID: 1700, frames: 40)
+		drawLoadBar(0);
+		
+		/* -- Load in the enemy ship */
+		
+		gEnemyShip2 = try Blit(largeSprite: (), resource: spriteres, baseID: 2100, frames: 40)
+		drawLoadBar(0);
+		
+		return true;
+	} catch _ {
+		return false
+	}
 }
 
 private func loadCICNS() -> Bool {

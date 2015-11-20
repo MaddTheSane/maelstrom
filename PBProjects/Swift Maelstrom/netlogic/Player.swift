@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Player: MaelObject {
+final class Player: MaelObject {
 	///Special features of the player
 	struct PlayerFeatures: OptionSetType {
 		let rawValue: UInt8
@@ -21,5 +21,9 @@ class Player: MaelObject {
 		static let TripleFire = PlayerFeatures(rawValue: 0x04)
 		static let LongRange = PlayerFeatures(rawValue: 0x08)
 		static let LuckyIrish = PlayerFeatures(rawValue: 0x80)
+	}
+	
+	override var isPlayer: Bool {
+		return true
 	}
 }

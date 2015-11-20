@@ -66,10 +66,10 @@ let FRAME_DELAY = 2
 
 let buttons = ButtonList()
 
-let MAX_SPRITES		= 100
-let MAX_STARS		= 30
-let SHIP_FRAMES		= 48
-let SPRITES_WIDTH	= 32
+let MAX_SPRITES			= 100
+let MAX_STARS			= 30
+let SHIP_FRAMES:Int32	= 48
+let SPRITES_WIDTH		= 32
 ///internal <--> screen precision
 let SPRITE_PRECISION	= 4
 let VEL_FACTOR			= 4
@@ -129,21 +129,37 @@ struct Star {
 typealias StarPtr = UnsafeMutablePointer<Star>
 
 ///Sprite blitting information structure
-class Blit {
-	var isSmall: Bool
-	var hitRect: Rect = Rect()
-	var sprites: [(mask: [UInt8], sprite: UnsafeMutablePointer<SDL_Surface>)] = []
+final class Blit {
+	let isSmall: Bool
+	private(set) var hitRect: Rect = Rect()
+	private(set) var sprites: [(mask: [UInt8], sprite: UnsafeMutablePointer<SDL_Surface>)] = []
 
+	private init(isSmall small: Bool) {
+		isSmall = small
+	}
+	
 	enum Errors: ErrorType {
 		case CouldNotCreateImage
 	}
 	
+	#if false
 	deinit {
 		for aSprite in sprites {
 			screen.freeImage(aSprite.sprite)
 		}
 	}
+	#endif
 	
+	func backwardsSprite() -> Blit {
+		let reversed = Blit(isSmall: self.isSmall)
+		
+		reversed.hitRect = self.hitRect
+		/* -- Reverse the sprite images */
+		reversed.sprites = self.sprites.reverse()
+		
+		return reversed
+	}
+
 	init(smallSprite: (), resource spriteres: MacResource, baseID: Int32, frames numFrames: Int32) throws {
 		isSmall = true
 		
@@ -326,7 +342,7 @@ private func runSpeedTest() {
 			} else {
 				onscreen = true
 			}
-			screen.queueBlit(x: Int32(x), y: Int32(y), src: gPlayerShip.sprites[frame].sprite);
+			screen.queueBlit(x: Int32(x), y: Int32(y), src: gPlayerShip.sprites[Int(frame)].sprite);
 			screen.update();
 		}
 	}
