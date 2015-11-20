@@ -251,7 +251,7 @@ SDL_SetWindowGammaRamp(window, ramp, ramp, ramp);
 		return SDL_MapRGB(screenfg.memory.format, R, G, B)
 	}
 
-	func loadImage(w w: UInt16, h: UInt16, pixels: UnsafeMutablePointer<UInt8>, mask: UnsafeMutablePointer<UInt8>) -> UnsafeMutablePointer<SDL_Surface> {
+	func loadImage(w w: UInt16, h: UInt16, pixels: UnsafeMutablePointer<UInt8>, mask: UnsafeMutablePointer<UInt8> = nil) -> UnsafeMutablePointer<SDL_Surface> {
 		return nil
 	}
 	
