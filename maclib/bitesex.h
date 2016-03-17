@@ -1,7 +1,7 @@
 #ifndef _bitesex_h
 #define _bitesex_h
 
-#include <SDL_endian.h>
+#include <SDL2/SDL_endian.h>
 
 #define bytesex32(x)	(x = SDL_SwapBE32(x))
 #define bytesex16(x)	(x = SDL_SwapBE16(x))

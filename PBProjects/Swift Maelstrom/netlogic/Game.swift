@@ -7,7 +7,7 @@
 //
 
 import Foundation
-
+import SDL2
 
 func newGame() {
 	

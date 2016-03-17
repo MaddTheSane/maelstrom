@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SDL2
 
 //MARK: Define values for Macintosh SND format
 //MARK: Different sound header formats 

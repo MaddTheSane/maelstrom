@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SDL2
 
 //static void PrintSurface(const char *title, SDL_Surface *surface)
 private func printSurface(title: String, surface: UnsafeMutablePointer<SDL_Surface>) {

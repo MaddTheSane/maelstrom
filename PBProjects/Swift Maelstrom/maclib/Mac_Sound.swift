@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SDL2
 
 ///Software volume ranges from `0 - 8`
 let MAX_VOLUME: UInt8 = 8

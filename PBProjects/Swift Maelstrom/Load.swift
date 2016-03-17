@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SDL2
 
 final class LibPath {
 	private static let searchURLs: [NSURL] = {

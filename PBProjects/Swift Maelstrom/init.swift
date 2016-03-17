@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SDL2
 
 var gLastHigh: Int32 = -1
 

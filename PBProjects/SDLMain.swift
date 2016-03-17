@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import SDL2
 
 private var pid: Int32 = -1;
 

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SDL2
 
 private var scoreLocation: NSURL!
 private let NUM_SCORES			= 10		// Do not change this!

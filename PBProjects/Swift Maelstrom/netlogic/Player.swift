@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SDL2
 
 final class Player: MaelObject {
 	///Special features of the player

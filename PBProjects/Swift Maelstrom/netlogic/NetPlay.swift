@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import SDL2
+import SDL2_net
 
 #if MULTIPLAYER_SUPPORT
 

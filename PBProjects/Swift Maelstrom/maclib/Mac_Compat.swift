@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SDL2
 
 /// Delay(x) -- sleep for x number of 1/60 second slices
 func Delay(x: UInt32) {

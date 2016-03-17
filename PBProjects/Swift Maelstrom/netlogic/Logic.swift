@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SDL2
 
 let VERSION = "3.0.6"
 let VERSION_STRING = VERSION + ".N"

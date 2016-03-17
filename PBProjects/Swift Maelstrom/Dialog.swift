@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SDL2
 
 
 /*  This is a class set for Macintosh-like dialogue boxes. :) */

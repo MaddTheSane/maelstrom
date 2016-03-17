@@ -7,7 +7,7 @@
 //
 
 import Foundation
-
+import SDL2
 
 private func HiByte(word: UInt16) -> UInt8 {
 	return UInt8((word >> 8) & 0xFF)

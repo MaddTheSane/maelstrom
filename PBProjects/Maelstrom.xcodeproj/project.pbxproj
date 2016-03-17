@@ -25,6 +25,7 @@
 		55732AFF1BF4806600CAFFE4 /* Dialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55732AFE1BF4806600CAFFE4 /* Dialog.swift */; };
 		55836C651BF3CBA6001605AB /* SwiftLoad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 55836C631BF3CBA6001605AB /* SwiftLoad.cpp */; };
 		55836C671BF3D409001605AB /* NetPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55836C661BF3D409001605AB /* NetPlay.swift */; };
+		55875D971C9A77FD009C230B /* SDLHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55875D961C9A77FD009C230B /* SDLHelpers.swift */; };
 		5596588A1BEACEA400D8BB39 /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559658891BEACEA400D8BB39 /* Object.swift */; };
 		55A616501BE55FEC00AD2049 /* SDLMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A6164F1BE55FEC00AD2049 /* SDLMain.swift */; };
 		55A616521BE5614600AD2049 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A616511BE5614600AD2049 /* main.swift */; };
@@ -227,6 +228,7 @@
 		55732AFE1BF4806600CAFFE4 /* Dialog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dialog.swift; sourceTree = "<group>"; };
 		55836C631BF3CBA6001605AB /* SwiftLoad.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SwiftLoad.cpp; sourceTree = "<group>"; };
 		55836C661BF3D409001605AB /* NetPlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetPlay.swift; sourceTree = "<group>"; };
+		55875D961C9A77FD009C230B /* SDLHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SDLHelpers.swift; sourceTree = "<group>"; };
 		559658891BEACEA400D8BB39 /* Object.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Object.swift; sourceTree = "<group>"; };
 		55A6164E1BE55FEA00AD2049 /* Maelstrom-UB-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Maelstrom-UB-Bridging-Header.h"; sourceTree = "<group>"; };
 		55A6164F1BE55FEC00AD2049 /* SDLMain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SDLMain.swift; sourceTree = "<group>"; };
@@ -492,6 +494,7 @@
 			children = (
 				5515E82B1BE60A3F0048605C /* Maelstrom Classes */,
 				5515E81D1BE609700048605C /* AppDelegate.swift */,
+				55875D961C9A77FD009C230B /* SDLHelpers.swift */,
 				5515E81F1BE609700048605C /* Assets.xcassets */,
 				5515E8211BE609700048605C /* MainMenu.xib */,
 				5515E8241BE609700048605C /* Info.plist */,
@@ -709,6 +712,7 @@
 				5515E8361BE68A7D0048605C /* applefile.swift in Sources */,
 				55D4F8C81BE9738E00F31A0F /* SDLMain.swift in Sources */,
 				55FF31AA1BF321F9001977AD /* Load.swift in Sources */,
+				55875D971C9A77FD009C230B /* SDLHelpers.swift in Sources */,
 				55FF31A01BF2C627001977AD /* Logic.swift in Sources */,
 				5515E82E1BE60F7A0048605C /* main.swift in Sources */,
 				555968651BE6ED5D003A3001 /* Mac_Wave.swift in Sources */,
@@ -851,11 +855,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					/Library/Frameworks/SDL2.framework/Headers,
-					/Library/Frameworks/SDL2_net.framework/Headers,
-					"$(inherited)",
-				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "Swift Maelstrom/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
@@ -901,11 +901,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					/Library/Frameworks/SDL2.framework/Headers,
-					/Library/Frameworks/SDL2_net.framework/Headers,
-					"$(inherited)",
-				);
+				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "Swift Maelstrom/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;

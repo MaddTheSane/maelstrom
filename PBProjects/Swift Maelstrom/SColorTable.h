@@ -9,7 +9,7 @@
 #ifndef SColorTable_h
 #define SColorTable_h
 
-#include <SDL_pixels.h>
+#include <SDL2/SDL_pixels.h>
 
 #define MAX_GAMMA	8L
 

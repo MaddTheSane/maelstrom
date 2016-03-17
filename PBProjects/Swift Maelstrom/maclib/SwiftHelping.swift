@@ -7,51 +7,12 @@
 //
 
 import Foundation
+import SDL2
 
 //MARK: SDL macros
 
 typealias SDL_WindowPtr = COpaquePointer
 typealias SDL_ThreadPtr = COpaquePointer
-
-func SDL_WINDOWPOS_CENTERED_DISPLAY(X: Int32) -> Int32 {
-	return SDL_WINDOWPOS_CENTERED_MASK | 0
-}
-
-var SDL_WINDOWPOS_CENTERED: Int32 {
-	return SDL_WINDOWPOS_CENTERED_DISPLAY(0)
-}
-
-func SDL_LoadBMP(file: UnsafePointer<CChar>) -> UnsafeMutablePointer<SDL_Surface> {
-	return SDL_LoadBMP_RW(SDL_RWFromFile(file, "rb"), 1)
-}
-
-func SDL_LoadWAV(file: UnsafePointer<CChar>, _ spec: UnsafeMutablePointer<SDL_AudioSpec>, _ audio_buf: UnsafeMutablePointer<UnsafeMutablePointer<UInt8>>, _ audio_len: UnsafeMutablePointer<UInt32>) -> UnsafeMutablePointer<SDL_AudioSpec> {
-	return SDL_LoadWAV_RW(SDL_RWFromFile(file, "rb"), 1, spec, audio_buf, audio_len)
-}
-
-func SDL_RWsize(ctx: UnsafeMutablePointer<SDL_RWops>) -> Int64 {
-	return ctx.memory.size(ctx)
-}
-
-func SDL_RWseek(ctx: UnsafeMutablePointer<SDL_RWops>, _ offset: Int64, _ whence: Int32) -> Int64 {
-	return ctx.memory.seek(ctx, offset, whence)
-}
-
-func SDL_RWtell(ctx: UnsafeMutablePointer<SDL_RWops>) -> Int64 {
-	return ctx.memory.seek(ctx, 0, RW_SEEK_CUR)
-}
-
-func SDL_RWread(ctx: UnsafeMutablePointer<SDL_RWops>, _ ptr: UnsafeMutablePointer<Void>, _ size: Int, _ maxnum: Int) -> Int {
-	return ctx.memory.read(ctx, ptr, size, maxnum)
-}
-
-func SDL_RWwrite(ctx: UnsafeMutablePointer<SDL_RWops>, _ ptr: UnsafePointer<Void>, _ size: Int, _ maxnum: Int) -> Int {
-	return ctx.memory.write(ctx, ptr, size, maxnum)
-}
-
-func SDL_RWclose(ctx: UnsafeMutablePointer<SDL_RWops>) -> Int32 {
-	return ctx.memory.close(ctx)
-}
 
 //MARK: -
 

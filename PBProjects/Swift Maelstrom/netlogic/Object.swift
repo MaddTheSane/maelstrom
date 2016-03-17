@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SDL2
 
 class MaelObject {
 	var points: Int32 = 0

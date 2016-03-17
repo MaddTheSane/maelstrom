@@ -4,7 +4,7 @@
 
 /* Declarations for the fast random functions */
 
-#include <SDL_types.h>
+#include <SDL2/SDL_types.h>
 
 #ifdef __cplusplus
 extern "C" {

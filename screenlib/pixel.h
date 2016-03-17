@@ -25,7 +25,7 @@
 #ifndef _pixel_h
 #define _pixel_h
 
-#include <SDL_surface.h>
+#include <SDL2/SDL_surface.h>
 
 #ifdef __cplusplus
 extern "C" {
