@@ -22,7 +22,7 @@
     slouken@devolution.com
 */
 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include "pixel.h"
 
 void PutPixel1(Uint8 *screen_loc, SDL_Surface *screen, Uint32 pixel) {

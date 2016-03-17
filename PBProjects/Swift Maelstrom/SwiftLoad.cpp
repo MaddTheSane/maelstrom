@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <SDL_surface.h>
+#include <SDL2/SDL_surface.h>
 
 extern "C" SDL_Surface *Load_Icon(char **xpm);
 
