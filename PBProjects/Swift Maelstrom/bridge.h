@@ -6,6 +6,7 @@
 #include "fastrand.h"
 #include "pixel.h"
 #include "protocol.h"
+#include "SwiftLoad.h"
 
 #include "SColorTable.h"
 #import "XattrResFork.h"

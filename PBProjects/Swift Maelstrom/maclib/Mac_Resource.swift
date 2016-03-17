@@ -317,7 +317,7 @@ final class MacResource {
 		let name: String
 		let id: UInt16
 		let offset: UInt32
-		private(set) var data: NSData? = nil
+		@NSCopying private(set) var data: NSData? = nil
 		
 		private init(entry ref_ent: ReferenceEntry, name: String) {
 			offset =
@@ -420,7 +420,7 @@ final class MacResource {
 				
 				var entName: String
 				/* Grab the name, while we're here... */
-				if ( ref_ent.nameOffset == 0xFFFF ) {
+				if ref_ent.nameOffset == 0xFFFF {
 					entName = ""
 				} else {
 					let cur_offset = ftell(filep);
@@ -447,13 +447,13 @@ final class MacResource {
 	}
 	
 	/** Create a set of resource types in this file */
-	var types: Set<MaelOSType> {
+	lazy var types: Set<MaelOSType> = {
 		var toRet = Set<MaelOSType>()
-		for res in resources {
+		for res in self.resources {
 			toRet.insert(res.type)
 		}
 		return toRet
-	}
+	}()
 
 	/** Return the number of resources of the given type */
 	func countOfResources(type type: MaelOSType) -> Int {
@@ -505,7 +505,7 @@ final class MacResource {
 		guard fread(d.mutableBytes, Int(len), 1, filep) != 0 else {
 			throw Errors.CouldNotReadData
 		}
-		resource.data = NSData(data: d)
+		resource.data = d
 	}
 	
 	/// Return a resource of a certain type and id.
@@ -556,4 +556,3 @@ final class MacResource {
 		}
 	}
 }
-

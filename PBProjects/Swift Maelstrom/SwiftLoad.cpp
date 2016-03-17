@@ -9,11 +9,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <SDL2/SDL_surface.h>
+#include "SwiftLoad.h"
 
-extern "C" SDL_Surface *Load_Icon(char **xpm);
-
-SDL_Surface *Load_Icon(char **xpm)
+SDL_Surface *loadIcon(char **xpm)
 {
 	SDL_Surface *icon;
 	int width, height, num_colors, chars_per_pixel;

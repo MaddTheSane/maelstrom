@@ -97,5 +97,4 @@ FILE *fileFromResourceFork(NSURL *url)
 	aMem->pos = 0;
 	
 	return funopen(aMem, readfn, NULL, seekfn, closefn);
-	return NULL;
 }

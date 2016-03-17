@@ -229,6 +229,7 @@
 		55836C631BF3CBA6001605AB /* SwiftLoad.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SwiftLoad.cpp; sourceTree = "<group>"; };
 		55836C661BF3D409001605AB /* NetPlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetPlay.swift; sourceTree = "<group>"; };
 		55875D961C9A77FD009C230B /* SDLHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SDLHelpers.swift; sourceTree = "<group>"; };
+		55875D981C9A7E68009C230B /* SwiftLoad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwiftLoad.h; sourceTree = "<group>"; };
 		559658891BEACEA400D8BB39 /* Object.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Object.swift; sourceTree = "<group>"; };
 		55A6164E1BE55FEA00AD2049 /* Maelstrom-UB-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Maelstrom-UB-Bridging-Header.h"; sourceTree = "<group>"; };
 		55A6164F1BE55FEC00AD2049 /* SDLMain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SDLMain.swift; sourceTree = "<group>"; };
@@ -544,6 +545,7 @@
 			isa = PBXGroup;
 			children = (
 				55836C631BF3CBA6001605AB /* SwiftLoad.cpp */,
+				55875D981C9A7E68009C230B /* SwiftLoad.h */,
 				554E20981BFA99D000070D91 /* SColorTable.c */,
 				554E20991BFA99D000070D91 /* SColorTable.h */,
 			);

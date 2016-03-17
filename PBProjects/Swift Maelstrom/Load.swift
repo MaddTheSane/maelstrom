@@ -62,8 +62,6 @@ final class LibPath {
 	}
 }
 
-@asmname("Load_Icon") func loadIcon(xpm: UnsafeMutablePointer<UnsafeMutablePointer<Int8>>) -> UnsafeMutablePointer<SDL_Surface>
-
 func loadTitle(screen: FrameBuf, title_id: Int32) -> UnsafeMutablePointer<SDL_Surface> {
 	let path = LibPath()
 	var bmp: UnsafeMutablePointer<SDL_Surface> = nil
