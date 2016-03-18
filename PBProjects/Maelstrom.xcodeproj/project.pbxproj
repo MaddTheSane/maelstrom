@@ -15,6 +15,7 @@
 		5515E8311BE611310048605C /* Mac_Resource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5515E8301BE611310048605C /* Mac_Resource.swift */; };
 		5515E8341BE6878E0048605C /* MacBinary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5515E8331BE6878E0048605C /* MacBinary.swift */; };
 		5515E8361BE68A7D0048605C /* applefile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5515E8351BE68A7D0048605C /* applefile.swift */; };
+		5529FE581C9B8CE100C8512D /* Shinobi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5529FE571C9B8CE100C8512D /* Shinobi.swift */; };
 		554E20921BFA896E00070D91 /* Images in Resources */ = {isa = PBXBuildFile; fileRef = 55D1287F0F09DA7200E06E2A /* Images */; };
 		554E20951BFA89DC00070D91 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 554E20971BFA89DC00070D91 /* InfoPlist.strings */; };
 		554E209A1BFA99D000070D91 /* SColorTable.c in Sources */ = {isa = PBXBuildFile; fileRef = 554E20981BFA99D000070D91 /* SColorTable.c */; };
@@ -85,6 +86,7 @@
 		55D4F8C81BE9738E00F31A0F /* SDLMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A6164F1BE55FEC00AD2049 /* SDLMain.swift */; };
 		55D4F8C91BE973A400F31A0F /* SDLMain.xib in Resources */ = {isa = PBXBuildFile; fileRef = 557258B519E5CC730073CDF2 /* SDLMain.xib */; };
 		55D4F8CB1BE9747500F31A0F /* Maelstrom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D4F8CA1BE9747500F31A0F /* Maelstrom.swift */; };
+		55D95E3B1C9B77C3008441E2 /* Make.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D95E3A1C9B77C3008441E2 /* Make.swift */; };
 		55EBAE1E17174CFB0029EB7B /* SDL2.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127EF0F09D54000E06E2A /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		55EBAE1F17174CFF0029EB7B /* SDL2_net.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127F00F09D54000E06E2A /* SDL2_net.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		55FF319E1BF2C5A7001977AD /* Controls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FF319D1BF2C5A7001977AD /* Controls.swift */; };
@@ -219,6 +221,7 @@
 		5515E8321BE686AE0048605C /* macbinary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = macbinary.h; sourceTree = "<group>"; };
 		5515E8331BE6878E0048605C /* MacBinary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MacBinary.swift; sourceTree = "<group>"; };
 		5515E8351BE68A7D0048605C /* applefile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = applefile.swift; sourceTree = "<group>"; };
+		5529FE571C9B8CE100C8512D /* Shinobi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shinobi.swift; sourceTree = "<group>"; };
 		554E20961BFA89DC00070D91 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		554E20981BFA99D000070D91 /* SColorTable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SColorTable.c; sourceTree = "<group>"; };
 		554E20991BFA99D000070D91 /* SColorTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SColorTable.h; sourceTree = "<group>"; };
@@ -256,6 +259,7 @@
 		55D4F8B71BE83ADB00F31A0F /* Mac_FontServ.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mac_FontServ.swift; sourceTree = "<group>"; };
 		55D4F8B91BE83B0900F31A0F /* Mac_Sound.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mac_Sound.swift; sourceTree = "<group>"; };
 		55D4F8CA1BE9747500F31A0F /* Maelstrom.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Maelstrom.swift; sourceTree = "<group>"; };
+		55D95E3A1C9B77C3008441E2 /* Make.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Make.swift; sourceTree = "<group>"; };
 		55FF319D1BF2C5A7001977AD /* Controls.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Controls.swift; sourceTree = "<group>"; };
 		55FF319F1BF2C627001977AD /* Logic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logic.swift; sourceTree = "<group>"; };
 		55FF31A11BF2D070001977AD /* Scores.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scores.swift; sourceTree = "<group>"; };
@@ -561,6 +565,8 @@
 				559658891BEACEA400D8BB39 /* Object.swift */,
 				55FF31AD1BF33A5F001977AD /* Player.swift */,
 				55836C661BF3D409001605AB /* NetPlay.swift */,
+				55D95E3A1C9B77C3008441E2 /* Make.swift */,
+				5529FE571C9B8CE100C8512D /* Shinobi.swift */,
 			);
 			path = netlogic;
 			sourceTree = "<group>";
@@ -703,9 +709,11 @@
 				55ADA3EA1BFE684400D78509 /* XattrResFork.m in Sources */,
 				55D4F8B81BE83ADB00F31A0F /* Mac_FontServ.swift in Sources */,
 				550CEC541BE842AC00453C11 /* SDL_FrameBuf.swift in Sources */,
+				55D95E3B1C9B77C3008441E2 /* Make.swift in Sources */,
 				555968611BE6EB22003A3001 /* fastrand.cpp in Sources */,
 				55D4F8B61BE7F3DB00F31A0F /* SwiftHelping.swift in Sources */,
 				55D4F8CB1BE9747500F31A0F /* Maelstrom.swift in Sources */,
+				5529FE581C9B8CE100C8512D /* Shinobi.swift in Sources */,
 				55FF31A41BF2E3A6001977AD /* About.swift in Sources */,
 				5515E8311BE611310048605C /* Mac_Resource.swift in Sources */,
 				55732AFF1BF4806600CAFFE4 /* Dialog.swift in Sources */,

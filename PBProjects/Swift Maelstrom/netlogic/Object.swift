@@ -339,7 +339,17 @@ final class Bonus: MaelObject {
 }
 
 final class DamagedShip : MaelObject {
-	
+/*
+DamagedShip::DamagedShip(int X, int Y, int xVel, int yVel) :
+Object(X, Y, xVel, yVel, gDamagedShip, 1)
+{
+Set_TTL(DAMAGED_DURATION*phasetime);
+sound->PlaySound(gDamagedAppears, 4);
+#ifdef SERIOUS_DEBUG
+error("Created a damaged ship!\n");
+#endif
+}
+*/
 	//DamagedShip(int X, int Y, int xVel, int yVel);
 	//~DamagedShip() { }
 	

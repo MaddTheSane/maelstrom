@@ -23,8 +23,8 @@ private(set) var gVelocityTable = [MPoint]()
 private(set) var gShotOrigins = [MPoint]()
 private(set) var gThrustOrigins = [MPoint]()
 
-//StarPtr	gTheStars[MAX_STARS];
-//Uint32	gStarColors[20];
+var gTheStars = [Star](count:MAX_STARS, repeatedValue: Star())
+var gStarColors = [UInt32](count: 20, repeatedValue: 0)
 
 
 /* -- The prize CICN's */
@@ -264,9 +264,34 @@ private func loadCICNS() -> Bool {
 	return true;
 }
 
-///Initialize the stars
+/// Initialize the stars
 private func initStars() {
+	/* Map star pixel colors to new colormap */
+	gStarColors[0] = screen.mapRGB(colorsAtGamma(Int32(gGammaCorrect))[0xEB])
+	gStarColors[1] = screen.mapRGB(colorsAtGamma(Int32(gGammaCorrect))[0xEC])
+	gStarColors[2] = screen.mapRGB(colorsAtGamma(Int32(gGammaCorrect))[0xED])
+	gStarColors[3] = screen.mapRGB(colorsAtGamma(Int32(gGammaCorrect))[0xEE])
+	gStarColors[4] = screen.mapRGB(colorsAtGamma(Int32(gGammaCorrect))[0xEF])
+	gStarColors[5] = screen.mapRGB(colorsAtGamma(Int32(gGammaCorrect))[0xD9])
+	gStarColors[6] = screen.mapRGB(colorsAtGamma(Int32(gGammaCorrect))[0xDA])
+	gStarColors[7] = screen.mapRGB(colorsAtGamma(Int32(gGammaCorrect))[0xDB])
+	gStarColors[8] = screen.mapRGB(colorsAtGamma(Int32(gGammaCorrect))[0xDC])
+	gStarColors[9] = screen.mapRGB(colorsAtGamma(Int32(gGammaCorrect))[0xDD])
+	gStarColors[10] = screen.mapRGB(colorsAtGamma(Int32(gGammaCorrect))[0xE4])
+	gStarColors[11] = screen.mapRGB(colorsAtGamma(Int32(gGammaCorrect))[0xE5])
+	gStarColors[12] = screen.mapRGB(colorsAtGamma(Int32(gGammaCorrect))[0xE6])
+	gStarColors[13] = screen.mapRGB(colorsAtGamma(Int32(gGammaCorrect))[0xE7])
+	gStarColors[14] = screen.mapRGB(colorsAtGamma(Int32(gGammaCorrect))[0xE8])
+	gStarColors[15] = screen.mapRGB(colorsAtGamma(Int32(gGammaCorrect))[0xF7])
+	gStarColors[16] = screen.mapRGB(colorsAtGamma(Int32(gGammaCorrect))[0xF8])
+	gStarColors[17] = screen.mapRGB(colorsAtGamma(Int32(gGammaCorrect))[0xF9])
+	gStarColors[18] = screen.mapRGB(colorsAtGamma(Int32(gGammaCorrect))[0xFA])
+	gStarColors[19] = screen.mapRGB(colorsAtGamma(Int32(gGammaCorrect))[0xFB])
 	
+	for i in 0 ..< Int(MAX_STARS) {
+		gTheStars[i].color = 0
+		setStar(i)
+	}
 }
 
 private func initSprites() -> Bool {
@@ -848,4 +873,11 @@ func doInitializations(video_flags: SDL_WindowFlags) -> Bool {
 	buildVelocityTable();
 	
 	return true;
+}
+
+/// Set a star
+func setStar(which: Int) {
+	gTheStars[which].xCoord = Int16(UInt16(gClipRect.x) + FastRandom(UInt16(gClipRect.w)))
+	gTheStars[which].yCoord = Int16(UInt16(gClipRect.y) + FastRandom(UInt16(gClipRect.h)))
+	gTheStars[which].color = gStarColors[Int(FastRandom(20))];
 }

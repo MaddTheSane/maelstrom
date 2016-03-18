@@ -240,7 +240,7 @@ SDL_SetWindowGammaRamp(window, ramp, ramp, ramp);
 		
 	}
 	
-	func update() {
+	func update(autoUpdate: Bool = false) {
 		
 	}
 	
@@ -250,6 +250,10 @@ SDL_SetWindowGammaRamp(window, ramp, ramp, ramp);
 	
 	func mapRGB(red R: UInt8, green G: UInt8, blue B: UInt8) -> UInt32 {
 		return SDL_MapRGB(screenfg.memory.format, R, G, B)
+	}
+	
+	func mapRGB(color: SDL_Color) -> UInt32 {
+		return mapRGB(red: color.r, green: color.g, blue: color.b)
 	}
 
 	/// Load and convert an 8-bit image with the given mask

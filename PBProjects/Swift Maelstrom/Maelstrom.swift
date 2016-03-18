@@ -90,7 +90,7 @@ let STATUS_HEIGHT	= 14
 let SHIELD_WIDTH	= 55
 let INITIAL_BONUS	= 2000
 
-let ENEMY_HITS			= 3
+let ENEMY_HITS: Int32	= 3
 let HOMING_HITS			= 9
 let STEEL_SPECIAL		= 10
 let DEFAULT_HITS:Int32	= 1
@@ -122,8 +122,8 @@ struct MPoint {
 }
 
 struct Star {
-	var xCoord: Int32 = 0
-	var yCoord: Int32 = 0
+	var xCoord: Int16 = 0
+	var yCoord: Int16 = 0
 	var color: UInt32 = 0
 }
 

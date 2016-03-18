@@ -10,6 +10,16 @@ import Foundation
 import SDL2
 import SDL2_net
 
+struct Shot {
+	var damage: Int32 = 0
+	var x: Int32 = 0
+	var y: Int32 = 0
+	var xvel: Int32 = 0
+	var yvel: Int32 = 0
+	var ttl: Int32 = 0
+	var hitRect = Rect()
+}
+
 #if MULTIPLAYER_SUPPORT
 
 var gNumPlayers: Int32 = 0
