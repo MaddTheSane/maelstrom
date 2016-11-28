@@ -85,13 +85,15 @@ class MacDialog {
 	}
 	
 	private class func enableText() {
-		if textEnabled++ == 0 {
+		if textEnabled == 0 {
 			SDL_StartTextInput()
 		}
+		textEnabled += 1
 	}
 	
 	private class func disableText() {
-		if --textEnabled == 0 {
+		textEnabled -= 1
+		if textEnabled == 0 {
 			SDL_StopTextInput()
 		}
 	}
@@ -253,7 +255,7 @@ final class MacDefaultButton : MacButton {
 	
 	override func map(offset offset: (x: Int32, y: Int32), screen: FrameBuf, background: (red: UInt8, green: UInt8, blue: UInt8), foreground: (red: UInt8, green: UInt8, blue: UInt8)) {
 		super.map(offset: offset, screen: screen, background: background, foreground: foreground)
-		fg = screen.mapRGB(foreground)
+		fg = screen.mapRGB(tuple: foreground)
 	}
 	
 	override func handleKeyPress(key: SDL_Keysym, inout done doneflag: Bool) {
@@ -330,8 +332,8 @@ final class MacCheckBox : MacDialog {
 		sensitive.h = CHECKBOX_SIZE
 		
 		/* Get the screen colors */
-		fg = screen.mapRGB(foreground)
-		bg = screen.mapRGB(background)
+		fg = screen.mapRGB(tuple: foreground)
+		bg = screen.mapRGB(tuple: background)
 		
 		/* Map the checkbox text */
 		label.memory.format.memory.palette.memory.colors[1].r = foreground.red;
@@ -429,8 +431,8 @@ final class MacRadioList : MacDialog {
 		super.map(offset: offset, screen: screen, background: background, foreground: foreground)
 		
 		/* Get the screen colors */
-		fg = screen.mapRGB(foreground);
-		bg = screen.mapRGB(background);
+		fg = screen.mapRGB(red: foreground.red, green: foreground.green, blue: foreground.blue)
+		bg = screen.mapRGB(red: background.red, green: background.green, blue: background.blue);
 		
 		/* Adjust sensitivity and map the radiobox text */
 		for i in 0..<radioList.count {
@@ -454,23 +456,27 @@ final class MacRadioList : MacDialog {
 		radioList.append(radio)
 	}
 	
-	private func spot(var x x: Int32, var y: Int32, color: UInt32) {
+	private func spot(x x2: Int32, y y2: Int32, color: UInt32) {
+		var x = x2
+		var y = y2
 		x += 8;
 		y += 8;
 		screen.drawLine(x1: x+1, y1: y, x2: x+4, y2: y, color: color)
-		++y
+		y += 1
 		screen.drawLine(x1: x, y1: y, x2: x+5, y2: y, color: color)
-		++y;
+		y += 1;
 		screen.drawLine(x1: x, y1: y, x2: x+5, y2: y, color: color);
-		++y;
+		y += 1;
 		screen.drawLine(x1: x, y1: y, x2: x+5, y2: y, color: color);
-		++y;
+		y += 1;
 		screen.drawLine(x1: x, y1: y, x2: x+5, y2: y, color: color);
-		++y;
+		y += 1;
 		screen.drawLine(x1: x+1, y1: y, x2: x+4, y2: y, color: color);
 	}
 	
-	private func circle(var x x: Int32, var y: Int32) {
+	private func circle(x x2: Int32, y y2: Int32) {
+		var x = x2
+		var y = y2
 		x += 5;
 		y += 5;
 		screen.drawLine(x1: x+4, y1: y, x2: x+7, y2: y, color: fg);
@@ -553,7 +559,7 @@ final class MacTextEntry : MacDialog {
 			entryList[currentEntry].hilite = false;
 			updateEntry(entryList[currentEntry]);
 			if currentEntry >= entryList.count {
-				currentEntry++
+				currentEntry += 1
 			} else {
 				currentEntry = 0
 			}
@@ -610,8 +616,8 @@ final class MacTextEntry : MacDialog {
 		/* Get the screen colors */
 		(foreground.r, foreground.g, foreground.b) = foreG
 		(background.r, background.g, background.b) = backG
-		fg = screen.mapRGB(foreG)
-		bg = screen.mapRGB(backG)
+		fg = screen.mapRGB(tuple: foreG)
+		bg = screen.mapRGB(tuple: backG)
 		
 		/* Adjust sensitivity and map the radiobox text */
 		for entry in entryList {
@@ -721,7 +727,7 @@ final class MacNumericEntry: MacDialog {
 			current.hilite = false
 			updateEntry(current);
 			if currentEntry <= entryList.count {
-				currentEntry++;
+				currentEntry += 1;
 			} else {
 				currentEntry=0;
 			}
@@ -785,8 +791,8 @@ final class MacNumericEntry: MacDialog {
 		/* Get the screen colors */
 		(foreground.r, foreground.g, foreground.b) = foreG;
 		(background.r, background.g, background.b) = backG;
-		fg = screen.mapRGB(foreG)
-		bg = screen.mapRGB(backG)
+		fg = screen.mapRGB(tuple: foreG)
+		bg = screen.mapRGB(tuple: backG)
 		
 		/* Adjust sensitivity and map the radiobox text */
 		for entry in entryList {
@@ -870,8 +876,8 @@ final class MaclikeDialog {
 	
 	/// The big Kahones
 	func run(expandSteps: Int = 1) {
-		var savedfg = UnsafeMutablePointer<SDL_Surface>()
-		var savedbg = UnsafeMutablePointer<SDL_Surface>()
+		var savedfg: UnsafeMutablePointer<SDL_Surface> = nil
+		var savedbg: UnsafeMutablePointer<SDL_Surface> = nil
 		var event = SDL_Event()
 		var maxX: Int32 = 0
 		var maxY: Int32 = 0
@@ -953,7 +959,7 @@ final class MaclikeDialog {
 		
 		var done = false
 		/* Wait until the dialog box is done */
-		for ( done = false; !done; ) {
+		while !done {
 			screen.waitEvent(&event);
 			
 			switch (event.type) {

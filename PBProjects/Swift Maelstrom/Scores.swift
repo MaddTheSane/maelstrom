@@ -124,7 +124,7 @@ final class HighScores {
 	func zapHighScores() -> Bool {
 		let x: Int32
 		let y: Int32
-		var splash = UnsafeMutablePointer<SDL_Surface>()
+		var splash: UnsafeMutablePointer<SDL_Surface> = nil
 		var doClear = false
 		
 		/* Set up all the components of the dialog box */
@@ -185,7 +185,7 @@ final class HighScores {
 		do {
 			var ourDir = try fm.URLForDirectory(.ApplicationSupportDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
 			for pathComp in ["Maelstrom", "Scores"] {
-				ourDir = ourDir.URLByAppendingPathComponent(pathComp)
+				ourDir = ourDir.URLByAppendingPathComponent(pathComp)!
 			}
 			scoreLocation = ourDir
 			

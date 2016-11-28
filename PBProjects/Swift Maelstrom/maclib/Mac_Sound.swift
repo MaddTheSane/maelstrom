@@ -44,9 +44,9 @@ private func bogusAudioThread(data: UnsafeMutablePointer<Void>) -> Int32 {
 	/* Get ready to roll.. */
 	let spec = UnsafeMutablePointer<SDL_AudioSpec>(data)
 	if spec.memory.callback == nil {
-		for ( ; ; ) {
+		//for ( ; ; ) {
 		Delay(60*60*60);	/* Delay 1 hour */
-		}
+		//}
 	}
 	let fill: SDL_AudioCallback? = spec.memory.callback
 	playticks = (UInt32(spec.memory.samples) * 1000) / UInt32(spec.memory.freq)
@@ -199,10 +199,11 @@ final class Sound {
 		
 		/* Allow ~ 1/30 second time-lag in audio buffer -- samples is x^2  */
 		spec.samples = UInt16(Int(wave.frequency) * Int(wave.sampleSize) / 30)
-		for ( p = 0; spec.samples > 1; ++p ) {
-			spec.samples /= 2;
+		while spec.samples > 1 {
+			spec.samples /= 2
+			p += 1
 		}
-		++p;
+		p += 1;
 		for _ in 0..<p {
 			spec.samples *= 2;
 		}
@@ -268,11 +269,14 @@ final class Sound {
 	}
 	
 	///This has to be a very fast routine, otherwise sound will lag and crackle
-	private func fillAudioU8(var stream: UnsafeMutablePointer<UInt8>, var _ length: Int32) {
+	private func fillAudioU8(stream2: UnsafeMutablePointer<UInt8>, _ length2: Int32) {
+		var length = length2
+		var stream = stream2
 		//int i, s;
 		
 		/* Mix in each of the channels, assuming 8-bit unsigned audio data */
-		while length-- != 0 {
+		while length != 0 {
+			length -= 1
 			var s = 0;
 			for i in 0..<NUM_CHANNELS {
 				if channels[i].len > 0 {
@@ -282,9 +286,9 @@ final class Sound {
 					len = 0 then we do '--len'
 					len = -1, but that's okay.
 					*/
-					--channels[i].len;
+					channels[i].len -= 1;
 					s += Int(channels[i].src.memory &- 0x80)
-					++channels[i].src;
+					channels[i].src = channels[i].src.successor();
 					/*
 					Possible race condition:
 					If a sound is played here,
@@ -311,13 +315,13 @@ final class Sound {
 			/* clip */
 			if s > 0xFE {/* 0xFF causes static on some audio systems */
 				stream.memory = 0xFE
-				stream++
+				stream = stream.successor()
 			} else if s < 0x00 {
 				stream.memory = 0
-				stream++
+				stream = stream.successor()
 			} else {
 				stream.memory = UInt8(s)
-				stream++
+				stream = stream.successor()
 			}
 		}
 	}

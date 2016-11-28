@@ -13,7 +13,7 @@ var gArgv = [UnsafeMutablePointer<Int8>](count: 20, repeatedValue: nil)
 func ADD_ARG(x: UnsafePointer<Int8>) {
 	assert(gArgc < 20)
 	gArgv[Int(gArgc)] = strdup(x)
-	gArgc++
+	gArgc += 1
 }
 
 for i in 0..<Process.argc {

@@ -119,7 +119,7 @@ class SDLMain : NSObject, NSApplicationDelegate {
 		NSBundle.mainBundle().executablePath
 		//var parentdir = [Int8](count: Int(MAXPATHLEN), repeatedValue: 0)
 		//strcpy(&parentdir, gArgv[0])
-		gArgv[0] = strdup(NSBundle.mainBundle().resourceURL!.URLByAppendingPathComponent("Maelstrom.app").fileSystemRepresentation)
+		gArgv[0] = strdup(NSBundle.mainBundle().resourceURL!.URLByAppendingPathComponent("Maelstrom.app")!.fileSystemRepresentation)
 		gArgc = 1
 		
 		atexit_b { () -> Void in

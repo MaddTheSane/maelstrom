@@ -17,7 +17,7 @@ final class LibPath {
 		do {
 			let fm = NSFileManager.defaultManager()
 			var userDir = try fm.URLForDirectory(.ApplicationSupportDirectory, inDomain: .UserDomainMask, appropriateForURL: ourBundle.bundleURL, create: false)
-			userDir = userDir.URLByAppendingPathComponent("Maelstrom", isDirectory: true)
+			userDir = userDir.URLByAppendingPathComponent("Maelstrom", isDirectory: true)!
 			if !userDir.checkResourceIsReachableAndReturnError(nil) {
 				try fm.createDirectoryAtURL(userDir, withIntermediateDirectories: true, attributes: nil)
 			}
@@ -39,7 +39,8 @@ final class LibPath {
 			toRet.append("._\(fileName)")
 			toRet.append((fileName as NSString).stringByAppendingPathExtension("bin")!)
 			
-			let tmpRet = toRet.map({ (var tmpName) -> String in
+			let tmpRet = toRet.map({ (aName) -> String in
+				var tmpName = aName
 				tmpName.replaceAllInstancesOfCharacter(" ", withCharacter: "_")
 				return tmpName
 			})
@@ -51,7 +52,7 @@ final class LibPath {
 		for url in LibPath.searchURLs {
 			for aFileName in posibleFileNames {
 				let combined = url.URLByAppendingPathComponent(aFileName)
-				if combined.checkResourceIsReachableAndReturnError(nil) {
+				if combined!.checkResourceIsReachableAndReturnError(nil) {
 					//But the APIs still expect the base file name
 					return url.URLByAppendingPathComponent(fileName)
 				}

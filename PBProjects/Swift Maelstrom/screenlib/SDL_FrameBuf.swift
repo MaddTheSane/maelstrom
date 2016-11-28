@@ -25,7 +25,9 @@ private func LOWER_PREC(X: Int32) -> Int16 {
 
 */
 
-private func memswap(var dst: UnsafeMutablePointer<UInt8>, var src: UnsafeMutablePointer<UInt8>, len: Int) {
+private func memswap(dst2: UnsafeMutablePointer<UInt8>, src src2: UnsafeMutablePointer<UInt8>, len: Int) {
+	var dst = dst2
+	var src = src2
 	#if SWAP_XOR
 		for _ in 0..<len {
 			dst.memory ^= src.memory
@@ -36,7 +38,7 @@ private func memswap(var dst: UnsafeMutablePointer<UInt8>, var src: UnsafeMutabl
 	#else
 		for _ in 0..<len {
 			swap(&dst.memory, &src.memory)
-			dst++;src++;
+			dst = dst.successor();src = src.successor();
 		}
 	#endif
 }
@@ -252,6 +254,11 @@ SDL_SetWindowGammaRamp(window, ramp, ramp, ramp);
 		return SDL_MapRGB(screenfg.memory.format, R, G, B)
 	}
 	
+	func mapRGB(tuple tuple: (red: UInt8, green: UInt8, blue: UInt8)) -> UInt32 {
+		return mapRGB(red: tuple.red, green: tuple.green, blue: tuple.blue)
+	}
+
+	
 	func mapRGB(color: SDL_Color) -> UInt32 {
 		return mapRGB(red: color.r, green: color.g, blue: color.b)
 	}
@@ -275,7 +282,7 @@ SDL_SetWindowGammaRamp(window, ramp, ramp, ramp);
 			UNLOCK_IF_NEEDED();
 			
 			/* Blast and free the queued blits */
-			for ( var i=0; i<blitQlen; ++i ) {
+			for i in 0..<blitQlen {
 				SDL_LowerBlit(blitQ[i].src, &blitQ[i].srcrect,
 					screen, &blitQ[i].dstrect);
 				SDL_FreeSurface(blitQ[i].src);
@@ -560,7 +567,8 @@ AddDirtyRect(&dirty);
 				let screen_bpp = screen.memory.format.memory.BytesPerPixel;
 				screen_loc = screen_mem.advancedBy(Int(y)*Int(screen.memory.pitch) + Int(x)*Int(screen_bpp))
 				w *= Int(screen_bpp)
-				while ( h-- != 0 ) {
+				while h != 0 {
+					h -= 1
 					/* Note that BGcolor is a 32 bit quantity while memset()
 					fills with an 8-bit quantity.  This only matters if
 					the background is a different color than black on a
@@ -633,7 +641,7 @@ AddDirtyRect(&dirty);
 			}
 			
 			/* Add the blit to the queue */
-			++src.memory.refcount;
+			src.memory.refcount += 1;
 			blitQ[blitQlen].src = src;
 			blitQ[blitQlen].srcrect.x = srcx;
 			blitQ[blitQlen].srcrect.y = srcy;
@@ -644,7 +652,7 @@ AddDirtyRect(&dirty);
 			blitQ[blitQlen].dstrect.w = w;
 			blitQ[blitQlen].dstrect.h = h;
 			addDirtyRect(&blitQ[blitQlen].dstrect);
-			++blitQlen;
+			blitQlen += 1;
 	}
 
 	func queueBlit(dstx dstx: Int32, dsty: Int32, src: UnsafeMutablePointer<SDL_Surface>,

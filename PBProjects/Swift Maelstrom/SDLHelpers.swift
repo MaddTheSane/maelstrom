@@ -8,6 +8,7 @@
 
 import Foundation
 import SDL2
+import SDL2.SDL_shape
 
 /*
 public var SDL_AUDIO_MASK_BITSIZE: Int32 { get }

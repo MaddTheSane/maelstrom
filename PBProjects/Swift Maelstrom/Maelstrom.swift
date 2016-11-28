@@ -11,7 +11,7 @@ import SDL2
 
 private let Version = "Maelstrom v1.4.3 (GPL version 3.0.6) -- 10/19/2002 by Sam Lantinga\n"
 
-func error(err: String, line: Int = __LINE__, file: StaticString = __FILE__) {
+func error(err: String, line: Int = #line, file: StaticString = #file) {
 	print("\(file):\(line), \(err)")
 }
 
@@ -190,8 +190,8 @@ final class Blit {
 					}
 				}
 			}
-			for var row=15; row>top; --row {
-				for var col=15; col>left; --col {
+			for row in (top..<15).reverse() {
+				for col in (left..<15).reverse() {
 					let offset = (row*16)+col;
 					if ((mask[offset/8] >> UInt8(7-(offset%8))) & 0x01) == 0x01 {
 						if row > bottom {
@@ -251,8 +251,8 @@ final class Blit {
 					}
 				}
 			}
-			for var row=31; row>top; --row {
-				for var col=31; col>left; --col {
+			for row in (top..<31).reverse() {
+				for col in (left..<31).reverse() {
 					let offset = (row*32)+col;
 					if ((mask[offset/8] >> UInt8(7-(offset%8))) & 0x01) == 0x01 {
 						if row > bottom {
@@ -382,7 +382,7 @@ private func drawMainScreen() {
 	var botDiv:UInt16 = 0
 	var rightDiv:UInt16 = 0
 	
-	var index: UInt16 = 0
+	var index1: UInt16 = 0
 	var sRt:UInt16 = 0
 	var wRt:UInt16 = 0
 	var sw:UInt16 = 0
@@ -459,7 +459,8 @@ private func drawMainScreen() {
 		//exit(255);
 	}
 	
-	for (index = 0; index < 10; index++) {
+	for index in UInt16(0)..<10 {
+		index1 = index
 		var R: UInt8 = 0
 		var G: UInt8 = 0
 		var B: UInt8 = 0
@@ -490,7 +491,7 @@ private func drawMainScreen() {
 		font: bigfont, style: [], R: 0xFF, G: 0xFF, B: 0xFF);
 	buffer = String(getScore())
 	sw = fontserv.textWidth("Last Score: ", font: bigfont, style: [])
-	drawText(x: xOff+5+sw, y: botDiv+46+(index*18)+3, text: buffer,
+	drawText(x: xOff+5+sw, y: botDiv+46+(index1*18)+3, text: buffer,
 		font: bigfont, style: [], R: 0xFF, G: 0xFF, B: 0xFF);
 	
 	/* -- Draw the Instructions */
@@ -605,7 +606,9 @@ private func runPlayGame()
 
 let KMOD_ALT = KMOD_LALT.rawValue | KMOD_RALT.rawValue
 
-func SDL_main(var argc: Int32, var _ argv: UnsafeMutablePointer<UnsafeMutablePointer<Int8>>) -> Int32 {
+func SDL_main(argc2: Int32, _ argv2: UnsafeMutablePointer<UnsafeMutablePointer<Int8>>) -> Int32 {
+	var argc = argc2
+	var argv = argv2
 	var video_flags = SDL_WindowFlags(0)
 	var event = SDL_Event()
 	
@@ -622,7 +625,7 @@ func SDL_main(var argc: Int32, var _ argv: UnsafeMutablePointer<UnsafeMutablePoi
 		exit(1);
 	}
 
-	for ( progname=argv[0]; (--argc) != 0; ++argv ) {
+	for ( progname=argv[0]; (--argc) != 0; argv = argv.successor() ) {
 		if ( strcmp(argv[1], "-fullscreen") == 0 ) {
 			video_flags = SDL_WINDOW_FULLSCREEN | video_flags
 		} else
@@ -644,8 +647,8 @@ func SDL_main(var argc: Int32, var _ argv: UnsafeMutablePointer<UnsafeMutablePoi
 				gGammaCorrect = UInt8(gammacorrect)
 				saveControls();
 				
-				++argv;
-				--argc;
+				argv = argv.successor();
+				argc -= 1;
 			}
 			else if ( strcmp(argv[1], "-volume") == 0 ) {
 				var volume: Int32 = 0
@@ -664,8 +667,8 @@ func SDL_main(var argc: Int32, var _ argv: UnsafeMutablePointer<UnsafeMutablePoi
 				gSoundLevel = UInt8(volume)
 				saveControls();
 				
-				++argv;
-				--argc;
+				argv = argv.successor();
+				argc -= 1;
 			}
 				/*
 				//#define CHECKSUM_DEBUG
@@ -880,7 +883,8 @@ private func drawSoundLevel() {
 
 private func incrementSound() {
 	if gSoundLevel < 8 {
-		sound.volume = ++gSoundLevel
+		gSoundLevel += 1
+		sound.volume = gSoundLevel
 		sound.playSound(.NewLife, priority: 5);
 		
 		/* -- Draw the new sound level */
@@ -890,7 +894,8 @@ private func incrementSound() {
 
 private func decrementSound() {
 	if gSoundLevel > 0 {
-		sound.volume = --gSoundLevel;
+		gSoundLevel -= 1
+		sound.volume = gSoundLevel;
 		sound.playSound(.NewLife, priority: 5);
 		
 		/* -- Draw the new sound level */

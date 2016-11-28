@@ -49,7 +49,7 @@ private func <(lhs: MacResource.Resource, rhs: MacResource.Resource) -> Bool {
 The input data is assumed to be always in big-endian format.
 */
 @inline(__always) internal func byteswap(var array: UnsafeMutablePointer<UInt16>, var count nshorts: Int) {
-	for ; nshorts-- > 0; array++ {
+	for ; nshorts-- > 0; array = array.successor() {
 		bytesex16(&array.memory)
 	}
 }
@@ -119,7 +119,7 @@ private func openMacRes(inout original: NSURL, inout resbase: Int) -> UnsafeMuta
 	
 	func urlByAddingPath(aPath: String) -> NSURL {
 		if let directory = directory {
-			return directory.URLByAppendingPathComponent(aPath)
+			return directory.URLByAppendingPathComponent(aPath)!
 		}
 		return NSURL(fileURLWithPath: aPath)
 	}
@@ -133,7 +133,7 @@ private func openMacRes(inout original: NSURL, inout resbase: Int) -> UnsafeMuta
 	
 	var iterations = 0
 	
-	for iterations = 0; iterations < snr.count; iterations++ {
+	for iterations = 0; iterations < snr.count; iterations += 1 {
 		/* Translate ' ' into '_', etc */
 		/* Note that this translation is irreversible */
 		filename.replaceAllInstancesOfCharacter(snr[iterations].search, withCharacter: snr[iterations].replace)

@@ -232,7 +232,7 @@ class FontServer {
 		copy_short(&fondStruct.Version, &data);
 		copy_short(&fondStruct.num_fonts, &data);
 		bytesex16(&fondStruct.num_fonts);
-		++fondStruct.num_fonts;
+		fondStruct.num_fonts += 1;
 
 		var i = 0
 		
@@ -436,7 +436,7 @@ class FontServer {
 		/* Print the individual characters */
 		/* Note: this could probably be optimized.. eh, who cares. :) */
 		var bit_offset = 0
-		for var boldness=0; boldness <= bold_offset; ++boldness {
+		for var boldness=0; boldness <= bold_offset; boldness += 1 {
 			bit_offset=0;
 			for aChar in bChars {
 				/* check to see if this character is defined */
@@ -485,7 +485,7 @@ class FontServer {
 		SDL_SetColorKey(image, 1/*SDL_SRCCOLORKEY*/, 0);
 		image.memory.format.memory.palette.memory.colors[0] = background
 		image.memory.format.memory.palette.memory.colors[1] = foreground
-		++text_allocated;
+		text_allocated += 1;
 		return image
 	}
 	
@@ -499,7 +499,7 @@ class FontServer {
 	}
 	
 	func freeText(text: UnsafeMutablePointer<SDL_Surface>) {
-		--text_allocated
+		text_allocated -= 1
 		SDL_FreeSurface(text)
 	}
 	

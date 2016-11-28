@@ -216,13 +216,13 @@ final class Wave {
 			sndCopy(&loop_start, &data);
 			sndCopy(&loop_end, &data);
 			encoding = data.memory
-			data++
+			data = data.successor()
 			if encoding != stdSH {
 				throw Errors.NonStandardSoundEncoding(encoding)
 			}
 			/* Frequency base might be used later */
 			//freq_base = data.memory
-			data++
+			data = data.successor()
 			
 			/* Now allocate room for the sound */
 			if Int(num_samples) > snd.length - data.distanceTo(UnsafePointer<UInt8>(snd.bytes)) {
