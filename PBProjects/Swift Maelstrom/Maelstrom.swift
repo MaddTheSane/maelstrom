@@ -614,84 +614,89 @@ func SDL_main(argc2: Int32, _ argv2: UnsafeMutablePointer<UnsafeMutablePointer<I
 	
 	var doprinthigh = false
 	var speedtest = false
-
+	
 	/* Seed the random number generator */
 	SeedRandom(0);
 	/* Initialize the controls */
 	loadControls();
-
+	
 	/* Initialize game logic data structures */
 	if !initLogicData() {
 		exit(1);
 	}
-
-	for ( progname=argv[0]; (--argc) != 0; argv = argv.successor() ) {
+	
+	progname = argv2[0]
+	
+	argc -= 1
+	while argc != 0 {
+		defer {
+			argv = argv.successor()
+			argc -= 1
+		}
 		if ( strcmp(argv[1], "-fullscreen") == 0 ) {
 			video_flags = SDL_WINDOW_FULLSCREEN | video_flags
-		} else
-			if ( strcmp(argv[1], "-gamma") == 0 ) {
-				var gammacorrect: Int32 = 0
-				
-				if argv[2] != nil {  /* Print the current gamma */
-					print("Current Gamma correction level: \(gGammaCorrect)")
-					exit(0);
-				}
-				gammacorrect = atoi(argv[2])
-				if ( gammacorrect < 0 ||
-					gammacorrect > 8 ) {
-						fatalError(
-							"Gamma correction value must be between 0 and 8. -- Exiting.");
-						//exit(1);
-				}
-				/* We need to update the gamma */
-				gGammaCorrect = UInt8(gammacorrect)
-				saveControls();
-				
-				argv = argv.successor();
-				argc -= 1;
-			}
-			else if ( strcmp(argv[1], "-volume") == 0 ) {
-				var volume: Int32 = 0
-				
-				if argv[2] != nil {  /* Print the current volume */
-					print("Current volume level: \(gSoundLevel)");
-					exit(0);
-				}
-				volume = atoi(argv[2])
-				if ( volume < 0 || volume > 8 ) {
-					fatalError(
-						"Volume must be a number between 0 and 8. -- Exiting.");
-					//exit(1);
-				}
-				/* We need to update the volume */
-				gSoundLevel = UInt8(volume)
-				saveControls();
-				
-				argv = argv.successor();
-				argc -= 1;
-			}
-				/*
-				//#define CHECKSUM_DEBUG
-				#if CHECKSUM_DEBUG
-				else if ( strcmp(argv[1], "-checksum") == 0 ) {
-				mesg("Checksum = %s\n", get_checksum(NULL, 0));
+		} else if ( strcmp(argv[1], "-gamma") == 0 ) {
+			var gammacorrect: Int32 = 0
+			
+			if argv[2] != nil {  /* Print the current gamma */
+				print("Current Gamma correction level: \(gGammaCorrect)")
 				exit(0);
-				}
-				#endif /* CHECKSUM_DEBUG */
-				*/
-			else if ( strcmp(argv[1], "-printscores") == 0 ) {
-				doprinthigh = true;
-			} else if ( strcmp(argv[1], "-netscores") == 0 ) {
-				HighScores.netScores = true;
-			} else if ( strcmp(argv[1], "-speedtest") == 0 ) {
-				speedtest = true;
-			} else if ( logicParseArgs(&argv, &argc) ) {
-				/* LogicParseArgs() took care of everything */
-			} else if ( strcmp(argv[1], "-version") == 0 ) {
-				print(Version)
+			}
+			gammacorrect = atoi(argv[2])
+			if ( gammacorrect < 0 ||
+				gammacorrect > 8 ) {
+				fatalError(
+					"Gamma correction value must be between 0 and 8. -- Exiting.");
+				//exit(1);
+			}
+			/* We need to update the gamma */
+			gGammaCorrect = UInt8(gammacorrect)
+			saveControls();
+			
+			argv = argv.successor();
+			argc -= 1;
+		} else if strcmp(argv[1], "-volume") == 0 {
+			var volume: Int32 = 0
+			
+			if argv[2] != nil {  /* Print the current volume */
+				print("Current volume level: \(gSoundLevel)");
 				exit(0);
-			} else {
-				printUsage();
+			}
+			volume = atoi(argv[2])
+			if volume < 0 || volume > 8 {
+				fatalError(
+					"Volume must be a number between 0 and 8. -- Exiting.");
+				//exit(1);
+			}
+			/* We need to update the volume */
+			gSoundLevel = UInt8(volume)
+			saveControls();
+			
+			argv = argv.successor();
+			argc -= 1;
+		}
+			/*
+			//#define CHECKSUM_DEBUG
+			#if CHECKSUM_DEBUG
+			else if ( strcmp(argv[1], "-checksum") == 0 ) {
+			mesg("Checksum = %s\n", get_checksum(NULL, 0));
+			exit(0);
+			}
+			#endif /* CHECKSUM_DEBUG */
+			*/
+		else if ( strcmp(argv[1], "-printscores") == 0 ) {
+			doprinthigh = true;
+		} else if ( strcmp(argv[1], "-netscores") == 0 ) {
+			HighScores.netScores = true;
+		} else if ( strcmp(argv[1], "-speedtest") == 0 ) {
+			speedtest = true;
+		} else if ( logicParseArgs(&argv, &argc) ) {
+			/* LogicParseArgs() took care of everything */
+		} else if ( strcmp(argv[1], "-version") == 0 ) {
+			print(Version)
+			exit(0);
+		} else {
+			printUsage();
 		}
 	}
 	
@@ -721,7 +726,7 @@ func SDL_main(argc2: Int32, _ argv2: UnsafeMutablePointer<UnsafeMutablePointer<I
 	sound.playSound(.NovaBoom, priority: 5);
 	screen.fade();		/* Fade-out */
 	Delay(SOUND_DELAY);
-
+	
 	gUpdateBuffer = true;
 	var unusedChannel: UInt8 = 0
 	while sound.playing(channel: &unusedChannel) {
@@ -731,12 +736,11 @@ func SDL_main(argc2: Int32, _ argv2: UnsafeMutablePointer<UnsafeMutablePointer<I
 	while gRunning {
 		/* Update the screen if necessary */
 		if gUpdateBuffer {
-		drawMainScreen();
+			drawMainScreen();
 		}
 		
 		/* -- Get an event */
 		screen.waitEvent(&event)
-
 		
 		if event.type == SDL_KEYDOWN.rawValue {
 			switch Int(event.key.keysym.sym) {
@@ -803,14 +807,14 @@ func SDL_main(argc2: Int32, _ argv2: UnsafeMutablePointer<UnsafeMutablePointer<I
 				/* -- Create a screen dump of high scores */
 			case SDLK_F3:
 				screen.screenDump("ScoreDump",
-				x: 64, y: 48, w: 298, h: 384);
+				                  x: 64, y: 48, w: 298, h: 384);
 				break;
 				
-				// Ignore Shift, Ctrl, Alt keys
+			// Ignore Shift, Ctrl, Alt keys
 			case SDLK_LSHIFT, SDLK_RSHIFT, SDLK_LCTRL, SDLK_RCTRL, SDLK_LALT, SDLK_RALT:
 				break;
 				
-				// Dink! :-)
+			// Dink! :-)
 			default:
 				Delay(SOUND_DELAY);
 				sound.playSound(.SteelHit, priority: 5)
@@ -818,17 +822,17 @@ func SDL_main(argc2: Int32, _ argv2: UnsafeMutablePointer<UnsafeMutablePointer<I
 			}
 		} else
 			/* -- Handle mouse clicks */
-			if ( event.type == SDL_MOUSEBUTTONDOWN.rawValue ) {
+			if event.type == SDL_MOUSEBUTTONDOWN.rawValue {
 				buttons.activateButton(x: UInt16(event.button.x),
-					y: UInt16(event.button.y))
+				                       y: UInt16(event.button.y))
 			} else
-		/* -- Handle window close requests */
-		if event.type == SDL_QUIT.rawValue {
-			runQuitGame();
+				/* -- Handle window close requests */
+				if event.type == SDL_QUIT.rawValue {
+					runQuitGame();
 		}
-
+		
 	}
-
+	
 	screen.fade()
 	Delay(60)
 	return 0
