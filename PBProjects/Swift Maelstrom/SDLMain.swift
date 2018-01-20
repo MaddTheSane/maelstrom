@@ -40,12 +40,12 @@ class SDLMain : NSObject, NSApplicationDelegate {
 	
 	@IBAction func startGame(_ sender: AnyObject!) {
 		// extract settings, add them to arguments array
-		if fullscreen.integerValue == NSOnState {
+		if fullscreen.state == .on {
 			ADD_ARG("-fullscreen");
 		}
 		
 		// enable realtime scheduling to get more CPU time.
-		if realtime.integerValue == NSOnState {
+		if realtime.state == .on {
 			var policy: Int32 = 0
 			var param = sched_param()
 			let thread = pthread_self();
@@ -56,11 +56,11 @@ class SDLMain : NSObject, NSApplicationDelegate {
 			pthread_getschedparam (thread, &policy, &param);
 		}
 		
-		if worldScores.integerValue == NSOnState {
+		if worldScores.state == .on {
 			ADD_ARG("-netscores");
 		}
 		
-		if joinGame.integerValue == NSOnState {
+		if joinGame.state == .on {
 			//char *storage[1024];
 			//char *buffer = (char*)storage;
 			var buffer = ""
@@ -72,7 +72,7 @@ class SDLMain : NSObject, NSApplicationDelegate {
 			buffer = "\(numberOfPlayers.intValue)@\(netAddress.stringValue)"
 			ADD_ARG(buffer);
 			
-			if playDeathmatch.integerValue == NSOnState {
+			if playDeathmatch.state == .on {
 				ADD_ARG("-deathmatch");
 				buffer = String(fragCount.intValue)
 				ADD_ARG(buffer);

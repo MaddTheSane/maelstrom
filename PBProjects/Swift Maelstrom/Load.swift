@@ -10,7 +10,7 @@ import Foundation
 import SDL2
 
 final class LibPath {
-	fileprivate static let searchURLs: [URL] = {
+	private static let searchURLs: [URL] = {
 		let ourBundle = Bundle.main
 		var toRet = [URL]()
 		

@@ -67,6 +67,7 @@ func logicUsage() {
 }
 
 func logicParseArgs(_ argvptr: inout UnsafeMutablePointer<UnsafeMutablePointer<CChar>?>, _ argcptr: inout Int32) -> Bool {
+	// TODO: implement
 	return false
 }
 
@@ -88,7 +89,7 @@ func getScore() -> Int32 {
 }
 
 func initPlayerSprites() -> Bool {
-	
+	// TODO: implement
 	
 	return true
 }

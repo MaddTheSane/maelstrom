@@ -10,7 +10,7 @@ import Foundation
 import SDL2
 
 func loadControls() {
-	
+	//TODO: implement
 }
 
 var gSoundLevel: UInt8 = 4

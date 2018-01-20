@@ -104,6 +104,10 @@ class MaelObject {
 		sound.playSound(.explosion, priority: 3)
 	}
 	
+	func collide(against object: MaelObject) -> Int {
+		// TODO: implement
+		return 0
+	}
 	/*
 virtual int Collide(Object *object) {
 /* Set up the location rectangles */

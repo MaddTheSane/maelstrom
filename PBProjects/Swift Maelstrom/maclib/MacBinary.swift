@@ -28,18 +28,18 @@ struct MBHeader {
 	}
 	
 	var dataLength: UInt32 {
-		let length = (UInt32(data.83) <<  0) |
-			(UInt32(data.84) <<  8) |
-			(UInt32(data.85) << 16) |
-			(UInt32(data.86) << 24);
+		var length = (UInt32(data.83) <<  0)
+		length |= (UInt32(data.84) <<  8)
+		length |= (UInt32(data.85) << 16)
+		length |= (UInt32(data.86) << 24)
 		return length;
 	}
 	
 	var resourceLength: UInt32 {
-		let length = (UInt32(data.87) <<  0) |
-			(UInt32(data.88) <<  8) |
-			(UInt32(data.89) << 16) |
-			(UInt32(data.90) << 24);
+		var length = (UInt32(data.87) <<  0)
+		length |= (UInt32(data.88) <<  8)
+		length |= (UInt32(data.89) << 16)
+		length |= (UInt32(data.90) << 24)
 		return length;
 	}
 }
