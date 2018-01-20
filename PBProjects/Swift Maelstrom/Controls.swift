@@ -17,15 +17,15 @@ var gSoundLevel: UInt8 = 4
 var gGammaCorrect: UInt8 = 3
 
 func saveControls() {
-	
+	//TODO: implement
 }
 
 func showDawn() {
-	
+	//TODO: implement
 }
 
 func configureControls() {
-	
+	//TODO: implement
 }
 
 func dropEvents() -> Int32 {

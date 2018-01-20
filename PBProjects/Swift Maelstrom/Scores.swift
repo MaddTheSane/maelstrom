@@ -96,7 +96,7 @@ final class HighScores {
 	}
 	
 	func printHighScores() {
-		
+		//TODO: implement
 	}
 	
 	func saveScores() {
@@ -118,6 +118,7 @@ final class HighScores {
 	}
 	
 	func beginCustomLevel() -> Int32 {
+		//TODO: implement
 		return 0
 	}
 	

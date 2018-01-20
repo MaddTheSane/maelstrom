@@ -31,10 +31,9 @@ final class ButtonList {
 	func activateButton(x: UInt16, y: UInt16) {
 		for belem in buttonList {
 			if (x >= belem.x1) && (x <= belem.x2) &&
-				(y >= belem.y1) && (y <= belem.y2) {
-					if let callback = belem.callback {
-						callback()
-					}
+				(y >= belem.y1) && (y <= belem.y2),
+				let callback = belem.callback {
+				callback()
 			}
 		}
 	}

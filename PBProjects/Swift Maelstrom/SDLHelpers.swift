@@ -95,21 +95,38 @@ public func ==(a: SDL_Rect, b: SDL_Rect) -> Bool {
 
 extension SDL_Rect: Equatable {
 	/// Returns `true` if point resides inside a rectangle.
+	@available(*, deprecated, renamed: "contains(_:)")
 	public func pointIsInRect(_ p: SDL_Point) -> Bool {
 		return ( (p.x >= x) && (p.x < (x + w)) &&
 			(p.y >= y) && (p.y < (y + h)) ) ? true : false
 	}
+
+	/// Returns `true` if point resides inside a rectangle.
+	public func contains(_ p: SDL_Point) -> Bool {
+		return ( (p.x >= x) && (p.x < (x + w)) &&
+			(p.y >= y) && (p.y < (y + h)) ) ? true : false
+	}
+
+	/// Returns `true` if the rectangle has no area.
+	@available(*, deprecated, renamed: "isEmpty")
+	public var empty: Bool {
+		return isEmpty
+	}
 	
 	/// Returns `true` if the rectangle has no area.
-	public var empty: Bool {
+	public var isEmpty: Bool {
 		return ((self.w <= 0) || (self.h <= 0)) ? true : false;
 	}
 	
+	@available(*, deprecated, renamed: "intersects(_:)")
+	public func intersectsRect(_ B: SDL_Rect) -> Bool {
+		return intersects(B)
+	}
 	
 	/// Determine whether two rectangles intersect.
 	///
 	/// - returns: `true` if there is an intersection, `false` otherwise.
-	public func intersectsRect(_ B: SDL_Rect) -> Bool {
+	public func intersects(_ B: SDL_Rect) -> Bool {
 		var ap = self
 		var bp = B
 		return SDL_HasIntersection(&ap, &bp).boolValue
@@ -124,7 +141,12 @@ extension SDL_Rect: Equatable {
 		return result
 	}
 	
+	@available(*, deprecated, renamed: "formUnion(_:)")
 	public mutating func unionInPlace(_ B: SDL_Rect) {
+		formUnion(B)
+	}
+	
+	public mutating func formUnion(_ B: SDL_Rect) {
 		var ap = self
 		var bp = B
 		SDL_UnionRect(&ap, &bp, &self)

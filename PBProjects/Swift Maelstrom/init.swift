@@ -72,16 +72,16 @@ var gMult = [Blit]()
 
 /// Put up an Ambrosia Software splash screen
 private func doSplash() {
-	
+	//TODO: implement
 }
 
 ///Put up our intro splash screen
 private func doIntroScreen() {
-	
+	//TODO: implement
 }
 
 func drawLoadBar(_ aVar: Int) {
-	
+	//TODO: implement
 }
 
 ///Load in the blits
@@ -749,9 +749,9 @@ func doInitializations(_ video_flags: SDL_WindowFlags) -> Bool {
 	//#ifdef SDL_INIT_JOYSTICK
 	init_flags |= SDL_INIT_JOYSTICK;
 	//#endif
-	if SDL_Init(UInt32(init_flags)) < 0 {
+	if SDL_Init(init_flags) < 0 {
 		init_flags &= ~SDL_INIT_JOYSTICK;
-		if SDL_Init(UInt32(init_flags)) < 0 {
+		if SDL_Init(init_flags) < 0 {
 			error("Couldn't initialize SDL: \(String(cString: SDL_GetError()))");
 			return false;
 		}
@@ -780,7 +780,7 @@ func doInitializations(_ video_flags: SDL_WindowFlags) -> Bool {
 	
 	/* Load the Font Server */
 	do {
-		fontserv = try FontServer(fontAtURL: library.path("Maelstrom Fonts")!)
+		fontserv = try FontServer(fontAt: library.path("Maelstrom Fonts")!)
 	} catch {
 		fatalError("Fatal: \(error)")
 		//return false
@@ -814,7 +814,7 @@ func doInitializations(_ video_flags: SDL_WindowFlags) -> Bool {
 	/* -- We want to access the FULL screen! */
 	setRect(&gScrnRect, 0, 0, Int32(SCREEN_WIDTH), Int32(SCREEN_HEIGHT));
 	gStatusLine = Int32(Int(gScrnRect.bottom - gScrnRect.top) - STATUS_HEIGHT);
-	gScrnRect.bottom -= STATUS_HEIGHT;
+	gScrnRect.bottom = gScrnRect.bottom.advanced(by: -STATUS_HEIGHT)
 	gTop = 0;
 	gLeft = 0;
 	gBottom = Int32(gScrnRect.bottom - gScrnRect.top)
@@ -833,7 +833,7 @@ func doInitializations(_ video_flags: SDL_WindowFlags) -> Bool {
 	doSplash();
 	screen.fade();
 	for _ in 0..<5 {
-		if ( dropEvents() != 0 ) {
+		if dropEvents() != 0 {
 			break;
 		}
 		Delay(60);

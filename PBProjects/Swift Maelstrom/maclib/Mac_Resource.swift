@@ -547,7 +547,10 @@ final class MacResource {
 						
 						try loadData(resource)
 						
-						return resource.data!
+						guard let resDat = resource.data else {
+							throw Errors.couldNotOpenResource
+						}
+						return resDat
 					}
 				}
 			}

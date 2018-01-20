@@ -25,11 +25,19 @@ struct FontStyle: OptionSet {
 		rawValue = rv
 	}
 	
-	static let Normal = FontStyle(rawValue: 0)
-	static let Bold = FontStyle(rawValue: 0x01)
-	static let Underline = FontStyle(rawValue: 0x02)
+	static var normal: FontStyle {
+		return FontStyle(rawValue: 0)
+	}
+	static var bold: FontStyle {
+		return FontStyle(rawValue: 0x01)
+	}
+	static var underline: FontStyle {
+		return FontStyle(rawValue: 0x02)
+	}
 	///Unimplemented
-	static let Italic = FontStyle(rawValue: 0x04)
+	static var italic: FontStyle {
+		return FontStyle(rawValue: 0x04)
+	}
 }
 
 ///Lay-out of a Font Record header
@@ -157,11 +165,11 @@ class FontServer {
 				return 0
 			}
 			var extra_width: UInt16 = 0
-			if style.contains(.Bold) {
+			if style.contains(.bold) {
 				extra_width = 1
 			}
 			
-			if style.contains(.Italic) {
+			if style.contains(.italic) {
 				return 0
 			}
 			
@@ -195,7 +203,7 @@ class FontServer {
 	fileprivate var text_allocated = 0
 	fileprivate var fontres: MacResource!
 
-	init(fontAtURL fontfile: URL) throws {
+	init(fontAt fontfile: URL) throws {
 		fontres = try MacResource(fileURL: fontfile);
 
 		if fontres.countOfResources(type: MaelOSType(stringValue: "FOND")!) == 0 {
@@ -262,11 +270,11 @@ class FontServer {
 		
 		/* Now that we have the resource, fiddle with the font structure
 		so we can use it.  (Code taken from 'mac2bdf' -- Thanks! :)
-	 */
+		*/
 		var swapFont = false
 		font.header = (fontData as NSData).bytes.bindMemory(to: FontHdr.self, capacity: fontData.count).pointee
-		if ( ((font.header.fontType & ~3) != FontHdr.PropFont) &&
-			((font.header.fontType & ~3) != FontHdr.FixedFont) ) {
+		if ((font.header.fontType & ~3) != FontHdr.PropFont) &&
+			((font.header.fontType & ~3) != FontHdr.FixedFont) {
 				swapFont = true
 		}
 		if swapFont {
@@ -280,10 +288,10 @@ class FontServer {
 		The low two bits are masked off; newer versions of the Font Manager
 		use these to indicate the presence of optional 'width' and 'height'
 		tables, which are for fractional character spacing (unused).
-	 */
+		*/
 		font.header = (fontData as NSData).bytes.bindMemory(to: FontHdr.self, capacity: fontData.count).pointee
-		if ( ((font.header.fontType & ~3) != FontHdr.PropFont) &&
-			((font.header.fontType & ~3) != FontHdr.FixedFont) ) {
+		if  ((font.header.fontType & ~3) != FontHdr.PropFont) &&
+			((font.header.fontType & ~3) != FontHdr.FixedFont)  {
 				throw Errors.badFontMagicNumber(font.header.fontType)
 		}
 
@@ -368,11 +376,11 @@ class FontServer {
 		
 		var bold_offset = 0
 		
-		if style.contains(.Bold) {
+		if style.contains(.bold) {
 			bold_offset = 1
 		}
 		
-		if style.contains(.Italic) {
+		if style.contains(.italic) {
 			error = "FontServ: Italics not implemented!"
 			return nil
 		}
@@ -480,7 +488,7 @@ class FontServer {
 				#endif
 			}
 		}
-		if style.contains(.Underline) {
+		if style.contains(.underline) {
 			let y = height-(font.header).descent+1
 			bit_offset =  Int(y)*Int((image?.pointee.pitch)!)*8
 			for bit in 0..<width {

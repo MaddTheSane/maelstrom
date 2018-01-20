@@ -40,29 +40,53 @@ struct FInfo {
 		}
 		
 		/// file is on desktop (HFS only)
-		static let OnDesktop = FinderFlags(rawValue: 0x0001)
+		static var onDesktop: FinderFlags {
+			return FinderFlags(rawValue: 0x0001)
+		}
 		/// color coding (3 bits)
-		static let MaskColor = FinderFlags(rawValue: 0x000E)
+		static var maskColor: FinderFlags {
+			return FinderFlags(rawValue: 0x000E)
+		}
 		/// reserved (System 7)
-		static let SwitchLaunch = FinderFlags(rawValue: 0x0020)
+		static var switchLaunch: FinderFlags {
+			return FinderFlags(rawValue: 0x0020)
+		}
 		/// appl available to multiple users
-		static let Shared = FinderFlags(rawValue: 0x0040)
+		static var shared: FinderFlags {
+			return FinderFlags(rawValue: 0x0040)
+		}
 		/// file contains no INIT resources
-		static let NoINITs = FinderFlags(rawValue: 0x0080)
+		static var noINITs: FinderFlags {
+			return FinderFlags(rawValue: 0x0080)
+		}
 		/// Finder has loaded bundle res.
-		static let BeenInited = FinderFlags(rawValue: 0x0100)
+		static var beenInited: FinderFlags {
+			return FinderFlags(rawValue: 0x0100)
+		}
 		/// file contains custom icon
-		static let CustomIcom = FinderFlags(rawValue: 0x0400)
+		static var customIcom: FinderFlags {
+			return FinderFlags(rawValue: 0x0400)
+		}
 		/// file is a stationary pad
-		static let Stationary = FinderFlags(rawValue: 0x0800)
+		static var stationary: FinderFlags {
+			return FinderFlags(rawValue: 0x0800)
+		}
 		/// file can't be renamed by Finder
-		static let NameLocked = FinderFlags(rawValue: 0x1000)
+		static var nameLocked: FinderFlags {
+			return FinderFlags(rawValue: 0x1000)
+		}
 		/// file has a bundle
-		static let HasBundle = FinderFlags(rawValue: 0x2000)
+		static var hasBundle: FinderFlags {
+			return FinderFlags(rawValue: 0x2000)
+		}
 		/// file's icon is invisible
-		static let Invisible = FinderFlags(rawValue: 0x4000)
+		static var invisible: FinderFlags {
+			return FinderFlags(rawValue: 0x4000)
+		}
 		/// file is an alias file (System 7)
-		static let Alias = FinderFlags(rawValue: 0x8000)
+		static var alias: FinderFlags {
+			return FinderFlags(rawValue: 0x8000)
+		}
 	}
 	
 	/// File type, 4 ASCII chars
@@ -222,7 +246,7 @@ struct AppleSingleEntry {
 	/// resource.
 	struct IconBW {
 		/// 32 rows of 32 1-bit pixels
-		var bitrow: (UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32,UInt32)
+		var bitrow: (UInt32, UInt32, UInt32, UInt32, UInt32, UInt32, UInt32, UInt32, UInt32, UInt32, UInt32, UInt32, UInt32, UInt32, UInt32, UInt32, UInt32, UInt32, UInt32, UInt32, UInt32, UInt32, UInt32, UInt32, UInt32, UInt32, UInt32, UInt32, UInt32, UInt32, UInt32, UInt32)
 	}
 
 	/// entry ID 8, file dates; create, modify, etc
@@ -265,9 +289,13 @@ struct AppleSingleEntry {
 			}
 			
 			/// protected bit
-			static let Protected = Attributes(rawValue: 1 << 1)
+			static var protected: Attributes {
+				return Attributes(rawValue: 1 << 1)
+			}
 			/// locked bit
-			static let Locked = Attributes(rawValue: 1 << 0)
+			static var locked: Attributes {
+				return Attributes(rawValue: 1 << 0)
+			}
 		}
 		/// filler, currently all bits 0
 		var filler: (UInt8, UInt8, UInt8) = (0,0,0)
@@ -305,25 +333,39 @@ struct AppleSingleEntry {
 			}
 			
 			/// normal file (all bits clear)
-			static let Normal = DOSAttributes(rawValue: 0x00)
+			static var normal: DOSAttributes {
+				return DOSAttributes(rawValue: 0x00)
+			}
 			/// file is read-only
-			static let ReadOnly = DOSAttributes(rawValue: 1 << 0)
+			static var readOnly: DOSAttributes {
+				return DOSAttributes(rawValue: 1 << 0)
+			}
 			/// hidden file (not shown by DIR)
-			static let Hidden = DOSAttributes(rawValue: 1 << 1)
+			static var hidden: DOSAttributes {
+				return DOSAttributes(rawValue: 1 << 1)
+			}
 			/// system file (not shown by DIR)
-			static let System = DOSAttributes(rawValue: 1 << 2)
+			static var system: DOSAttributes {
+				return DOSAttributes(rawValue: 1 << 2)
+			}
 			/// volume label (only in root dir)
-			static let VolID = DOSAttributes(rawValue: 1 << 3)
+			static var volID: DOSAttributes {
+				return DOSAttributes(rawValue: 1 << 3)
+			}
 			/// file is a subdirectory
-			static let SubDir = DOSAttributes(rawValue: 1 << 4)
+			static var subDir: DOSAttributes {
+				return DOSAttributes(rawValue: 1 << 4)
+			}
 			/// new or modified (needs backup)
-			static let Archive = DOSAttributes(rawValue: 1 << 5)
+			static var archive: DOSAttributes {
+				return DOSAttributes(rawValue: 1 << 5)
+			}
 		}
 		/// filler, currently all bits 0
 		var filler: UInt8 = 0
 		/// `_dos_getfileattr()`, MS-DOS
 		/// interrupt 21h function 4300h
-		var attr: DOSAttributes = .Normal
+		var attr: DOSAttributes = .normal
 	}
 	
 	/// entry ID 14, AFP server file information
@@ -336,13 +378,21 @@ struct AppleSingleEntry {
 			}
 			
 			/// file is invisible
-			static let Invisible = Attributes(rawValue: 1 << 0)
+			static var invisible: Attributes {
+				return Attributes(rawValue: 1 << 0)
+			}
 			/// simultaneous access allowed
-			static let MultiUser = Attributes(rawValue: 1 << 1)
+			static var multiUser: Attributes {
+				return Attributes(rawValue: 1 << 1)
+			}
 			/// system file
-			static let System = Attributes(rawValue: 1 << 2)
+			static var system: Attributes {
+				return Attributes(rawValue: 1 << 2)
+			}
 			/// new or modified (needs backup)
-			static let BackupNeeded = Attributes(rawValue: 0x40)
+			static var backupNeeded: Attributes {
+				return Attributes(rawValue: 0x40)
+			}			
 		}
 		
 		/// filler, currently all bits 0

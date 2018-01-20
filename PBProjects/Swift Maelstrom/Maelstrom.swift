@@ -448,16 +448,16 @@ private func drawMainScreen() {
 		fatalError("Can't use New York (18) font! -- Exiting.");
 		//exit(255);
 	}
-	drawText(x: Int32(xOff)+5, y: Int32(botDiv+22), text: "Name", font: bigfont, style: .Underline,
+	drawText(x: Int32(xOff)+5, y: Int32(botDiv+22), text: "Name", font: bigfont, style: .underline,
 		R: 0xFF, G: 0xFF, B: 0x00);
 	sRt = xOff+185;
-	drawText(x: Int32(sRt), y: Int32(botDiv+22), text: "Score", font: bigfont, style: .Underline,
+	drawText(x: Int32(sRt), y: Int32(botDiv+22), text: "Score", font: bigfont, style: .underline,
 		R: 0xFF, G: 0xFF, B: 0x00);
-	sRt += fontserv.textWidth("Score", font: bigfont, style: .Underline)
+	sRt += fontserv.textWidth("Score", font: bigfont, style: .underline)
 	wRt = xOff+245;
-	drawText(x: Int32(wRt), y: Int32(botDiv+22), text: "Wave", font: bigfont, style: .Underline,
+	drawText(x: Int32(wRt), y: Int32(botDiv+22), text: "Wave", font: bigfont, style: .underline,
 		R: 0xFF, G: 0xFF, B: 0x00);
-	wRt += fontserv.textWidth("Wave", font: bigfont, style: .Underline)-10;
+	wRt += fontserv.textWidth("Wave", font: bigfont, style: .underline)-10;
 	
 	/* -- Now the scores */
 	hScores.loadScores();
@@ -482,15 +482,15 @@ private func drawMainScreen() {
 			B = UInt8(30000>>8);
 		}
 		drawText(x: xOff+5, y: botDiv+42+(index*18), text: hScores[Int(index)].name,
-			font: font, style: .Bold, R: R, G: G, B: B);
+			font: font, style: .bold, R: R, G: G, B: B);
 		buffer = String(hScores[Int(index)].score)
-		sw = fontserv.textWidth(buffer, font: font, style: .Bold);
+		sw = fontserv.textWidth(buffer, font: font, style: .bold);
 		drawText(x: sRt-sw, y: botDiv+42+(index*18), text: buffer,
-			font: font, style: .Bold, R: R, G: G, B: B);
+			font: font, style: .bold, R: R, G: G, B: B);
 		buffer = String(hScores[Int(index)].wave)
-		sw = fontserv.textWidth(buffer, font: font, style: .Bold);
+		sw = fontserv.textWidth(buffer, font: font, style: .bold);
 		drawText(x: wRt-sw, y: botDiv+42+(index*18), text: buffer,
-			font: font, style: .Bold, R: R, G: G, B: B);
+			font: font, style: .bold, R: R, G: G, B: B);
 	}
 	//delete font;
 	
@@ -544,9 +544,9 @@ private func drawMainScreen() {
 	/* -- Draw the credits */
 	
 	drawText(x: xOff+5+68, y: yOff+5+127, text: "Port to Linux by Sam Lantinga",
-		font: font, style: .Bold, R: 0xFF, G: 0xFF, B: 0x00);
+		font: font, style: .bold, R: 0xFF, G: 0xFF, B: 0x00);
 	drawText(x: rightDiv+10, y: yOff+259, text: "©1992-4 Ambrosia Software, Inc.",
-		font: font, style: .Bold, R: 0xFF, G: 0xFF, B: 0xFF);
+		font: font, style: .bold, R: 0xFF, G: 0xFF, B: 0xFF);
 	
 	/* -- Draw the version number */
 	
@@ -763,17 +763,14 @@ func SDL_main(_ argc2: Int32, _ argv2: UnsafeMutablePointer<UnsafeMutablePointer
 				/* -- About the game...*/
 			case SDLK_a:
 				runDoAbout();
-				break;
 				
 				/* -- Configure the controls */
 			case SDLK_c:
 				runConfigureControls();
-				break;
 				
 				/* -- Start the game */
 			case SDLK_p:
 				runPlayGame();
-				break;
 				
 				/* -- Start the game */
 			case SDLK_l:
@@ -786,37 +783,31 @@ func SDL_main(_ argc2: Int32, _ argv2: UnsafeMutablePointer<UnsafeMutablePointer
 					Delay(SOUND_DELAY);
 					newGame();
 				}
-				break;
 				
 				/* -- Let them leave */
 			case SDLK_q:
 				runQuitGame();
-				break;
 				
 				/* -- Set the volume */
 				/* (SDLK_0 - SDLK_8 are contiguous) */
 			case SDLK_0, SDLK_1, SDLK_2, SDLK_3, SDLK_4, SDLK_5, SDLK_6, SDLK_7, SDLK_8:
 				setSoundLevel(Int(event.key.keysym.sym)
 					- SDLK_0);
-				break;
 				
 				/* -- Give 'em a little taste of the peppers */
 			case SDLK_x:
 				Delay(SOUND_DELAY);
 				sound.playSound(.enemyAppears, priority: 5);
 				showDawn();
-				break;
 				
 				/* -- Zap the high scores */
 			case SDLK_z:
 				runZapScores();
-				break;
 				
 				/* -- Create a screen dump of high scores */
 			case SDLK_F3:
 				screen.screenDump("ScoreDump",
 				                  x: 64, y: 48, w: 298, h: 384);
-				break;
 				
 			// Ignore Shift, Ctrl, Alt keys
 			case SDLK_LSHIFT, SDLK_RSHIFT, SDLK_LCTRL, SDLK_RCTRL, SDLK_LALT, SDLK_RALT:
@@ -826,7 +817,6 @@ func SDL_main(_ argc2: Int32, _ argv2: UnsafeMutablePointer<UnsafeMutablePointer
 			default:
 				Delay(SOUND_DELAY);
 				sound.playSound(.steelHit, priority: 5)
-				break;
 			}
 		} else
 			/* -- Handle mouse clicks */
@@ -859,24 +849,21 @@ private func runQuitGame() {
 
 private func drawKey(_ pt: inout MPoint, key: String, text: String, callback: (()-> Void)?)
 {
-	guard let geneva = try? fontserv.newFont("Geneva", pointSize: 9) else {
-		fatalError("Can't use Geneva font! -- Exiting.\n");
-		//exit(255);
-	}
+	let geneva = geneva9
 	screen.queueBlit(x: pt.h, y: pt.v, src: gKeyIcon!);
 	screen.update();
 	
-	drawText(x: pt.h+14, y: pt.v+20, text: key, font: geneva, style: .Bold, R: 0xFF, G: 0xFF, B: 0xFF);
-	drawText(x: pt.h+13, y: pt.v+19, text: key, font: geneva, style: .Bold, R: 0x00, G: 0x00, B: 0x00);
+	drawText(x: pt.h+14, y: pt.v+20, text: key, font: geneva, style: .bold, R: 0xFF, G: 0xFF, B: 0xFF);
+	drawText(x: pt.h+13, y: pt.v+19, text: key, font: geneva, style: .bold, R: 0x00, G: 0x00, B: 0x00);
 	drawText(x: pt.h+gKeyIcon!.pointee.w+3, y: pt.v+19, text: text,
-	font: geneva, style: .Bold, R: 0xFF, G: 0xFF, B: 0x00);
+	font: geneva, style: .bold, R: 0xFF, G: 0xFF, B: 0x00);
 	
 	buttons.addButton(x: UInt16(pt.h), y: UInt16(pt.v), width: UInt16(gKeyIcon!.pointee.w), height: UInt16(gKeyIcon!.pointee.h), callback: callback);
 }
 
 private let xOff = (SCREEN_WIDTH - 512) / 2;
 private let yOff = (SCREEN_HEIGHT - 384) / 2;
-private var geneva9: FontServer.MFont = {
+private let geneva9: FontServer.MFont = {
 	guard let geneva = try? fontserv.newFont("Geneva", pointSize: 9) else {
 		fatalError("Can't use Geneva font! -- Exiting.");
 	}
@@ -887,7 +874,7 @@ private var drawSoundLevelOnce: Int = 0
 /// Draw the current sound volume
 private func drawSoundLevel() {
 	let text = String(gSoundLevel)
-	drawText(x: xOff+309-7, y: yOff+240-6, text: text, font: geneva9, style: .Bold,
+	drawText(x: xOff+309-7, y: yOff+240-6, text: text, font: geneva9, style: .bold,
 		R: UInt8(30000>>8), G: UInt8(30000>>8), B: 0xFF);
 	screen.update();
 }

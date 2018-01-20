@@ -324,7 +324,7 @@ SDL_SetWindowGammaRamp(window, ramp, ramp, ramp);
 	}
 	
 	func drawLine(x1: Int16, y1: Int16, x2: Int16, y2: Int16, color: UInt32) {
-		
+		//TODO: implement
 	}
 	/*
 
@@ -430,7 +430,7 @@ AddDirtyRect(&dirty);
 	}
 	
 	func drawRect(x: Int16, y: Int16, width: Int16, height: Int16, color: UInt32) {
-		
+		//TODO: implement
 	}
 	/*
 void
@@ -488,7 +488,8 @@ AddDirtyRect(&dirty);
 	}
 	
 	func fillRect(x: Int16, y: Int16, w: Int16, h: Int16, color: UInt32) {
-		
+		//TODO: implement
+
 	}
 	
 	/*
