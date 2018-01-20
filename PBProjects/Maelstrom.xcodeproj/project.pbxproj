@@ -28,9 +28,8 @@
 		55836C671BF3D409001605AB /* NetPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55836C661BF3D409001605AB /* NetPlay.swift */; };
 		55875D971C9A77FD009C230B /* SDLHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55875D961C9A77FD009C230B /* SDLHelpers.swift */; };
 		5596588A1BEACEA400D8BB39 /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559658891BEACEA400D8BB39 /* Object.swift */; };
-		55A616501BE55FEC00AD2049 /* SDLMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A6164F1BE55FEC00AD2049 /* SDLMain.swift */; };
-		55A616521BE5614600AD2049 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A616511BE5614600AD2049 /* main.swift */; };
 		55ADA3EA1BFE684400D78509 /* XattrResFork.m in Sources */ = {isa = PBXBuildFile; fileRef = 55ADA3E91BFE684400D78509 /* XattrResFork.m */; };
+		55D1282B0F09D59800E06E2A /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 00F9DA5100AC730E7F000001 /* SDLMain.m */; };
 		55D1282C0F09D59800E06E2A /* checksum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 173670BC00AF295B7F000001 /* checksum.cpp */; };
 		55D1282D0F09D59800E06E2A /* controls.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 173670BF00AF295B7F000001 /* controls.cpp */; };
 		55D1282E0F09D59800E06E2A /* dialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 173670C100AF295B7F000001 /* dialog.cpp */; };
@@ -146,6 +145,8 @@
 
 /* Begin PBXFileReference section */
 		00F8BA57010A53097F000001 /* objects.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = objects.cpp; sourceTree = "<group>"; };
+		00F9DA4F00AC72F57F000001 /* SDLMain.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = SOURCE_ROOT; };
+		00F9DA5100AC730E7F000001 /* SDLMain.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = SOURCE_ROOT; };
 		00FF5C4A00B0464B7F000001 /* about.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = about.cpp; sourceTree = "<group>"; };
 		00FF5C4B00B0464B7F000001 /* blit.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = blit.cpp; sourceTree = "<group>"; };
 		00FF5C4C00B0464B7F000001 /* game.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = game.cpp; sourceTree = "<group>"; };
@@ -211,7 +212,6 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		550CEC531BE842AC00453C11 /* SDL_FrameBuf.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SDL_FrameBuf.swift; sourceTree = "<group>"; };
 		5515E81B1BE609700048605C /* Swift Maelstrom.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Swift Maelstrom.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		5515E81D1BE609700048605C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5515E81F1BE609700048605C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5515E8221BE609700048605C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		5515E8241BE609700048605C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -330,8 +330,8 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				55A6164F1BE55FEC00AD2049 /* SDLMain.swift */,
-				55A616511BE5614600AD2049 /* main.swift */,
+				00F9DA4F00AC72F57F000001 /* SDLMain.h */,
+				00F9DA5100AC730E7F000001 /* SDLMain.m */,
 			);
 			name = Classes;
 			sourceTree = SOURCE_ROOT;
@@ -498,7 +498,8 @@
 			isa = PBXGroup;
 			children = (
 				5515E82B1BE60A3F0048605C /* Maelstrom Classes */,
-				5515E81D1BE609700048605C /* AppDelegate.swift */,
+				55A6164F1BE55FEC00AD2049 /* SDLMain.swift */,
+				55A616511BE5614600AD2049 /* main.swift */,
 				55875D961C9A77FD009C230B /* SDLHelpers.swift */,
 				5515E81F1BE609700048605C /* Assets.xcassets */,
 				5515E8211BE609700048605C /* MainMenu.xib */,
@@ -635,7 +636,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0710;
-				LastUpgradeCheck = 0710;
+				LastUpgradeCheck = 0920;
 				TargetAttributes = {
 					5515E81A1BE609700048605C = {
 						CreatedOnToolsVersion = 7.1;
@@ -747,6 +748,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55D1282B0F09D59800E06E2A /* SDLMain.m in Sources */,
 				55D1282C0F09D59800E06E2A /* checksum.cpp in Sources */,
 				55D1282D0F09D59800E06E2A /* controls.cpp in Sources */,
 				55D1282E0F09D59800E06E2A /* dialog.cpp in Sources */,
@@ -754,8 +756,6 @@
 				55D128300F09D59800E06E2A /* init.cpp in Sources */,
 				55D128310F09D59800E06E2A /* load.cpp in Sources */,
 				55D128320F09D59800E06E2A /* main.cpp in Sources */,
-				55A616521BE5614600AD2049 /* main.swift in Sources */,
-				55A616501BE55FEC00AD2049 /* SDLMain.swift in Sources */,
 				55D128330F09D59800E06E2A /* myerror.cpp in Sources */,
 				55D128340F09D59800E06E2A /* rect.cpp in Sources */,
 				55D128350F09D59800E06E2A /* scores.cpp in Sources */,
@@ -875,7 +875,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.maddthesane.Swift-Maelstrom";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Swift Maelstrom/bridge.h";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 2.3;
 			};
 			name = Debug;
@@ -929,30 +928,80 @@
 		55D127D80F09D4BC00E06E2A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = "";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		55D127D90F09D4BC00E06E2A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_VERSION = "";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 			};
 			name = Release;
 		};
@@ -978,7 +1027,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.devolution.${PRODUCT_NAME:identifier}";
 				PRODUCT_NAME = Maelstrom;
 				SWIFT_OBJC_BRIDGING_HEADER = "Maelstrom-UB-Bridging-Header.h";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
