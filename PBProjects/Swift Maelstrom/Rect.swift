@@ -14,7 +14,7 @@ struct Rect {
 	var bottom: Int16 = 0
 	var right: Int16 = 0
 	
-	func offsetRectBy(x x: Int32, y: Int32) -> Rect {
+	func offsetRectBy(x: Int32, y: Int32) -> Rect {
 		var r = self
 		r.left += Int16(x)
 		r.top += Int16(y)
@@ -23,7 +23,7 @@ struct Rect {
 		return r
 	}
 	
-	func offsetRectBy(x x: Int, y: Int) -> Rect {
+	func offsetRectBy(x: Int, y: Int) -> Rect {
 		var r = self
 		r.left += Int16(x)
 		r.top += Int16(y)
@@ -32,21 +32,21 @@ struct Rect {
 		return r
 	}
 	
-	mutating func offsetInPlaceWith(x x: Int32, y: Int32) {
+	mutating func offsetInPlaceWith(x: Int32, y: Int32) {
 		self.left += Int16(x)
 		self.top += Int16(y)
 		self.right += Int16(x)
 		self.bottom += Int16(y)
 	}
 	
-	mutating func offsetInPlaceWith(x x: Int, y: Int) {
+	mutating func offsetInPlaceWith(x: Int, y: Int) {
 		self.left += Int16(x)
 		self.top += Int16(y)
 		self.right += Int16(x)
 		self.bottom += Int16(y)
 	}
 	
-	func inset(x x: Int32, y: Int32) -> Rect {
+	func inset(x: Int32, y: Int32) -> Rect {
 		var R = self
 		R.left += Int16(x)
 		R.top += Int16(y)
@@ -55,7 +55,7 @@ struct Rect {
 		return R
 	}
 	
-	func inset(x x: Int, y: Int) -> Rect {
+	func inset(x: Int, y: Int) -> Rect {
 		var R = self
 		R.left += Int16(x)
 		R.top += Int16(y)
@@ -64,14 +64,14 @@ struct Rect {
 		return R
 	}
 	
-	mutating func insetInPlace(x x: Int32, y: Int32) {
+	mutating func insetInPlace(x: Int32, y: Int32) {
 		left += Int16(x)
 		top += Int16(y)
 		right -= Int16(x)
 		bottom -= Int16(y)
 	}
 	
-	mutating func insetInPlace(x x: Int, y: Int) {
+	mutating func insetInPlace(x: Int, y: Int) {
 		left += Int16(x)
 		top += Int16(y)
 		right -= Int16(x)
@@ -79,17 +79,17 @@ struct Rect {
 	}
 }
 
-func setRect(inout R: Rect, _ left: Int32, _ top: Int32, _ right: Int32, _ bottom: Int32) {
+func setRect(_ R: inout Rect, _ left: Int32, _ top: Int32, _ right: Int32, _ bottom: Int32) {
 	R.left = Int16(left)
 	R.top = Int16(top)
 	R.right = Int16(right)
 	R.bottom = Int16(bottom)
 }
 
-func offsetRect(inout R: Rect, _ x: Int32, _ y: Int32) {
+func offsetRect(_ R: inout Rect, _ x: Int32, _ y: Int32) {
 	R.offsetInPlaceWith(x: x, y: y)
 }
 
-func insetRect(inout R: Rect, x: Int32, y: Int32) {
+func insetRect(_ R: inout Rect, x: Int32, y: Int32) {
 	R.insetInPlace(x: x, y: y)
 }

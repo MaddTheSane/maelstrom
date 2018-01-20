@@ -24,23 +24,26 @@ private func <(lhs: MacResource.Resource, rhs: MacResource.Resource) -> Bool {
 	return lhs.id < rhs.id
 }
 
-@inline(__always) internal func bytesex32(inout x: UInt32) -> UInt32 {
+@discardableResult
+@inline(__always) internal func bytesex32(_ x: inout UInt32) -> UInt32 {
 	x = x.bigEndian
 	return x
 }
 
-@inline(__always) internal func bytesex32(inout x: Int32) -> Int32 {
+@discardableResult
+@inline(__always) internal func bytesex32(_ x: inout Int32) -> Int32 {
 	x = x.bigEndian
 	return x
 }
 
-
-@inline(__always) internal func bytesex16(inout x: UInt16) -> UInt16 {
+@discardableResult
+@inline(__always) internal func bytesex16(_ x: inout UInt16) -> UInt16 {
 	x = x.bigEndian
 	return x
 }
 
-@inline(__always) internal func bytesex16(inout x: Int16) -> Int16 {
+@discardableResult
+@inline(__always) internal func bytesex16(_ x: inout Int16) -> Int16 {
 	x = x.bigEndian
 	return x
 }
@@ -48,9 +51,11 @@ private func <(lhs: MacResource.Resource, rhs: MacResource.Resource) -> Bool {
 /** Swap bytes from big-endian to this machine's type.
 The input data is assumed to be always in big-endian format.
 */
-@inline(__always) internal func byteswap(var array: UnsafeMutablePointer<UInt16>, var count nshorts: Int) {
-	for ; nshorts-- > 0; array = array.successor() {
-		bytesex16(&array.memory)
+@inline(__always) internal func byteswap(_ array: UnsafeMutablePointer<UInt16>, count nshorts: Int) {
+	var array = array, nshorts = nshorts
+	for _ in 0 ..< nshorts {
+		bytesex16(&array.pointee)
+		array = array.successor()
 	}
 }
 
@@ -60,16 +65,16 @@ word :-) a macintosh resource fork from a general mac name.
 This function may be overkill, but I want to be able to find any Macintosh
 resource fork, darn it! :)
 */
-private func checkAppleFile(resfile: UnsafeMutablePointer<FILE>, inout resbase: Int) {
+private func checkAppleFile(_ resfile: UnsafeMutablePointer<FILE>, resbase: inout Int) {
 	var header = AppleSingleHeader()
-	if fread(&header.magicNum, sizeof(UInt32), 1, resfile) != 0 && bytesex32(&header.magicNum) == APPLEDOUBLE_MAGIC {
+	if fread(&header.magicNum, MemoryLayout<UInt32>.size, 1, resfile) != 0 && bytesex32(&header.magicNum) == APPLEDOUBLE_MAGIC {
 		fread(&header.versionNum,
-			sizeofValue(header.versionNum), 1, resfile);
+			MemoryLayout.size(ofValue: header.versionNum), 1, resfile);
 		bytesex32(&header.versionNum);
 		fread(&header.filler,
-			sizeofValue(header.filler), 1, resfile);
+			MemoryLayout.size(ofValue: header.filler), 1, resfile);
 		fread(&header.numEntries,
-			sizeofValue(header.numEntries), 1, resfile);
+			MemoryLayout.size(ofValue: header.numEntries), 1, resfile);
 		bytesex16(&header.numEntries);
 		#if APPLEDOUBLE_DEBUG
 			print(String(format: "Header magic: 0x%.8x, version 0x%.8x",
@@ -83,7 +88,7 @@ private func checkAppleFile(resfile: UnsafeMutablePointer<FILE>, inout resbase: 
 				header.numEntries, sizeofValue(entry)))
 		#endif
 		for i in 0..<header.numEntries {
-			if fread(&entry, sizeofValue(entry), 1, resfile) == 0 {
+			if fread(&entry, MemoryLayout.size(ofValue: entry), 1, resfile) == 0 {
 				break;
 			}
 			bytesex32(&entry.entryIDValue);
@@ -93,7 +98,7 @@ private func checkAppleFile(resfile: UnsafeMutablePointer<FILE>, inout resbase: 
 				print(String(format: "Entry (%d): ID = 0x%.8x, Offset = %d, Length = %d",
 					i+1, entry.entryID, entry.entryOffset, entry.entryLength))
 			#endif
-			if entry.entryID == .Resource {
+			if entry.entryID == .resource {
 				resbase = Int(entry.entryOffset)
 				break;
 			}
@@ -103,25 +108,25 @@ private func checkAppleFile(resfile: UnsafeMutablePointer<FILE>, inout resbase: 
 	fseek(resfile, 0, SEEK_SET)
 }
 
-private func checkMacBinary(resfile: UnsafeMutablePointer<FILE>, inout resbase: Int) {
+private func checkMacBinary(_ resfile: UnsafeMutablePointer<FILE>, resbase: inout Int) {
 	var header = MBHeader()
-	if fread(&header, sizeof(MBHeader), 1, resfile) != 0 && (header.version & MACBINARY_MASK) == MACBINARY_MAGIC {
-		resbase = sizeof(MBHeader) + Int(header.dataLength)
+	if fread(&header, MemoryLayout<MBHeader>.size, 1, resfile) != 0 && (header.version & MACBINARY_MASK) == MACBINARY_MAGIC {
+		resbase = MemoryLayout<MBHeader>.size + Int(header.dataLength)
 	}
 	fseek(resfile, 0, SEEK_SET)
 }
 
-private func openMacRes(inout original: NSURL, inout resbase: Int) -> UnsafeMutablePointer<FILE> {
-	var resfile: UnsafeMutablePointer<FILE> = nil
-	let directory = original.URLByDeletingLastPathComponent
-	var filename = original.lastPathComponent!
-	var newURL: NSURL?
+private func openMacRes(_ original: inout URL, resbase: inout Int) -> UnsafeMutablePointer<FILE> {
+	var resfile: UnsafeMutablePointer<FILE>? = nil
+	let directory = original.deletingLastPathComponent()
+	var filename = original.lastPathComponent
+	var newURL: URL?
 	
-	func urlByAddingPath(aPath: String) -> NSURL {
-		if let directory = directory {
-			return directory.URLByAppendingPathComponent(aPath)!
+	func urlByAddingPath(_ aPath: String) -> URL {
+		if (try? directory.checkResourceIsReachable()) ?? false {
+			return directory.appendingPathComponent(aPath)
 		}
-		return NSURL(fileURLWithPath: aPath)
+		return URL(fileURLWithPath: aPath)
 	}
 	
 	struct searchnreplace {
@@ -131,9 +136,9 @@ private func openMacRes(inout original: NSURL, inout resbase: Int) -> UnsafeMuta
 	let snr = [searchnreplace(search: "\0", replace: "\0"),
 	searchnreplace(search: " ", replace: "_")]
 	
-	var iterations = 0
+	var iterations2 = 0
 	
-	for iterations = 0; iterations < snr.count; iterations += 1 {
+	for iterations in 0 ..< snr.count {
 		/* Translate ' ' into '_', etc */
 		/* Note that this translation is irreversible */
 		filename.replaceAllInstancesOfCharacter(snr[iterations].search, withCharacter: snr[iterations].replace)
@@ -141,7 +146,7 @@ private func openMacRes(inout original: NSURL, inout resbase: Int) -> UnsafeMuta
 		/* First look for Executor (tm) resource forks */
 		var newName = "%\(filename)"
 		newURL = urlByAddingPath(newName)
-		resfile = fopen(newURL!.fileSystemRepresentation, "rb")
+		resfile = fopen((newURL! as NSURL).fileSystemRepresentation, "rb")
 		guard resfile == nil else {
 			break
 		}
@@ -149,9 +154,9 @@ private func openMacRes(inout original: NSURL, inout resbase: Int) -> UnsafeMuta
 		newURL = nil
 		
 		/* Look for MacBinary files */
-		newName = (filename as NSString).stringByAppendingPathExtension("bin")!
+		newName = (filename as NSString).appendingPathExtension("bin")!
 		newURL = urlByAddingPath(newName)
-		resfile = fopen(newURL!.fileSystemRepresentation, "rb")
+		resfile = fopen((newURL! as NSURL).fileSystemRepresentation, "rb")
 		guard resfile == nil else {
 			break
 		}
@@ -161,13 +166,13 @@ private func openMacRes(inout original: NSURL, inout resbase: Int) -> UnsafeMuta
 		/* Look for OS X-style metadata: it might have a resource fork */
 		newName = "._\(filename)"
 		newURL = urlByAddingPath(newName)
-		resfile = fopen(newURL!.fileSystemRepresentation, "rb")
+		resfile = fopen((newURL! as NSURL).fileSystemRepresentation, "rb")
 		if resfile != nil {
 			//Be a bit more strict when looking for resources in OS X metadata.
 			//Simply put, it might not have a resource fork.
 			//...but it will always be an AppleSingle/AppleDouble file
 			var resbase2 = 0
-			checkAppleFile(resfile, resbase: &resbase2)
+			checkAppleFile(resfile!, resbase: &resbase2)
 			guard resbase2 != 0 else {
 				break
 			}
@@ -185,30 +190,31 @@ private func openMacRes(inout original: NSURL, inout resbase: Int) -> UnsafeMuta
 		}
 
 		/* Look for raw resource fork.. */
-		resfile = fopen(newURL!.fileSystemRepresentation, "rb")
+		resfile = fopen((newURL! as NSURL).fileSystemRepresentation, "rb")
 		guard resfile == nil else {
 			break
 		}
 		
 		newURL = nil
+		iterations2 = iterations
 	}
 	
 	/* Did we find anything? */
-	if iterations != snr.count {
+	if iterations2 != snr.count {
 		original = newURL!
 		resbase = 0
 		
 		/* Look for AppleDouble format header */
-		checkAppleFile(resfile, resbase: &resbase)
+		checkAppleFile(resfile!, resbase: &resbase)
 		
 		/* Look for MacBinary format header */
-		checkMacBinary(resfile, resbase: &resbase)
+		checkMacBinary(resfile!, resbase: &resbase)
 	}
 	#if APPLEDOUBLE_DEBUG
 		print(String(format: "Resfile base = %d", resbase))
 	#endif
 
-	return resfile
+	return resfile!
 }
 
 // MARK: - These are the data structures that make up the Macintosh Resource Fork
@@ -290,36 +296,36 @@ private struct ResourceMap {
 }
 
 final class MacResource {
-	enum Errors: ErrorType {
-		case FileNotFound
-		case CouldNotOpenResource
-		case CouldNotFindResourceType(type: MaelOSType)
-		case CouldNotFindResourceTypeID(type: MaelOSType, id: UInt16)
-		case CouldNotFindResourceTypeName(type: MaelOSType, name: String)
-		case CouldNotReadData
+	enum Errors: Error {
+		case fileNotFound
+		case couldNotOpenResource
+		case couldNotFindResourceType(type: MaelOSType)
+		case couldNotFindResourceTypeID(type: MaelOSType, id: UInt16)
+		case couldNotFindResourceTypeName(type: MaelOSType, name: String)
+		case couldNotReadData
 	}
 	
 	/// The Resource Fork File
-	private var filep: UnsafeMutablePointer<FILE> = nil
+	fileprivate var filep: UnsafeMutablePointer<FILE>? = nil
 	/// The offset of the rsrc
-	private var base = 0
+	fileprivate var base = 0
 
 	/// Offset of Resource data in resource fork
-	private var res_offset: UInt32 = 0
+	fileprivate var res_offset: UInt32 = 0
 	/// Number of types of resources
-	private var num_types: UInt16 = 0
+	fileprivate var num_types: UInt16 = 0
 
-	private var resources = [ResourceList]()
+	fileprivate var resources = [ResourceList]()
 	
-	private(set) var errstr: String?
+	fileprivate(set) var errstr: String?
 	
-	private final class Resource: Comparable {
+	fileprivate final class Resource: Comparable {
 		let name: String
 		let id: UInt16
 		let offset: UInt32
-		@NSCopying private(set) var data: NSData? = nil
+		fileprivate(set) var data: Data? = nil
 		
-		private init(entry ref_ent: ReferenceEntry, name: String) {
+		fileprivate init(entry ref_ent: ReferenceEntry, name: String) {
 			offset =
 				((UInt32(ref_ent.Res_offset.0)<<16) |
 					(UInt32(ref_ent.Res_offset.1)<<8) |
@@ -329,22 +335,22 @@ final class MacResource {
 		}
 	}
 
-	private final class ResourceList {
+	fileprivate final class ResourceList {
 		var type: MaelOSType
-		private var intCount: UInt16
-		private(set) var list = [Resource]()
+		fileprivate var intCount: UInt16
+		fileprivate(set) var list = [Resource]()
 		
-		private init(entry: TypeEntry) {
+		fileprivate init(entry: TypeEntry) {
 			type = entry.Res_type
 			intCount = entry.Num_rez
 		}
 	}
 	
 	convenience init(filename: String) throws {
-		try self.init(fileURL: NSURL(fileURLWithPath: filename))
+		try self.init(fileURL: URL(fileURLWithPath: filename))
 	}
 	
-	init(fileURL: NSURL) throws {
+	init(fileURL: URL) throws {
 		var filename = fileURL
 		var header = ResourceHeader()
 		var resMap = ResourceMap()
@@ -360,13 +366,13 @@ final class MacResource {
 		errstr = nil;
 		filep = openMacRes(&filename, resbase: &base)
 		guard filep != nil else {
-			throw Errors.FileNotFound
+			throw Errors.fileNotFound
 			//error("Couldn't open resource file '%@'", filename);
 		}
 		fseek(filep, base, SEEK_SET);
 		
-		guard fread(&header, sizeof(ResourceHeader), 1, filep) != 0 else {
-			throw Errors.CouldNotOpenResource
+		guard fread(&header, MemoryLayout<ResourceHeader>.size, 1, filep) != 0 else {
+			throw Errors.couldNotOpenResource
 			//error("Couldn't read resource info from '%s'", filename);
 		}
 		bytesex32(&header.res_length);
@@ -376,8 +382,8 @@ final class MacResource {
 		bytesex32(&header.map_offset);
 		
 		fseek(filep, base+Int(header.map_offset), SEEK_SET);
-		guard fread(&resMap, sizeof(ResourceMap), 1, filep) != 0 else {
-			throw Errors.CouldNotOpenResource
+		guard fread(&resMap, MemoryLayout<ResourceMap>.size, 1, filep) != 0 else {
+			throw Errors.couldNotOpenResource
 			//error("Couldn't read resource info from '%s'", filename);
 		}
 		bytesex16(&resMap.types_offset);
@@ -392,8 +398,8 @@ final class MacResource {
 		ref_offsets.reserveCapacity(Int(num_types))
 		fseek(filep, base+Int(header.map_offset)+Int(resMap.types_offset)+2, SEEK_SET)
 		for _ in 0..<num_types {
-			guard fread(&typeEnt, sizeof(TypeEntry), 1, filep) != 0 else {
-				throw Errors.CouldNotOpenResource
+			guard fread(&typeEnt, MemoryLayout<TypeEntry>.size, 1, filep) != 0 else {
+				throw Errors.couldNotOpenResource
 			}
 			
 			bytesex16(&typeEnt.Num_rez);
@@ -404,15 +410,15 @@ final class MacResource {
 			ref_offsets.append(typeEnt.Ref_offset)
 		}
 		
-		for (i, aRes) in resources.enumerate() {
+		for (i, aRes) in resources.enumerated() {
 			fseek(filep,
 				base + Int(header.map_offset) + Int(resMap.types_offset) + Int(ref_offsets[i]),
 				SEEK_SET);
 			for _ in 0..<Int(aRes.intCount) {
 				var ref_ent = ReferenceEntry()
 				
-				guard fread(&ref_ent, sizeofValue(ref_ent), 1, filep) != 0 else {
-					throw Errors.CouldNotOpenResource
+				guard fread(&ref_ent, MemoryLayout.size(ofValue: ref_ent), 1, filep) != 0 else {
+					throw Errors.couldNotOpenResource
 				}
 				
 				bytesex16(&ref_ent.Res_id)
@@ -428,10 +434,10 @@ final class MacResource {
 						base+Int(header.map_offset)+Int(resMap.names_offset)+Int(ref_ent.nameOffset) - 1,
 						SEEK_SET);
 					fread(&name_len, 1, 1, filep);
-					var aCharName = [UInt8](count: Int(name_len), repeatedValue: 0)
+					var aCharName = [UInt8](repeating: 0, count: Int(name_len))
 					fread(&aCharName,
 						1, Int(name_len), filep);
-					if let nsName = NSString(bytes: aCharName, length: aCharName.count, encoding: NSMacOSRomanStringEncoding) as String? {
+					if let nsName = NSString(bytes: aCharName, length: aCharName.count, encoding: String.Encoding.macOSRoman.rawValue) as String? {
 						entName = nsName
 					} else {
 						entName = "Encoding failure!"
@@ -442,7 +448,7 @@ final class MacResource {
 				let aPart = Resource(entry: ref_ent, name: entName)
 				aRes.list.append(aPart)
 			}
-			aRes.list.sortInPlace(>)
+			aRes.list.sort(by: >)
 		}
 	}
 	
@@ -456,7 +462,7 @@ final class MacResource {
 	}()
 
 	/** Return the number of resources of the given type */
-	func countOfResources(type type: MaelOSType) -> Int {
+	func countOfResources(type: MaelOSType) -> Int {
 		for res in resources {
 			if res.type == type {
 				return res.list.count
@@ -467,20 +473,20 @@ final class MacResource {
 	}
 	
 	/** Create an array of resource ids for a type */
-	func resourceIDs(type type: MaelOSType) throws -> [UInt16] {
+	func resourceIDs(type: MaelOSType) throws -> [UInt16] {
 		var toRet = [UInt16]()
 		for aRes in resources {
 			if aRes.type == type {
 				for aTyp in aRes.list {
 					toRet.append(aTyp.id)
 				}
-				return toRet.sort(<)
+				return toRet.sorted(by: <)
 			}
 		}
-		throw Errors.CouldNotFindResourceType(type: type)
+		throw Errors.couldNotFindResourceType(type: type)
 	}
 
-	func nameOfResource(type type: MaelOSType, id: UInt16) throws -> String {
+	func nameOfResource(type: MaelOSType, id: UInt16) throws -> String {
 		for res in resources {
 			if res.type == type {
 				for aTyp in res.list {
@@ -490,10 +496,10 @@ final class MacResource {
 				}
 			}
 		}
-		throw Errors.CouldNotFindResourceTypeID(type: type, id: id)
+		throw Errors.couldNotFindResourceTypeID(type: type, id: id)
 	}
 
-	private func loadData(resource: Resource) throws {
+	fileprivate func loadData(_ resource: Resource) throws {
 		fseek(filep, base + Int(res_offset + resource.offset), SEEK_SET);
 		
 		var len: UInt32 = 0
@@ -503,13 +509,13 @@ final class MacResource {
 			fatalError("Out of memory?")
 		}
 		guard fread(d.mutableBytes, Int(len), 1, filep) != 0 else {
-			throw Errors.CouldNotReadData
+			throw Errors.couldNotReadData
 		}
-		resource.data = d
+		resource.data = d as Data
 	}
 	
 	/// Return a resource of a certain type and id.
-	func resource(type res_type: MaelOSType, id: UInt16) throws -> NSData {
+	func resource(type res_type: MaelOSType, id: UInt16) throws -> Data {
 		for rezes in resources {
 			if rezes.type == res_type {
 				for resource in rezes.list {
@@ -526,15 +532,15 @@ final class MacResource {
 			}
 		}
 		
-		throw Errors.CouldNotFindResourceTypeID(type: res_type, id: id)
+		throw Errors.couldNotFindResourceTypeID(type: res_type, id: id)
 	}
 	
 	/// Return a resource of a certain type and name.
-	func resource(type res_type: MaelOSType, name: String, comparisonOptions options: NSStringCompareOptions = []) throws -> NSData {
+	func resource(type res_type: MaelOSType, name: String, comparisonOptions options: NSString.CompareOptions = []) throws -> Data {
 		for rezes in resources {
 			if rezes.type == res_type {
 				for resource in rezes.list {
-					if resource.name.compare(name, options: options) == .OrderedSame {
+					if resource.name.compare(name, options: options) == .orderedSame {
 						if let data = resource.data {
 							return data
 						}
@@ -547,7 +553,7 @@ final class MacResource {
 			}
 		}
 		
-		throw Errors.CouldNotFindResourceTypeName(type: res_type, name: name)
+		throw Errors.couldNotFindResourceTypeName(type: res_type, name: name)
 	}
 	
 	deinit {

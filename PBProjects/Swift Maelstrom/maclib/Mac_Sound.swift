@@ -18,18 +18,16 @@ let DSP_FREQUENCY:Int32 = 11025
 
 private var bogus_running = false
 
-private func fillAudio(selfPtr: UnsafeMutablePointer<Void>, bytes: UnsafeMutablePointer<Uint8>, length: Int32) -> Void {
+private func fillAudio(_ selfPtr: UnsafeMutableRawPointer, bytes: UnsafeMutablePointer<Uint8>, length: Int32) -> Void {
 	//ugly hack to get ourself back
 	let ourself: Sound = {
-		let cOpPtr = COpaquePointer(selfPtr)
-		
-		return Unmanaged.fromOpaque(cOpPtr).takeUnretainedValue()
+		return Unmanaged<Sound>.fromOpaque(selfPtr).takeUnretainedValue()
 	}()
 	
 	ourself.fillAudioU8(bytes, length)
 }
 
-private func bogusAudioThread(data: UnsafeMutablePointer<Void>) -> Int32 {
+private func bogusAudioThread(_ data: UnsafeMutableRawPointer?) -> Int32 {
 	//void (*fill)(void *userdata, Uint8 *stream, int len);
 	var then: UInt32 = 0
 	var playticks: UInt32 = 0
@@ -42,26 +40,26 @@ private func bogusAudioThread(data: UnsafeMutablePointer<Void>) -> Int32 {
 	}
 	
 	/* Get ready to roll.. */
-	let spec = UnsafeMutablePointer<SDL_AudioSpec>(data)
-	if spec.memory.callback == nil {
+	let spec = data!.assumingMemoryBound(to: SDL_AudioSpec.self)
+	if spec.pointee.callback == nil {
 		//for ( ; ; ) {
 		Delay(60*60*60);	/* Delay 1 hour */
 		//}
 	}
-	let fill: SDL_AudioCallback? = spec.memory.callback
-	playticks = (UInt32(spec.memory.samples) * 1000) / UInt32(spec.memory.freq)
+	let fill: SDL_AudioCallback? = spec.pointee.callback
+	playticks = (UInt32(spec.pointee.samples) * 1000) / UInt32(spec.pointee.freq)
 	/* Fill in the spec */
-	spec.memory.size = UInt32(spec.memory.format&0xFF) / 8;
-	spec.memory.size *= UInt32(spec.memory.channels)
-	spec.memory.size *= UInt32(spec.memory.samples)
-	stream = [UInt8](count: Int(spec.memory.size), repeatedValue: 0)
+	spec.pointee.size = UInt32(spec.pointee.format&0xFF) / 8;
+	spec.pointee.size *= UInt32(spec.pointee.channels)
+	spec.pointee.size *= UInt32(spec.pointee.samples)
+	stream = [UInt8](repeating: 0, count: Int(spec.pointee.size))
 	
 	while bogus_running {
 		then = SDL_GetTicks();
 		
 		/* Fill buffer */
 		if let fill = fill {
-			fill(spec.memory.userdata, &stream, Int32(spec.memory.size))
+			fill(spec.pointee.userdata, &stream, Int32(spec.pointee.size))
 		}
 		
 		/* Calculate time left, and sleep */
@@ -76,25 +74,25 @@ private func bogusAudioThread(data: UnsafeMutablePointer<Void>) -> Int32 {
 
 final class Sound {
 	
-	enum Errors: ErrorType {
-		case NoSoundResources
-		case ResourceLoadError(String)
+	enum Errors: Error {
+		case noSoundResources
+		case resourceLoadError(String)
 	}
 	
-	private struct Channel {
+	fileprivate struct Channel {
 		var ID: UInt16 = 0
 		var priority: Int16 = 0
 		///Signed, so race conditions can make it < 0
 		var len: Int = 0
-		var src: UnsafeMutablePointer<UInt8> = nil
-		var callback: ((channel: UInt8) -> Void)? = nil
+		var src: UnsafeMutablePointer<UInt8>? = nil
+		var callback: ((_ channel: UInt8) -> Void)? = nil
 	} //channels[NUM_CHANNELS];
 	
-	private var bogusAudio: SDL_ThreadPtr = nil
+	fileprivate var bogusAudio: SDL_ThreadPtr? = nil
 	
-	private var channels = [Channel](count: NUM_CHANNELS, repeatedValue: Channel())
+	fileprivate var channels = [Channel](repeating: Channel(), count: NUM_CHANNELS)
 	
-	private var intVol: UInt8 = 0
+	fileprivate var intVol: UInt8 = 0
 	var volume: UInt8 {
 		get {
 			return intVol
@@ -140,9 +138,9 @@ final class Sound {
 		}
 	}
 	
-	private var spec: SDL_AudioSpec = SDL_AudioSpec()
-	private var aPlaying = false
-	private(set) var waves = [UInt16: Wave]()
+	fileprivate var spec: SDL_AudioSpec = SDL_AudioSpec()
+	fileprivate var aPlaying = false
+	fileprivate(set) var waves = [UInt16: Wave]()
 	
 	///Stop mixing on all channels
 	func haltAllSound() {
@@ -152,7 +150,7 @@ final class Sound {
 	}
 	
 	///Stop mixing on the requested channel
-	func haltSound(channel channel: Int) {
+	func haltSound(channel: Int) {
 		channels[channel].len = 0
 	}
 	
@@ -162,7 +160,7 @@ final class Sound {
 	}
 	
 	/// Find out if a sound is playing on a channel 
-	func playing(sndID: UInt16 = 0, inout channel: UInt8) -> Bool {
+	func playing(_ sndID: UInt16 = 0, channel: inout UInt8) -> Bool {
 		for i in 0..<NUM_CHANNELS {
 			guard channels[i].len > 0 else {
 				continue
@@ -177,12 +175,12 @@ final class Sound {
 		return false
 	}
 
-	init(soundFileURL soundfile: NSURL, volume vol: UInt8 = 4) throws {
+	init(soundFileURL soundfile: URL, volume vol: UInt8 = 4) throws {
 		let sndResType = MaelOSType(stringValue: "snd ")!
 		let soundres = try MacResource(fileURL: soundfile)
 		var p = 0
 		if soundres.countOfResources(type: sndResType) == 0 {
-			throw Errors.NoSoundResources
+			throw Errors.noSoundResources
 		}
 		
 		let ids = try! soundres.resourceIDs(type: sndResType)
@@ -207,10 +205,10 @@ final class Sound {
 		for _ in 0..<p {
 			spec.samples *= 2;
 		}
-		spec.callback = fillAudio;
+		spec.callback = fillAudio as! SDL_AudioCallback;
 		//ugly hack to get to pass ourself as a parameter
 		let unMan = Unmanaged.passUnretained(self)
-		spec.userdata = UnsafeMutablePointer(unMan.toOpaque())
+		spec.userdata = unMan.toOpaque()
 		
 		/* Empty the channels and start the music :-) */
 		haltAllSound()
@@ -222,7 +220,7 @@ final class Sound {
 		}
 	}
 
-	func priorityOfChannel(channel: UInt8) -> Int16 {
+	func priorityOfChannel(_ channel: UInt8) -> Int16 {
 		if channels[Int(channel)].len > 0 {
 			return channels[Int(channel)].priority
 		}
@@ -231,7 +229,7 @@ final class Sound {
 	}
 
 	/// Play the requested sound
-	func playSound(sndID: UInt16, priority: UInt8 = 0, callback: ((channel: UInt8) -> ())? = nil) -> Bool {
+	func playSound(_ sndID: UInt16, priority: UInt8 = 0, callback: ((_ channel: UInt8) -> ())? = nil) -> Bool {
 		for i in 0..<NUM_CHANNELS {
 			if channels[i].len <= 0 {
 				return playSound(sndID, priority: priority, channel: UInt8(i), callback: callback)
@@ -248,7 +246,7 @@ final class Sound {
 	}
 	
 	/// Play the requested sound
-	func playSound(sndID: UInt16, priority: UInt8, channel: UInt8, callback: ((channel: UInt8) -> ())? = nil) -> Bool {
+	func playSound(_ sndID: UInt16, priority: UInt8, channel: UInt8, callback: ((_ channel: UInt8) -> ())? = nil) -> Bool {
 		if Int16(priority) <= self.priorityOfChannel(channel) {
 			return false
 		}
@@ -269,7 +267,7 @@ final class Sound {
 	}
 	
 	///This has to be a very fast routine, otherwise sound will lag and crackle
-	private func fillAudioU8(stream2: UnsafeMutablePointer<UInt8>, _ length2: Int32) {
+	fileprivate func fillAudioU8(_ stream2: UnsafeMutablePointer<UInt8>, _ length2: Int32) {
 		var length = length2
 		var stream = stream2
 		//int i, s;
@@ -287,8 +285,8 @@ final class Sound {
 					len = -1, but that's okay.
 					*/
 					channels[i].len -= 1;
-					s += Int(channels[i].src.memory &- 0x80)
-					channels[i].src = channels[i].src.successor();
+					s += Int((channels[i].src?.pointee)! &- 0x80)
+					channels[i].src = channels[i].src?.successor();
 					/*
 					Possible race condition:
 					If a sound is played here,
@@ -301,7 +299,7 @@ final class Sound {
 						#endif
 						/* This is critical */
 						if let callback = channels[i].callback {
-							callback(channel: UInt8(i))
+							callback(UInt8(i))
 						}
 					}
 				}
@@ -314,19 +312,19 @@ final class Sound {
 			
 			/* clip */
 			if s > 0xFE {/* 0xFF causes static on some audio systems */
-				stream.memory = 0xFE
+				stream.pointee = 0xFE
 				stream = stream.successor()
 			} else if s < 0x00 {
-				stream.memory = 0
+				stream.pointee = 0
 				stream = stream.successor()
 			} else {
-				stream.memory = UInt8(s)
+				stream.pointee = UInt8(s)
 				stream = stream.successor()
 			}
 		}
 	}
 
-	private(set) var error: String? = nil
+	fileprivate(set) var error: String? = nil
 	
 	deinit {
 		if aPlaying {

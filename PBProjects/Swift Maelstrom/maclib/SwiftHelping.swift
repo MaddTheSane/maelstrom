@@ -11,18 +11,18 @@ import SDL2
 
 //MARK: SDL macros
 
-typealias SDL_WindowPtr = COpaquePointer
-typealias SDL_ThreadPtr = COpaquePointer
+typealias SDL_WindowPtr = OpaquePointer
+typealias SDL_ThreadPtr = OpaquePointer
 
 //MARK: -
 
 extension String {
-	mutating func replaceAllInstancesOfCharacter(aChar: Character, withCharacter bChar: Character) {
+	mutating func replaceAllInstancesOfCharacter(_ aChar: Character, withCharacter bChar: Character) {
 		if aChar == bChar {
 			return
 		}
-		while let charRange = rangeOfString(String(aChar)) {
-			replaceRange(charRange, with: String(bChar))
+		while let charRange = range(of: String(aChar)) {
+			replaceSubrange(charRange, with: String(bChar))
 		}
 	}
 }
@@ -39,7 +39,7 @@ struct MaelOSType: Hashable, CustomStringConvertible {
 	var d: UInt8
 	
 	init?(stringValue: String) {
-		if var aStr = stringValue.cStringUsingEncoding(NSMacOSRomanStringEncoding) {
+		if var aStr = stringValue.cString(using: String.Encoding.macOSRoman) {
 			while aStr.count < 4 {
 				aStr.append(0)
 			}
@@ -74,7 +74,7 @@ struct MaelOSType: Hashable, CustomStringConvertible {
 	
 	var stringValue: String {
 		let array = [a, b, c, d]
-		if let nsStr = NSString(bytes: array, length: 4, encoding: NSMacOSRomanStringEncoding) {
+		if let nsStr = NSString(bytes: array, length: 4, encoding: String.Encoding.macOSRoman.rawValue) {
 			return nsStr as String
 		}
 		
@@ -88,7 +88,7 @@ struct MaelOSType: Hashable, CustomStringConvertible {
 		d = 0
 	}
 	
-	init(`OSType` aType: UInt32) {
+	init(OSType aType: UInt32) {
 		//TODO: make this endian-safe
 		a = UInt8((aType >> 24) & 0xFF)
 		b = UInt8((aType >> 16) & 0xFF)

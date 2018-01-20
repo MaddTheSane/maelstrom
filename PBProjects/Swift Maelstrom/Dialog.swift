@@ -25,7 +25,7 @@ let EXPAND_STEPS = 50
 
 
 /** Utility routine for dialogs */
-private func isSensitive(area: SDL_Rect, x: Int32, y: Int32) -> Bool {
+private func isSensitive(_ area: SDL_Rect, x: Int32, y: Int32) -> Bool {
 	if (y > area.y) && (y < (area.y+area.h)) &&
 		(x > area.x) && (x < (area.x+area.w)) {
 			return true
@@ -35,16 +35,16 @@ private func isSensitive(area: SDL_Rect, x: Int32, y: Int32) -> Bool {
 
 /**  This is a class set for Macintosh-like dialogue boxes. :) */
 class MacDialog {
-	private static var textEnabled = 0
-	private var screen: FrameBuf!
-	private var position: (x: Int32, y: Int32)
-	typealias ButtonCallbackFunc = (x: Int32, y: Int32, button: UInt8, inout done: Bool) -> Void
-	typealias KeyCallbackFunc = (key: SDL_Keysym, inout doneflag: Bool) -> Void
+	fileprivate static var textEnabled = 0
+	fileprivate var screen: FrameBuf!
+	fileprivate var position: (x: Int32, y: Int32)
+	typealias ButtonCallbackFunc = (_ x: Int32, _ y: Int32, _ button: UInt8, _ done: inout Bool) -> Void
+	typealias KeyCallbackFunc = (_ key: SDL_Keysym, _ doneflag: inout Bool) -> Void
 	
-	private var buttonCallback: ButtonCallbackFunc?
-	private var keyCallback: KeyCallbackFunc?
+	fileprivate var buttonCallback: ButtonCallbackFunc?
+	fileprivate var keyCallback: KeyCallbackFunc?
 	
-	private(set) var error: String?
+	fileprivate(set) var error: String?
 	
 	init(x: Int32, y: Int32) {
 		position = (x, y)
@@ -52,31 +52,31 @@ class MacDialog {
 	
 	//MARK: - Input handling
 	
-	func setButtonPress(newButtonCallback: ButtonCallbackFunc?) {
+	func setButtonPress(_ newButtonCallback: ButtonCallbackFunc?) {
 		buttonCallback = newButtonCallback
 	}
 	
-	func handleButtonPress(x x: Int32, y: Int32, button: UInt8, inout done doneFlag: Bool) {
-		buttonCallback?(x: x, y: y, button: button, done: &doneFlag)
+	func handleButtonPress(x: Int32, y: Int32, button: UInt8, done doneFlag: inout Bool) {
+		buttonCallback?(x, y, button, &doneFlag)
 	}
 	
-	func setKeyPress(newKeyCallback: KeyCallbackFunc?) {
+	func setKeyPress(_ newKeyCallback: KeyCallbackFunc?) {
 		keyCallback = newKeyCallback
 	}
 	
-	func handleKeyPress(key: SDL_Keysym, inout done doneflag: Bool) {
-		keyCallback?(key: key, doneflag: &doneflag)
+	func handleKeyPress(_ key: SDL_Keysym, done doneflag: inout Bool) {
+		keyCallback?(key, &doneflag)
 	}
 	
 	//MARK: - Display handling
 	
-	func map(offset offset: (x: Int32, y: Int32), screen: FrameBuf, background: (red: UInt8, green: UInt8, blue: UInt8), foreground: (red: UInt8, green: UInt8, blue: UInt8)) {
+	func map(offset: (x: Int32, y: Int32), screen: FrameBuf, background: (red: UInt8, green: UInt8, blue: UInt8), foreground: (red: UInt8, green: UInt8, blue: UInt8)) {
 		position.x += offset.x
 		position.y += offset.y
 		self.screen = screen
 	}
 	
-	final func map(xOff xOff: Int32, yOff: Int32, screen: FrameBuf, r_bg: UInt8, g_bg: UInt8, b_bg: UInt8, r_fg: UInt8, g_fg: UInt8, b_fg: UInt8) {
+	final func map(xOff: Int32, yOff: Int32, screen: FrameBuf, r_bg: UInt8, g_bg: UInt8, b_bg: UInt8, r_fg: UInt8, g_fg: UInt8, b_fg: UInt8) {
 		self.map(offset: (xOff, yOff), screen: screen, background: (r_bg, g_bg, b_bg), foreground: (r_fg, g_fg, b_fg))
 	}
 	
@@ -84,14 +84,14 @@ class MacDialog {
 		//empty, for subclassing
 	}
 	
-	private class func enableText() {
+	fileprivate class func enableText() {
 		if textEnabled == 0 {
 			SDL_StartTextInput()
 		}
 		textEnabled += 1
 	}
 	
-	private class func disableText() {
+	fileprivate class func disableText() {
 		textEnabled -= 1
 		if textEnabled == 0 {
 			SDL_StopTextInput()
@@ -103,15 +103,15 @@ class MacDialog {
 or `0` if they do not.
 */
 class MacButton : MacDialog {
-	private var size: (width: Int32, height: Int32)
+	fileprivate var size: (width: Int32, height: Int32)
 	//int Width, Height;
-	private var button: UnsafeMutablePointer<SDL_Surface>
-	private var callback: buttonCallback?
-	private var sensitive = SDL_Rect()
+	fileprivate var button: UnsafeMutablePointer<SDL_Surface>?
+	fileprivate var callback: buttonCallback?
+	fileprivate var sensitive = SDL_Rect()
 	typealias buttonCallback = () -> Bool
 	
-	enum Errors: ErrorType {
-		case SDLError(String)
+	enum Errors: Error {
+		case sdlError(String)
 	}
 	
 	init(x: Int32, y: Int32, width: Int32, height: Int32, text: String, font: FontServer.MFont, fontserv: FontServer, callback: buttonCallback?) throws {
@@ -122,74 +122,74 @@ class MacButton : MacDialog {
 		super.init(x: x, y: y)
 
 		guard button != nil else {
-			throw Errors.SDLError(String.fromCString(SDL_GetError())!)
+			throw Errors.sdlError(String(cString: SDL_GetError()))
 		}
 		
 		//var textb = UnsafeMutablePointer<SDL_Surface>()
 		var dstrect = SDL_Rect()
 		
-		button.memory.format.memory.palette.memory.colors[0].r = 0xFF;
-		button.memory.format.memory.palette.memory.colors[0].g = 0xFF;
-		button.memory.format.memory.palette.memory.colors[0].b = 0xFF;
-		button.memory.format.memory.palette.memory.colors[1].r = 0x00;
-		button.memory.format.memory.palette.memory.colors[1].g = 0x00;
-		button.memory.format.memory.palette.memory.colors[1].b = 0x00;
+		button?.pointee.format.pointee.palette.pointee.colors[0].r = 0xFF;
+		button?.pointee.format.pointee.palette.pointee.colors[0].g = 0xFF;
+		button?.pointee.format.pointee.palette.pointee.colors[0].b = 0xFF;
+		button?.pointee.format.pointee.palette.pointee.colors[1].r = 0x00;
+		button?.pointee.format.pointee.palette.pointee.colors[1].g = 0x00;
+		button?.pointee.format.pointee.palette.pointee.colors[1].b = 0x00;
 		
 		let textb = fontserv.newTextImage(text, font: font, style: [], foreground: (red: 0, green: 0, blue: 0))
 		if textb != nil {
-			if (textb.memory.w <= button.memory.w) &&
-				(textb.memory.h <= button.memory.h) {
-					dstrect.x = (button.memory.w-textb.memory.w)/2;
-					dstrect.y = (button.memory.h-textb.memory.h)/2;
-					dstrect.w = textb.memory.w;
-					dstrect.h = textb.memory.h;
+			if (textb!.pointee.w <= button!.pointee.w) &&
+				(textb!.pointee.h <= button!.pointee.h) {
+					dstrect.x = (button!.pointee.w-textb!.pointee.w)/2;
+					dstrect.y = (button!.pointee.h-textb!.pointee.h)/2;
+					dstrect.w = textb!.pointee.w;
+					dstrect.h = textb!.pointee.h;
 					SDL_UpperBlit(textb, nil, button, &dstrect);
 			}
 
-			fontserv.freeText(textb)
+			fontserv.freeText(textb!)
 		}
-		bevelButton(button);
+		bevelButton(button!);
 		
 		/* Set the callback */
 		self.callback = callback
 	}
 	
-	private func bevelButton(image: UnsafeMutablePointer<SDL_Surface>) {
-		var image_bits = UnsafeMutablePointer<UInt8>(image.memory.pixels)
+	fileprivate func bevelButton(_ image: UnsafeMutablePointer<SDL_Surface>) {
+		var image_bits = image.pointee.pixels.assumingMemoryBound(to: UInt8.self)
 		
 		/* Bevel upper corners */
-		memset(image_bits+3, 0x01, image.memory.w-6);
-		image_bits += Int(image.memory.pitch)
+		memset(image_bits+3, 0x01, Int(image.pointee.w - 6));
+		image_bits += Int(image.pointee.pitch)
 		memset(image_bits+1, 0x01, 2);
-		memset(image_bits.advancedBy(image.memory.w-3), 0x01, 2);
-		image_bits += Int(image.memory.pitch);
+		memset(image_bits.advanced(by: Int(image.pointee.w-3)), 0x01, 2);
+		image_bits += Int(image.pointee.pitch);
 		memset(image_bits+1, 0x01, 1);
-		memset(image_bits.advancedBy(image.memory.w-2), 0x01, 1);
-		image_bits += Int(image.memory.pitch);
+		memset(image_bits.advanced(by: Int(image.pointee.w - 2)), 0x01, 1);
+		image_bits += Int(image.pointee.pitch);
 		
 		/* Draw sides */
 		//for ( h=3; h < Int(image.memory.h-3); ++h ) {
-		for _ in 3..<(image.memory.h - 3) {
+		for _ in 3..<(image.pointee.h - 3) {
 			image_bits[0] = 0x01;
-			image_bits[Int(image.memory.w-1)] = 0x01;
-			image_bits += Int(image.memory.pitch)
+			image_bits[Int(image.pointee.w-1)] = 0x01;
+			image_bits += Int(image.pointee.pitch)
 		}
 		
 		/* Bevel bottom corners */
 		memset(image_bits+1, 0x01, 1);
-		memset(image_bits.advancedBy(image.memory.w - 2), 0x01, 1);
-		image_bits += Int(image.memory.pitch)
+		memset(image_bits.advanced(by: Int(image.pointee.w - 2)), 0x01, 1);
+		image_bits += Int(image.pointee.pitch)
 		memset(image_bits+1, 0x01, 2);
-		memset(image_bits+Int(image.memory.w-3), 0x01, 2);
-		image_bits += Int(image.memory.pitch);
-		memset(image_bits+3, 0x01, image.memory.w-6);
+		memset(image_bits+Int(image.pointee.w-3), 0x01, 2);
+		image_bits += Int(image.pointee.pitch);
+		memset(image_bits+3, 0x01, Int(image.pointee.w - 6));
 	}
 	
 	override func show() {
-		screen.queueBlit(x: position.x, y: position.y, src: button, do_clip: .NOCLIP);
+		screen.queueBlit(x: position.x, y: position.y, src: button!, do_clip: .noclip);
 	}
 	
-	override func map(offset offset: (x: Int32, y: Int32), screen: FrameBuf, background: (red: UInt8, green: UInt8, blue: UInt8), foreground: (red: UInt8, green: UInt8, blue: UInt8)) {
+	override func map(offset: (x: Int32, y: Int32), screen: FrameBuf, background: (red: UInt8, green: UInt8, blue: UInt8), foreground: (red: UInt8, green: UInt8, blue: UInt8)) {
 		super.map(offset: offset, screen: screen, background: background, foreground: foreground)
 		
 		/* Set up the button sensitivity */
@@ -199,18 +199,18 @@ class MacButton : MacDialog {
 		sensitive.h = size.height;
 		
 		/* Map the bitmap image */
-		button.memory.format.memory.palette.memory.colors[0].r = background.red;
-		button.memory.format.memory.palette.memory.colors[0].g = background.green;
-		button.memory.format.memory.palette.memory.colors[0].b = background.blue;
-		button.memory.format.memory.palette.memory.colors[1].r = foreground.red;
-		button.memory.format.memory.palette.memory.colors[1].g = foreground.green;
-		button.memory.format.memory.palette.memory.colors[1].b = foreground.blue;
+		button?.pointee.format.pointee.palette.pointee.colors[0].r = background.red;
+		button?.pointee.format.pointee.palette.pointee.colors[0].g = background.green;
+		button?.pointee.format.pointee.palette.pointee.colors[0].b = background.blue;
+		button?.pointee.format.pointee.palette.pointee.colors[1].r = foreground.red;
+		button?.pointee.format.pointee.palette.pointee.colors[1].g = foreground.green;
+		button?.pointee.format.pointee.palette.pointee.colors[1].b = foreground.blue;
 	}
 	
-	final private func invertImage() {
-		let buttonPixels = UnsafeMutableBufferPointer(start: UnsafeMutablePointer<UInt8>(button.memory.pixels), count: Int(button.memory.h * button.memory.pitch))
+	final fileprivate func invertImage() {
+		let buttonPixels = UnsafeMutableBufferPointer(start: button?.pointee.pixels.assumingMemoryBound(to: UInt8.self), count: Int(button!.pointee.h * button!.pointee.pitch))
 		
-		for (i,buf) in buttonPixels.enumerate() {
+		for (i,buf) in buttonPixels.enumerated() {
 			if buf == 0 {
 				buttonPixels[i] = 1
 			} else {
@@ -219,13 +219,13 @@ class MacButton : MacDialog {
 		}
 	}
 	
-	override final func handleButtonPress(x x: Int32, y: Int32, button: UInt8, inout done doneFlag: Bool) {
+	override final func handleButtonPress(x: Int32, y: Int32, button: UInt8, done doneFlag: inout Bool) {
 		if isSensitive(sensitive, x: x, y: y) {
 			activateButton(&doneFlag)
 		}
 	}
 	
-	private func activateButton(inout doneFlag: Bool) {
+	fileprivate func activateButton(_ doneFlag: inout Bool) {
 		/* Flash the button */
 		invertImage();
 		show();
@@ -251,14 +251,14 @@ class MacButton : MacDialog {
 if <Return> is pressed, this button is activated.
 */
 final class MacDefaultButton : MacButton {
-	private var fg: UInt32 = 0
+	fileprivate var fg: UInt32 = 0
 	
-	override func map(offset offset: (x: Int32, y: Int32), screen: FrameBuf, background: (red: UInt8, green: UInt8, blue: UInt8), foreground: (red: UInt8, green: UInt8, blue: UInt8)) {
+	override func map(offset: (x: Int32, y: Int32), screen: FrameBuf, background: (red: UInt8, green: UInt8, blue: UInt8), foreground: (red: UInt8, green: UInt8, blue: UInt8)) {
 		super.map(offset: offset, screen: screen, background: background, foreground: foreground)
 		fg = screen.mapRGB(tuple: foreground)
 	}
 	
-	override func handleKeyPress(key: SDL_Keysym, inout done doneflag: Bool) {
+	override func handleKeyPress(_ key: SDL_Keysym, done doneflag: inout Bool) {
 		if Int(key.sym) == SDLK_RETURN {
 			activateButton(&doneflag)
 		}
@@ -308,12 +308,12 @@ final class MacDefaultButton : MacButton {
 let CHECKBOX_SIZE: Int32 = 12
 
 final class MacCheckBox : MacDialog {
-	private var label: UnsafeMutablePointer<SDL_Surface>
-	private var fontServ: FontServer
-	private var fg: UInt32 = 0
-	private var bg: UInt32 = 0
-	private var sensitive = SDL_Rect()
-	private var checkval: UnsafeMutablePointer<Bool>
+	fileprivate var label: UnsafeMutablePointer<SDL_Surface>?
+	fileprivate var fontServ: FontServer
+	fileprivate var fg: UInt32 = 0
+	fileprivate var bg: UInt32 = 0
+	fileprivate var sensitive = SDL_Rect()
+	fileprivate var checkval: UnsafeMutablePointer<Bool>
 	
 	init(toggle: UnsafeMutablePointer<Bool>, x: Int32, y: Int32, text: String, font: FontServer.MFont, fontserv: FontServer) {
 		fontServ = fontserv
@@ -322,7 +322,7 @@ final class MacCheckBox : MacDialog {
 		super.init(x: x, y: y)
 	}
 	
-	override func map(offset offset: (x: Int32, y: Int32), screen: FrameBuf, background: (red: UInt8, green: UInt8, blue: UInt8), foreground: (red: UInt8, green: UInt8, blue: UInt8)) {
+	override func map(offset: (x: Int32, y: Int32), screen: FrameBuf, background: (red: UInt8, green: UInt8, blue: UInt8), foreground: (red: UInt8, green: UInt8, blue: UInt8)) {
 		super.map(offset: offset, screen: screen, background: background, foreground: foreground)
 		
 		/* Set up the checkbox sensitivity */
@@ -336,15 +336,15 @@ final class MacCheckBox : MacDialog {
 		bg = screen.mapRGB(tuple: background)
 		
 		/* Map the checkbox text */
-		label.memory.format.memory.palette.memory.colors[1].r = foreground.red;
-		label.memory.format.memory.palette.memory.colors[1].g = foreground.green;
-		label.memory.format.memory.palette.memory.colors[1].b = foreground.blue;
+		label?.pointee.format.pointee.palette.pointee.colors[1].r = foreground.red;
+		label?.pointee.format.pointee.palette.pointee.colors[1].g = foreground.green;
+		label?.pointee.format.pointee.palette.pointee.colors[1].b = foreground.blue;
 	}
 	
-	override func handleButtonPress(x x: Int32, y: Int32, button: UInt8, inout done doneFlag: Bool) {
+	override func handleButtonPress(x: Int32, y: Int32, button: UInt8, done doneFlag: inout Bool) {
 		if isSensitive(sensitive, x: x, y: y) {
-			checkval.memory = !checkval.memory
-			checkBox(checkval.memory)
+			checkval.pointee = !checkval.pointee
+			checkBox(checkval.pointee)
 			screen.update()
 		}
 	}
@@ -352,12 +352,12 @@ final class MacCheckBox : MacDialog {
 	override func show() {
 		screen.drawRect(x: position.x, y: position.y, width: CHECKBOX_SIZE, height: CHECKBOX_SIZE, color: fg)
 		if label != nil {
-			screen.queueBlit(x: position.x + CHECKBOX_SIZE + 4, y: position.y - 2, src: label, do_clip: .NOCLIP)
+			screen.queueBlit(x: position.x + CHECKBOX_SIZE + 4, y: position.y - 2, src: label!, do_clip: .noclip)
 		}
-		checkBox(checkval.memory)
+		checkBox(checkval.pointee)
 	}
 	
-	private func checkBox(checked: Bool) {
+	fileprivate func checkBox(_ checked: Bool) {
 		let color: UInt32
 		
 		if checked {
@@ -371,7 +371,7 @@ final class MacCheckBox : MacDialog {
 	}
 	
 	deinit {
-		if label != nil {
+		if let label = label {
 			fontServ.freeText(label)
 		}
 	}
@@ -379,15 +379,15 @@ final class MacCheckBox : MacDialog {
 
 /** Class of radio buttons */
 final class MacRadioList : MacDialog {
-	private var radioList = [Radio]()
-	private let fontServ: FontServer
-	private let font: FontServer.MFont
-	private var fg: UInt32 = 0
-	private var bg: UInt32 = 0
-	private var radiovar: UnsafeMutablePointer<Int>
+	fileprivate var radioList = [Radio]()
+	fileprivate let fontServ: FontServer
+	fileprivate let font: FontServer.MFont
+	fileprivate var fg: UInt32 = 0
+	fileprivate var bg: UInt32 = 0
+	fileprivate var radiovar: UnsafeMutablePointer<Int>
 	
-	private struct Radio {
-		var label: UnsafeMutablePointer<SDL_Surface>
+	fileprivate struct Radio {
+		var label: UnsafeMutablePointer<SDL_Surface>?
 		var x: Int32
 		var y: Int32
 		var sensitive: SDL_Rect
@@ -400,13 +400,13 @@ final class MacRadioList : MacDialog {
 		super.init(x: x, y: y)
 	}
 	
-	override func handleButtonPress(x x: Int32, y: Int32, button: UInt8, inout done doneFlag: Bool) {
-		let oldRadio = radioList[radiovar.memory]
+	override func handleButtonPress(x: Int32, y: Int32, button: UInt8, done doneFlag: inout Bool) {
+		let oldRadio = radioList[radiovar.pointee]
 		
-		for (n, radio) in radioList.enumerate() {
+		for (n, radio) in radioList.enumerated() {
 			if isSensitive(radio.sensitive, x: x, y: y) {
 				spot(x: oldRadio.x, y: oldRadio.y, color: bg)
-				radiovar.memory = n
+				radiovar.pointee = n
 				spot(x: radio.x, y: radio.y, color: fg)
 				screen.update()
 				return
@@ -415,18 +415,18 @@ final class MacRadioList : MacDialog {
 	}
 	
 	override func show() {
-		for (n,radio) in radioList.enumerate() {
+		for (n,radio) in radioList.enumerated() {
 			circle(x: radio.x, y: radio.y)
-			if n == radiovar.memory {
+			if n == radiovar.pointee {
 				spot(x: radio.x, y: radio.y, color: fg)
 			}
 			if radio.label != nil {
-				screen.queueBlit(x: radio.x + 21, y: radio.y + 3, src: radio.label, do_clip: .NOCLIP)
+				screen.queueBlit(x: radio.x + 21, y: radio.y + 3, src: radio.label!, do_clip: .noclip)
 			}
 		}
 	}
 	
-	override func map(offset offset: (x: Int32, y: Int32), screen: FrameBuf, background: (red: UInt8, green: UInt8, blue: UInt8), foreground: (red: UInt8, green: UInt8, blue: UInt8)) {
+	override func map(offset: (x: Int32, y: Int32), screen: FrameBuf, background: (red: UInt8, green: UInt8, blue: UInt8), foreground: (red: UInt8, green: UInt8, blue: UInt8)) {
 		/* Do the normal dialog mapping */
 		super.map(offset: offset, screen: screen, background: background, foreground: foreground)
 		
@@ -440,23 +440,23 @@ final class MacRadioList : MacDialog {
 			radioList[i].y += offset.y
 			radioList[i].sensitive.x += offset.x
 			radioList[i].sensitive.y += offset.y
-			radioList[i].label.memory.format.memory.palette.memory.colors[1].r = foreground.red
-			radioList[i].label.memory.format.memory.palette.memory.colors[1].g = foreground.green
-			radioList[i].label.memory.format.memory.palette.memory.colors[1].b = foreground.blue
+			radioList[i].label?.pointee.format.pointee.palette.pointee.colors[1].r = foreground.red
+			radioList[i].label?.pointee.format.pointee.palette.pointee.colors[1].g = foreground.green
+			radioList[i].label?.pointee.format.pointee.palette.pointee.colors[1].b = foreground.blue
 		}
 	}
 	
-	func addRadio(x x: Int32, y: Int32, text: String) {
+	func addRadio(x: Int32, y: Int32, text: String) {
 		var radio = Radio(label: fontServ.newTextImage(text, font: font, style: [],
 			foreground: (red: 0, green: 0, blue: 0)), x: x, y: y, sensitive: SDL_Rect())
 		radio.sensitive.x = x
 		radio.sensitive.y = y
-		radio.sensitive.w = 20 + radio.label.memory.w
+		radio.sensitive.w = 20 + radio.label!.pointee.w
 		radio.sensitive.h = BOX_HEIGHT
 		radioList.append(radio)
 	}
 	
-	private func spot(x x2: Int32, y y2: Int32, color: UInt32) {
+	fileprivate func spot(x x2: Int32, y y2: Int32, color: UInt32) {
 		var x = x2
 		var y = y2
 		x += 8;
@@ -474,7 +474,7 @@ final class MacRadioList : MacDialog {
 		screen.drawLine(x1: x+1, y1: y, x2: x+4, y2: y, color: color);
 	}
 	
-	private func circle(x x2: Int32, y y2: Int32) {
+	fileprivate func circle(x x2: Int32, y y2: Int32) {
 		var x = x2
 		var y = y2
 		x += 5;
@@ -495,26 +495,28 @@ final class MacRadioList : MacDialog {
 	
 	deinit {
 		for radio in radioList {
-			fontServ.freeText(radio.label)
+			if let radioLbl = radio.label {
+				fontServ.freeText(radioLbl)
+			}
 		}
 	}
 }
 
 /** Class of text entry boxes */
 final class MacTextEntry : MacDialog {
-	private let fontServ: FontServer
-	private let font: FontServer.MFont
-	private var fg: UInt32 = 0
-	private var bg: UInt32 = 0
-	private var cWidth: Int32
-	private var cHeight: Int32
-	private var foreground = SDL_Color(r: 0, g: 0, b: 0, a: 255)
-	private var background = SDL_Color(r: 0, g: 0, b: 0, a: 255)
-	private var entryList = [TextEntry]()
-	private var currentEntry = 0
+	fileprivate let fontServ: FontServer
+	fileprivate let font: FontServer.MFont
+	fileprivate var fg: UInt32 = 0
+	fileprivate var bg: UInt32 = 0
+	fileprivate var cWidth: Int32
+	fileprivate var cHeight: Int32
+	fileprivate var foreground = SDL_Color(r: 0, g: 0, b: 0, a: 255)
+	fileprivate var background = SDL_Color(r: 0, g: 0, b: 0, a: 255)
+	fileprivate var entryList = [TextEntry]()
+	fileprivate var currentEntry = 0
 	
-	private class TextEntry {
-		var text: UnsafeMutablePointer<SDL_Surface> = nil
+	fileprivate class TextEntry {
+		var text: UnsafeMutablePointer<SDL_Surface>? = nil
 		var variable: String = ""
 		var sensitive = SDL_Rect()
 		var location: (x: Int32, y: Int32) = (0,0)
@@ -534,13 +536,15 @@ final class MacTextEntry : MacDialog {
 	
 	deinit {
 		for entry in entryList {
-			fontServ.freeText(entry.text)
+			if let entryTxt = entry.text {
+				fontServ.freeText(entryTxt)
+			}
 		}
 		MacDialog.disableText()
 	}
 	
-	override func handleButtonPress(x x: Int32, y: Int32, button: UInt8, inout done doneFlag: Bool) {
-		for (i,entry) in entryList.enumerate() {
+	override func handleButtonPress(x: Int32, y: Int32, button: UInt8, done doneFlag: inout Bool) {
+		for (i,entry) in entryList.enumerated() {
 			if isSensitive(entry.sensitive, x: x, y: y) {
 				entryList[currentEntry].hilite = false
 				
@@ -553,7 +557,7 @@ final class MacTextEntry : MacDialog {
 		}
 	}
 	
-	override func handleKeyPress(key: SDL_Keysym, inout done doneflag: Bool) {
+	override func handleKeyPress(_ key: SDL_Keysym, done doneflag: inout Bool) {
 		switch Int(key.sym) {
 		case SDLK_TAB:
 			entryList[currentEntry].hilite = false;
@@ -570,8 +574,8 @@ final class MacTextEntry : MacDialog {
 			if entryList[currentEntry].hilite {
 				entryList[currentEntry].variable = ""
 				entryList[currentEntry].hilite = false
-			} else if entryList[currentEntry].variable.characters.count > 0 {
-				entryList[currentEntry].variable = String(entryList[currentEntry].variable.characters.dropLast())
+			} else if entryList[currentEntry].variable.count > 0 {
+				entryList[currentEntry].variable = String(entryList[currentEntry].variable.dropLast())
 			}
 			updateEntry(entryList[currentEntry]);
 			drawCursor(entryList[currentEntry]);
@@ -581,7 +585,7 @@ final class MacTextEntry : MacDialog {
 				return;
 			}
 			entryList[currentEntry].hilite = false
-			entryList[currentEntry].variable += String.fromCString([Int8(key.sym),0])!
+			entryList[currentEntry].variable += String(cString: [Int8(key.sym),0])
 			updateEntry(entryList[currentEntry])
 			drawCursor(entryList[currentEntry])
 		}
@@ -589,7 +593,7 @@ final class MacTextEntry : MacDialog {
 		screen.update()
 	}
 	
-	func addEntry(x x: Int32, y: Int32, width: Int32, isDefault: Bool, variable: UnsafeMutablePointer<Int8>) {
+	func addEntry(x: Int32, y: Int32, width: Int32, isDefault: Bool, variable: UnsafeMutablePointer<Int8>) {
 		let entry = TextEntry()
 		
 		if isDefault {
@@ -609,7 +613,7 @@ final class MacTextEntry : MacDialog {
 		entryList.append(entry)
 	}
 	
-	override func map(offset offset: (x: Int32, y: Int32), screen: FrameBuf, background backG: (red: UInt8, green: UInt8, blue: UInt8), foreground foreG: (red: UInt8, green: UInt8, blue: UInt8)) {
+	override func map(offset: (x: Int32, y: Int32), screen: FrameBuf, background backG: (red: UInt8, green: UInt8, blue: UInt8), foreground foreG: (red: UInt8, green: UInt8, blue: UInt8)) {
 		/* Do the normal dialog mapping */
 		super.map(offset: offset, screen: screen, background: backG, foreground: foreG)
 		
@@ -635,12 +639,12 @@ final class MacTextEntry : MacDialog {
 		}
 	}
 	
-	private func updateEntry(entry: TextEntry) {
+	fileprivate func updateEntry(_ entry: TextEntry) {
 		var clear: Uint32 = 0
 		
 		/* Create the new entry text */
-		if ( entry.text != nil ) {
-			fontServ.freeText(entry.text)
+		if let entryTxt = entry.text {
+			fontServ.freeText(entryTxt)
 			entry.text = nil
 		}
 		if entry.hilite {
@@ -655,14 +659,14 @@ final class MacTextEntry : MacDialog {
 		screen.fillRect(x: entry.location.x, y: entry.location.y,
 		w: entry.size.width, h: entry.size.height, color: clear);
 		if ( entry.text != nil ) {
-			entry.end = entry.text.memory.w;
-			screen.queueBlit(x: entry.location.x, y: entry.location.y, src: entry.text, do_clip: .NOCLIP);
+			entry.end = (entry.text?.pointee.w)!;
+			screen.queueBlit(x: entry.location.x, y: entry.location.y, src: entry.text!, do_clip: .noclip);
 		} else {
 			entry.end = 0;
 		}
 	}
 	
-	private func drawCursor(entry: TextEntry) {
+	fileprivate func drawCursor(_ entry: TextEntry) {
 		screen.drawLine(x1: entry.location.x + entry.end, y1: entry.location.y,
 			x2: entry.location.x + entry.end, y2: entry.location.y + entry.size.height - 1,
 			color: fg)
@@ -671,23 +675,23 @@ final class MacTextEntry : MacDialog {
 
 /** Class of numeric entry boxes */
 final class MacNumericEntry: MacDialog {
-	private var entryList = [NumericEntry]()
-	private let fontServ: FontServer
-	private let font: FontServer.MFont
-	private var fg: UInt32 = 0
-	private var bg: UInt32 = 0
-	private var cWidth: Int32
-	private var cHeight: Int32
-	private var foreground = SDL_Color(r: 0, g: 0, b: 0, a: 255)
-	private var background = SDL_Color(r: 0, g: 0, b: 0, a: 255)
-	private var currentEntry = 0
-	private var current: NumericEntry {
+	fileprivate var entryList = [NumericEntry]()
+	fileprivate let fontServ: FontServer
+	fileprivate let font: FontServer.MFont
+	fileprivate var fg: UInt32 = 0
+	fileprivate var bg: UInt32 = 0
+	fileprivate var cWidth: Int32
+	fileprivate var cHeight: Int32
+	fileprivate var foreground = SDL_Color(r: 0, g: 0, b: 0, a: 255)
+	fileprivate var background = SDL_Color(r: 0, g: 0, b: 0, a: 255)
+	fileprivate var currentEntry = 0
+	fileprivate var current: NumericEntry {
 		return entryList[currentEntry]
 	}
 
-	private class NumericEntry {
-		var text: UnsafeMutablePointer<SDL_Surface> = nil
-		var variable: UnsafeMutablePointer<Int> = nil
+	fileprivate class NumericEntry {
+		var text: UnsafeMutablePointer<SDL_Surface>? = nil
+		var variable: UnsafeMutablePointer<Int>? = nil
 		var sensitive = SDL_Rect()
 		var location: (x: Int32, y: Int32) = (0,0)
 		var size: (width: Int32, height: Int32) = (0,0)
@@ -705,12 +709,14 @@ final class MacNumericEntry: MacDialog {
 	
 	deinit {
 		for entry in entryList {
-			fontServ.freeText(entry.text)
+			if let entryTxt = entry.text {
+				fontServ.freeText(entryTxt)
+			}
 		}
 	}
 	
-	override func handleButtonPress(x x: Int32, y: Int32, button: UInt8, inout done doneFlag: Bool) {
-		for (i,entry) in entryList.enumerate() {
+	override func handleButtonPress(x: Int32, y: Int32, button: UInt8, done doneFlag: inout Bool) {
+		for (i,entry) in entryList.enumerated() {
 			if isSensitive(entry.sensitive, x: x, y: y) {
 				current.hilite = false
 				updateEntry(current);
@@ -721,7 +727,7 @@ final class MacNumericEntry: MacDialog {
 		}
 	}
 	
-	override func handleKeyPress(key: SDL_Keysym, inout done doneflag: Bool) {
+	override func handleKeyPress(_ key: SDL_Keysym, done doneflag: inout Bool) {
 		switch Int(key.sym) {
 		case SDLK_TAB:
 			current.hilite = false
@@ -737,10 +743,10 @@ final class MacNumericEntry: MacDialog {
 			
 		case SDLK_DELETE, SDLK_BACKSPACE:
 			if ( current.hilite ) {
-				current.variable.memory = 0
+				current.variable?.pointee = 0
 				current.hilite = false
 			} else {
-				current.variable.memory /= 10
+				current.variable?.pointee /= 10
 			}
 			updateEntry(current);
 			drawCursor(current);
@@ -752,11 +758,11 @@ final class MacNumericEntry: MacDialog {
 				return
 			}
 			if current.hilite {
-				current.variable.memory = n
+				current.variable?.pointee = n
 				current.hilite = false
 			} else {
-				current.variable.memory *= 10;
-				current.variable.memory += n;
+				current.variable?.pointee *= 10;
+				current.variable?.pointee += n;
 			}
 			updateEntry(current);
 			drawCursor(current);
@@ -768,7 +774,7 @@ final class MacNumericEntry: MacDialog {
 		screen.update();
 	}
 	
-	func addEntry(x x: Int32, y: Int32, width: Int32, isDefault: Bool, variable: UnsafeMutablePointer<Int>) {
+	func addEntry(x: Int32, y: Int32, width: Int32, isDefault: Bool, variable: UnsafeMutablePointer<Int>) {
 		let entry = NumericEntry()
 		entryList.append(entry)
 		entry.variable = variable
@@ -784,7 +790,7 @@ final class MacNumericEntry: MacDialog {
 		entry.text = nil
 	}
 	
-	override func map(offset offset: (x: Int32, y: Int32), screen: FrameBuf, background backG: (red: UInt8, green: UInt8, blue: UInt8), foreground foreG: (red: UInt8, green: UInt8, blue: UInt8)) {
+	override func map(offset: (x: Int32, y: Int32), screen: FrameBuf, background backG: (red: UInt8, green: UInt8, blue: UInt8), foreground foreG: (red: UInt8, green: UInt8, blue: UInt8)) {
 		/* Do the normal dialog mapping */
 		super.map(offset: offset, screen: screen, background: backG, foreground: foreG)
 		
@@ -810,15 +816,15 @@ final class MacNumericEntry: MacDialog {
 		}
 	}
 	
-	private func updateEntry(entry: NumericEntry) {
+	fileprivate func updateEntry(_ entry: NumericEntry) {
 		var buf = "";
 		var clear: Uint32
 		
 		/* Create the new entry text */
-		if entry.text != nil {
-			fontServ.freeText(entry.text);
+		if let entryTxt = entry.text {
+			fontServ.freeText(entryTxt);
 		}
-		buf = String(entry.variable.memory)
+		buf = String(describing: entry.variable?.pointee)
 		
 		if entry.hilite {
 			clear = fg;
@@ -829,22 +835,22 @@ final class MacNumericEntry: MacDialog {
 			entry.text = fontServ.newTextImage(buf, font: font,
 				style: [], foreground: foreground, background: background);
 		}
-		entry.end = entry.text.memory.w;
+		entry.end = (entry.text?.pointee.w)!;
 		screen.fillRect(x: entry.location.x, y: entry.location.y,
 		w: entry.size.width, h: entry.size.height, color: clear);
-		screen.queueBlit(x: entry.location.x, y: entry.location.y, src: entry.text, do_clip: .NOCLIP);
+		screen.queueBlit(x: entry.location.x, y: entry.location.y, src: entry.text!, do_clip: .noclip);
 	}
 	
-	private func drawCursor(entry: NumericEntry) {
+	fileprivate func drawCursor(_ entry: NumericEntry) {
 		screen.drawLine(x1: entry.location.x + entry.end, y1: entry.location.y, x2: entry.location.x + entry.end, y2: entry.location.y + entry.size.height - 1, color: fg)
 	}
 }
 
 /** Finally, the macintosh-like dialog class */
 final class MaclikeDialog {
-	private var screen: FrameBuf
-	private var location: (x: Int32, y: Int32)
-	private var size: (width: Int32, height: Int32)
+	fileprivate var screen: FrameBuf
+	fileprivate var location: (x: Int32, y: Int32)
+	fileprivate var size: (width: Int32, height: Int32)
 	
 	convenience init(x: Int, y: Int, width: Int, height: Int, screen: FrameBuf) {
 		self.init(x: Int32(x), y: Int32(y), width: Int32(width), height: Int32(height), screen: screen)
@@ -856,28 +862,28 @@ final class MaclikeDialog {
 		self.screen = screen
 	}
 	
-	func addRectangle(x x: Int, y: Int, w: Int, h: Int, color: UInt32) {
+	func addRectangle(x: Int, y: Int, w: Int, h: Int, color: UInt32) {
 		let newElement = RectElement(x: Int16(x), y: Int16(y), w: UInt16(w), h: UInt16(h), color: color)
 		rectList.append(newElement)
 	}
 	
-	func addImage(image: UnsafeMutablePointer<SDL_Surface>, x: Int32, y: Int32) {
+	func addImage(_ image: UnsafeMutablePointer<SDL_Surface>, x: Int32, y: Int32) {
 		let newElement = ImageElement(image: image, x: x, y: y)
 		imageList.append(newElement)
 	}
 	
-	func addImage(image: UnsafeMutablePointer<SDL_Surface>, x: Int, y: Int) {
+	func addImage(_ image: UnsafeMutablePointer<SDL_Surface>, x: Int, y: Int) {
 		addImage(image, x: Int32(x), y: Int32(x))
 	}
 	
-	func addDialog(dialog: MacDialog) {
+	func addDialog(_ dialog: MacDialog) {
 		dialogList.append(dialog)
 	}
 	
 	/// The big Kahones
-	func run(expandSteps: Int = 1) {
-		var savedfg: UnsafeMutablePointer<SDL_Surface> = nil
-		var savedbg: UnsafeMutablePointer<SDL_Surface> = nil
+	func run(_ expandSteps: Int = 1) {
+		var savedfg: UnsafeMutablePointer<SDL_Surface>? = nil
+		var savedbg: UnsafeMutablePointer<SDL_Surface>? = nil
 		var event = SDL_Event()
 		var maxX: Int32 = 0
 		var maxY: Int32 = 0
@@ -948,7 +954,7 @@ final class MaclikeDialog {
 				width: Int32(relem.w), height: Int32(relem.h), color: relem.color);
 		}
 		for ielem in imageList {
-			screen.queueBlit(x: location.x + 4 + ielem.x, y: location.y + 4 + ielem.y, src: ielem.image, do_clip: .NOCLIP)
+			screen.queueBlit(x: location.x + 4 + ielem.x, y: location.y + 4 + ielem.y, src: ielem.image, do_clip: .noclip)
 		}
 		for delem in dialogList {
 			delem.map(offset: (location.x + 4, location.y + 4), screen: screen,
@@ -982,21 +988,21 @@ final class MaclikeDialog {
 		}
 		
 		/* Replace the old section of screen */
-		if savedbg != nil {
+		if let savedbg = savedbg {
 			screen.focusBG();
-			screen.queueBlit(x: location.x, y: location.y, src: savedbg, do_clip: .NOCLIP);
+			screen.queueBlit(x: location.x, y: location.y, src: savedbg, do_clip: .noclip);
 			screen.update();
 			screen.focusFG();
 			screen.freeImage(savedbg);
 		}
-		if savedfg != nil {
-			screen.queueBlit(x: location.x, y: location.y, src: savedfg, do_clip: .NOCLIP);
+		if let savedfg = savedfg {
+			screen.queueBlit(x: location.x, y: location.y, src: savedfg, do_clip: .noclip);
 			screen.update();
 			screen.freeImage(savedfg);
 		}
 	}
 	
-	private struct RectElement {
+	fileprivate struct RectElement {
 		var x: Int16
 		var y: Int16
 		var w: UInt16
@@ -1004,13 +1010,13 @@ final class MaclikeDialog {
 		var color: UInt32
 	}
 	
-	private struct ImageElement {
+	fileprivate struct ImageElement {
 		var image: UnsafeMutablePointer<SDL_Surface>
 		var x: Int32
 		var y: Int32
 	}
 	
-	private var rectList = [RectElement]()
-	private var imageList = [ImageElement]()
-	private var dialogList = [MacDialog]()
+	fileprivate var rectList = [RectElement]()
+	fileprivate var imageList = [ImageElement]()
+	fileprivate var dialogList = [MacDialog]()
 }

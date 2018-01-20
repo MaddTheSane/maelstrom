@@ -11,7 +11,7 @@ import SDL2
 
 final class Player: MaelObject {
 	///Special features of the player
-	struct PlayerFeatures: OptionSetType {
+	struct PlayerFeatures: OptionSet {
 		let rawValue: UInt8
 		init(rawValue rv: UInt8) {
 			rawValue = rv
@@ -43,6 +43,6 @@ final class Player: MaelObject {
 }
 
 
-var gPlayerShot: UnsafeMutablePointer<SDL_Surface> = nil
-var gEnemyShot: UnsafeMutablePointer<SDL_Surface> = nil
+var gPlayerShot: UnsafeMutablePointer<SDL_Surface>? = nil
+var gEnemyShot: UnsafeMutablePointer<SDL_Surface>? = nil
 

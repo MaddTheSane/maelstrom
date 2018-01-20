@@ -10,12 +10,12 @@ import Foundation
 import SDL2
 
 //static void PrintSurface(const char *title, SDL_Surface *surface)
-private func printSurface(title: String, surface: UnsafeMutablePointer<SDL_Surface>) {
+private func printSurface(_ title: String, surface: UnsafeMutablePointer<SDL_Surface>) {
 	//do nothing
 }
 
 ///Lower the precision of a value
-private func LOWER_PREC(X: Int32) -> Int16 {
+private func LOWER_PREC(_ X: Int32) -> Int16 {
 	return Int16(X / 16)
 }
 
@@ -25,7 +25,7 @@ private func LOWER_PREC(X: Int32) -> Int16 {
 
 */
 
-private func memswap(dst2: UnsafeMutablePointer<UInt8>, src src2: UnsafeMutablePointer<UInt8>, len: Int) {
+private func memswap(_ dst2: UnsafeMutablePointer<UInt8>, src src2: UnsafeMutablePointer<UInt8>, len: Int) {
 	var dst = dst2
 	var src = src2
 	#if SWAP_XOR
@@ -37,7 +37,7 @@ private func memswap(dst2: UnsafeMutablePointer<UInt8>, src src2: UnsafeMutableP
 		}
 	#else
 		for _ in 0..<len {
-			swap(&dst.memory, &src.memory)
+			swap(&dst.pointee, &src.pointee)
 			dst = dst.successor();src = src.successor();
 		}
 	#endif
@@ -45,32 +45,32 @@ private func memswap(dst2: UnsafeMutablePointer<UInt8>, src src2: UnsafeMutableP
 
 class FrameBuf {
 	enum clipval {
-		case DOCLIP
-		case NOCLIP
+		case doclip
+		case noclip
 	}
 
 	//	SDL_Window *window;
-	private var window: SDL_WindowPtr = nil
-	private var putPixel: (@convention(c) (screen_loc: UnsafeMutablePointer<Uint8>, screen: UnsafeMutablePointer<SDL_Surface>, pixel: Uint32) -> ())! = nil
-	var screen: UnsafeMutablePointer<SDL_Surface> = nil
+	fileprivate var window: SDL_WindowPtr? = nil
+	fileprivate var putPixel: (@convention(c) (_ screen_loc: UnsafeMutablePointer<Uint8>?, _ screen: UnsafeMutablePointer<SDL_Surface>?, _ pixel: Uint32) -> ())! = nil
+	var screen: UnsafeMutablePointer<SDL_Surface>? = nil
 
-	var screenfg: UnsafeMutablePointer<SDL_Surface> = nil
-	var screenbg: UnsafeMutablePointer<SDL_Surface> = nil
+	var screenfg: UnsafeMutablePointer<SDL_Surface>? = nil
+	var screenbg: UnsafeMutablePointer<SDL_Surface>? = nil
 	
-	private var locked = false
-	private var screen_mem: UnsafeMutablePointer<UInt8> = nil
+	fileprivate var locked = false
+	fileprivate var screen_mem: UnsafeMutablePointer<UInt8>? = nil
 
 	/* Blit clipping rectangle */
-	private var clip = SDL_Rect()
+	fileprivate var clip = SDL_Rect()
 
-	func clipBlit(cliprect: SDL_Rect) {
+	func clipBlit(_ cliprect: SDL_Rect) {
 		clip = cliprect
 	}
 	
 	/* List of loaded images */
 	struct ImageList {
-		var image: UnsafeMutablePointer<SDL_Surface>
-		var next: UnsafeMutablePointer<ImageList>
+		var image: UnsafeMutablePointer<SDL_Surface>?
+		var next: UnsafeMutablePointer<ImageList>?
 	};
 	var images = ImageList(image: nil, next: nil)
 	//image_list images, *itail;
@@ -82,7 +82,7 @@ class FrameBuf {
 			while ( SDL_LockSurface(screen) < 0 ) {
 				SDL_Delay(10);
 			}
-			screen_mem = UnsafeMutablePointer<UInt8>(screen.memory.pixels)
+			screen_mem = screen?.pointee.pixels.assumingMemoryBound(to: UInt8.self) // UnsafeMutablePointer<UInt8>(screen?.pointee.pixels)
 		}
 	}
 	
@@ -93,13 +93,13 @@ class FrameBuf {
 		}
 	}
 
-	private func LOCK_IF_NEEDED() {
+	fileprivate func LOCK_IF_NEEDED() {
 		if !locked {
 			lock()
 		}
 	}
 	
-	private func UNLOCK_IF_NEEDED() {
+	fileprivate func UNLOCK_IF_NEEDED() {
 		if locked {
 			unlock()
 		}
@@ -115,27 +115,27 @@ class FrameBuf {
 		screen = screenbg;
 	}
 	
-	enum Errors: ErrorType {
-		case CouldNotCreateWindow(SDLError: String)
-		case SettingVideoMode(width: Int32, height: Int32, SDLError: String)
-		case CouldNotCreateBackground(SDLError: String)
-		case InvalidPixelFormat(UInt8)
+	enum Errors: Error {
+		case couldNotCreateWindow(SDLError: String)
+		case settingVideoMode(width: Int32, height: Int32, SDLError: String)
+		case couldNotCreateBackground(SDLError: String)
+		case invalidPixelFormat(UInt8)
 	}
 	
 	var caption: String {
 		get {
-			return String.fromCString(SDL_GetWindowTitle(window))!
+			return String(cString: SDL_GetWindowTitle(window))
 		}
 		set {
 			SDL_SetWindowTitle(window, newValue);
 		}
 	}
 	
-	init(width: Int32, height: Int32, videoFlags: UInt32, colors: UnsafePointer<SDL_Color> = nil, icon: UnsafeMutablePointer<SDL_Surface> = nil) throws {
+	init(width: Int32, height: Int32, videoFlags: UInt32, colors: UnsafePointer<SDL_Color>? = nil, icon: UnsafeMutablePointer<SDL_Surface>? = nil) throws {
 		window = SDL_CreateWindow("title", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, videoFlags);
 		if window == nil {
 			error = String(format: "Couldn't create window: %s", SDL_GetError())
-			throw Errors.CouldNotCreateWindow(SDLError: String.fromCString(SDL_GetError())!)
+			throw Errors.couldNotCreateWindow(SDLError: String(cString: SDL_GetError()))
 		}
 		/* Set the icon, if any */
 		if icon != nil {
@@ -146,51 +146,51 @@ class FrameBuf {
 		/* Try for the 8-bit video mode that was requested, accept any depth */
 		screenfg = SDL_GetWindowSurface(window);
 		if screenfg == nil {
-			throw Errors.SettingVideoMode(width: width, height: height, SDLError: String.fromCString(SDL_GetError())!)
+			throw Errors.settingVideoMode(width: width, height: height, SDLError: String(cString: SDL_GetError()))
 		}
-		printSurface("Created foreground", surface: screenfg);
+		printSurface("Created foreground", surface: screenfg!);
 		screen = screenfg
 		
 		/* Create the background */
-		screenbg = SDL_CreateRGBSurface(screen.memory.flags, screen.memory.w, screen.memory.h,
-			Int32(screen.memory.format.memory.BitsPerPixel),
-			screen.memory.format.memory.Rmask,
-			screen.memory.format.memory.Gmask,
-			screen.memory.format.memory.Bmask, 0);
+		screenbg = SDL_CreateRGBSurface((screen?.pointee.flags)!, (screen?.pointee.w)!, (screen?.pointee.h)!,
+			Int32((screen?.pointee.format.pointee.BitsPerPixel)!),
+			(screen?.pointee.format.pointee.Rmask)!,
+			(screen?.pointee.format.pointee.Gmask)!,
+			(screen?.pointee.format.pointee.Bmask)!, 0);
 		if screenbg == nil {
-			throw Errors.CouldNotCreateBackground(SDLError: String.fromCString(SDL_GetError())!)
+			throw Errors.couldNotCreateBackground(SDLError: String(cString: SDL_GetError()))
 		}
-		printSurface("Created background", surface: screenbg);
+		printSurface("Created background", surface: screenbg!);
 		
 		/* Create a dirty rectangle map of the screen */
 		dirtypitch = UInt16(LOWER_PREC(width))
 		dirtymaplen = UInt16(LOWER_PREC(height)) * dirtypitch;
-		dirtymap   = [UnsafeMutablePointer<SDL_Rect>](count: Int(dirtymaplen), repeatedValue: nil)
+		dirtymap   = [UnsafeMutablePointer<SDL_Rect>?](repeating: nil, count: Int(dirtymaplen))
 		
 		/* Create the update list */
-		updatelist = [SDL_Rect](count: FrameBuf.UPDATE_CHUNK, repeatedValue:SDL_Rect())
+		updatelist = [SDL_Rect](repeating: SDL_Rect(), count: FrameBuf.UPDATE_CHUNK)
 		clearDirtyList();
 		updatemax = FrameBuf.UPDATE_CHUNK;
 		
 		/* Create the blit list */
-		blitQ = [BlitQ](count: FrameBuf.QUEUE_CHUNK, repeatedValue: BlitQ())
+		blitQ = [BlitQ](repeating: BlitQ(), count: FrameBuf.QUEUE_CHUNK)
 		blitQlen = 0;
 		blitQmax = FrameBuf.QUEUE_CHUNK;
 		
 		/* Set the blit clipping rectangle */
 		clip.x = 0;
 		clip.y = 0;
-		clip.w = screen.memory.w;
-		clip.h = screen.memory.h;
+		clip.w = (screen?.pointee.w)!;
+		clip.h = (screen?.pointee.h)!;
 		
 		/* Copy the image colormap and set a black background */
 		setBackground(R: 0, G: 0, B: 0);
 		if colors != nil {
-			setPalette(colors);
+			setPalette(colors!);
 		}
 		
 		/* Figure out what putpixel routine to use */
-		switch (screen.memory.format.memory.BytesPerPixel) {
+		switch (screen!.pointee.format.pointee.BytesPerPixel) {
 		case 1:
 			putPixel = PutPixel1;
 			break;
@@ -205,7 +205,7 @@ class FrameBuf {
 			break;
 			
 		default:
-			throw Errors.InvalidPixelFormat(screen.memory.format.memory.BytesPerPixel)
+			throw Errors.invalidPixelFormat(screen!.pointee.format.pointee.BytesPerPixel)
 		}
 	}
 	
@@ -242,37 +242,39 @@ SDL_SetWindowGammaRamp(window, ramp, ramp, ramp);
 		
 	}
 	
-	func update(autoUpdate: Bool = false) {
+	func update(_ autoUpdate: Bool = false) {
 		
 	}
 	
-	func freeImage(title: UnsafeMutablePointer<SDL_Surface>) {
+	func freeImage(_ title: UnsafeMutablePointer<SDL_Surface>) {
 		
 	}
 	
 	func mapRGB(red R: UInt8, green G: UInt8, blue B: UInt8) -> UInt32 {
-		return SDL_MapRGB(screenfg.memory.format, R, G, B)
+		return SDL_MapRGB(screenfg!.pointee.format, R, G, B)
 	}
 	
-	func mapRGB(tuple tuple: (red: UInt8, green: UInt8, blue: UInt8)) -> UInt32 {
+	func mapRGB(tuple: (red: UInt8, green: UInt8, blue: UInt8)) -> UInt32 {
 		return mapRGB(red: tuple.red, green: tuple.green, blue: tuple.blue)
 	}
 
 	
-	func mapRGB(color: SDL_Color) -> UInt32 {
+	func mapRGB(_ color: SDL_Color) -> UInt32 {
 		return mapRGB(red: color.r, green: color.g, blue: color.b)
 	}
 
 	/// Load and convert an 8-bit image with the given mask
-	func loadImage(w w: UInt16, h: UInt16, pixels: UnsafeMutablePointer<UInt8>, mask: UnsafeMutablePointer<UInt8> = nil) -> UnsafeMutablePointer<SDL_Surface> {
+	func loadImage(w: UInt16, h: UInt16, pixels: UnsafeMutablePointer<UInt8>, mask: UnsafeMutablePointer<UInt8>? = nil) -> UnsafeMutablePointer<SDL_Surface>? {
 		return nil
 	}
 	
-	func screenDump(fileName: String, x: UInt16, y: UInt16, w: UInt16, h: UInt16) -> Bool {
+	@discardableResult
+	func screenDump(_ fileName: String, x: UInt16, y: UInt16, w: UInt16, h: UInt16) -> Bool {
 		return false
 	}
 	
-	func waitEvent(event: UnsafeMutablePointer<SDL_Event>) -> Int32 {
+	@discardableResult
+	func waitEvent(_ event: UnsafeMutablePointer<SDL_Event>) -> Int32 {
 		return SDL_WaitEvent(event)
 	}
 	
@@ -292,18 +294,18 @@ SDL_SetWindowGammaRamp(window, ramp, ramp, ramp);
 	}
 
 	
-	func drawPoint(x x: Int16, y: Int16, color: UInt32) {
+	func drawPoint(x: Int16, y: Int16, color: UInt32) {
 		var dirty = SDL_Rect()
 		
 		/* Adjust the bounds */
 		if x < 0 {return;}
-		if Int32(x) > screen.memory.w {return;}
+		if Int32(x) > (screen?.pointee.w)! {return;}
 		if y < 0 {return;}
-		if Int32(y) > screen.memory.h {return;}
+		if Int32(y) > (screen?.pointee.h)! {return;}
 		
 		performBlits();
 		LOCK_IF_NEEDED();
-		putPixel!(screen_loc: screen_mem.advancedBy(Int(y)*Int(screen.memory.pitch)+Int(x)*Int(screen.memory.format.memory.BytesPerPixel)), screen: screen, pixel: color)
+		putPixel!((screen_mem?.advanced(by: Int(y)*Int((screen?.pointee.pitch)!)+Int(x)*Int((screen?.pointee.format.pointee.BytesPerPixel)!)))!, screen!, color)
 		dirty.x = Int32(x)
 		dirty.y = Int32(y)
 		dirty.w = 1;
@@ -313,15 +315,15 @@ SDL_SetWindowGammaRamp(window, ramp, ramp, ramp);
 	
 	///Simple, slow, line drawing algorithm.  Improvement, anyone? :-)
 	
-	func drawLine(x1 x1: Int32, y1: Int32, x2: Int32, y2: Int32, color: UInt32) {
+	func drawLine(x1: Int32, y1: Int32, x2: Int32, y2: Int32, color: UInt32) {
 		drawLine(x1: Int16(x1), y1: Int16(y1), x2: Int16(x2), y2: Int16(y2), color: color)
 	}
 	
-	func drawLine(x1 x1: UInt16, y1: UInt16, x2: UInt16, y2: UInt16, color: UInt32) {
+	func drawLine(x1: UInt16, y1: UInt16, x2: UInt16, y2: UInt16, color: UInt32) {
 		drawLine(x1: Int16(x1), y1: Int16(y1), x2: Int16(x2), y2: Int16(y2), color: color)
 	}
 	
-	func drawLine(x1 x1: Int16, y1: Int16, x2: Int16, y2: Int16, color: UInt32) {
+	func drawLine(x1: Int16, y1: Int16, x2: Int16, y2: Int16, color: UInt32) {
 		
 	}
 	/*
@@ -423,11 +425,11 @@ AddDirtyRect(&dirty);
 }
 	
 	*/
-	func drawRect(x x: Int32, y: Int32, width: Int32, height: Int32, color: UInt32) {
+	func drawRect(x: Int32, y: Int32, width: Int32, height: Int32, color: UInt32) {
 		drawRect(x: Int16(x), y: Int16(y), width: Int16(width), height: Int16(height), color: color)
 	}
 	
-	func drawRect(x x: Int16, y: Int16, width: Int16, height: Int16, color: UInt32) {
+	func drawRect(x: Int16, y: Int16, width: Int16, height: Int16, color: UInt32) {
 		
 	}
 	/*
@@ -481,11 +483,11 @@ AddDirtyRect(&dirty);
 }
 	*/
 	
-	func fillRect(x x: Int32, y: Int32, w: Int32, h: Int32, color: UInt32) {
+	func fillRect(x: Int32, y: Int32, w: Int32, h: Int32, color: UInt32) {
 		fillRect(x: Int16(x), y: Int16(y), w: Int16(w), h: Int16(h), color: color)
 	}
 	
-	func fillRect(x x: Int16, y: Int16, w: Int16, h: Int16, color: UInt32) {
+	func fillRect(x: Int16, y: Int16, w: Int16, h: Int16, color: UInt32) {
 		
 	}
 	
@@ -526,47 +528,47 @@ AddDirtyRect(&dirty);
 }*/
 	
 	/* Setup routines */
-	func setPalette(colors: UnsafePointer<SDL_Color>) {
+	func setPalette(_ colors: UnsafePointer<SDL_Color>) {
 		//int i;
 		
-		if screenfg.memory.format.memory.palette != nil {
+		if screenfg?.pointee.format.pointee.palette != nil {
 			let palette = SDL_AllocPalette(256);
 			SDL_SetPaletteColors(palette, colors, 0, 256);
 			SDL_SetSurfacePalette(screenfg, palette);
-			SDL_SetSurfacePalette(screenbg, screenfg.memory.format.memory.palette);
+			SDL_SetSurfacePalette(screenbg, screenfg?.pointee.format.pointee.palette);
 			SDL_FreePalette(palette);
 		}
 		for i in 0..<256 {
-			image_map[i] = SDL_MapRGB(screenfg.memory.format,
+			image_map[i] = SDL_MapRGB(screenfg?.pointee.format,
 				colors[i].r, colors[i].g, colors[i].b);
 		}
 		setBackground(R: BGrgb.0, G: BGrgb.1, B: BGrgb.2);
 	}
 	
-	func setBackground(R R: UInt8, G: UInt8, B: UInt8) {
+	func setBackground(R: UInt8, G: UInt8, B: UInt8) {
 		BGrgb.0 = R;
 		BGrgb.1 = G;
 		BGrgb.2 = B;
-		BGcolor = SDL_MapRGB(screenfg.memory.format, R, G, B);
+		BGcolor = SDL_MapRGB(screenfg?.pointee.format, R, G, B);
 		focusBG();
 		clear();
 		focusFG();
 	}
 
-	func clear(x x: Int16, y: Int16, w w1: UInt16, h h1: UInt16,
-		do_clip: clipval = .NOCLIP) {
+	func clear(x: Int16, y: Int16, w w1: UInt16, h h1: UInt16,
+		do_clip: clipval = .noclip) {
 			var w = Int(w1)
 			var h = Int32(h1)
 			/* If we're focused on the foreground, copy from background */
 			if ( screen == screenfg ) {
-				queueBlit(dstx: Int32(x), dsty: Int32(y), src: screenbg, srcx: Int32(x), srcy: Int32(y), w: Int32(w), h: Int32(h), do_clip: do_clip);
+				queueBlit(dstx: Int32(x), dsty: Int32(y), src: screenbg!, srcx: Int32(x), srcy: Int32(y), w: Int32(w), h: Int32(h), do_clip: do_clip);
 			} else {
-				var screen_loc: UnsafeMutablePointer<UInt8> = nil
+				var screen_loc: UnsafeMutablePointer<UInt8>? = nil
 				
 				LOCK_IF_NEEDED();
-				let screen_bpp = screen.memory.format.memory.BytesPerPixel;
-				screen_loc = screen_mem.advancedBy(Int(y)*Int(screen.memory.pitch) + Int(x)*Int(screen_bpp))
-				w *= Int(screen_bpp)
+				let screen_bpp = screen?.pointee.format.pointee.BytesPerPixel;
+				screen_loc = screen_mem?.advanced(by: Int(y)*Int((screen?.pointee.pitch)!) + Int(x)*Int(screen_bpp!))
+				w *= Int(screen_bpp!)
 				while h != 0 {
 					h -= 1
 					/* Note that BGcolor is a 32 bit quantity while memset()
@@ -575,13 +577,13 @@ AddDirtyRect(&dirty);
 					HiColor or TrueColor display.
 					*/
 					memset(screen_loc, Int32(bitPattern: BGcolor), w);
-					screen_loc += Int(screen.memory.pitch)
+					screen_loc = screen_loc?.advanced(by: Int((screen?.pointee.pitch)!))
 				}
 			}
 	}
 	
 	func clear() {
-		clear(x: 0, y: 0, w: UInt16(screen.memory.w), h: UInt16(screen.memory.h))
+		clear(x: 0, y: 0, w: UInt16((screen?.pointee.w)!), h: UInt16((screen?.pointee.h)!))
 	}
 
 	func queueBlit(destinationPosition dstPos: (x: Int32, y: Int32),
@@ -596,7 +598,7 @@ AddDirtyRect(&dirty);
 			var dsty = dstPos.y
 			
 			/* Perform clipping */
-			if do_clip == .DOCLIP {
+			if do_clip == .doclip {
 				diff = clip.x - dstPos.x;
 				if ( diff > 0 ) {
 					w -= diff;
@@ -641,7 +643,7 @@ AddDirtyRect(&dirty);
 			}
 			
 			/* Add the blit to the queue */
-			src.memory.refcount += 1;
+			src.pointee.refcount += 1;
 			blitQ[blitQlen].src = src;
 			blitQ[blitQlen].srcrect.x = srcx;
 			blitQ[blitQlen].srcrect.y = srcy;
@@ -655,44 +657,44 @@ AddDirtyRect(&dirty);
 			blitQlen += 1;
 	}
 
-	func queueBlit(dstx dstx: Int32, dsty: Int32, src: UnsafeMutablePointer<SDL_Surface>,
+	func queueBlit(dstx: Int32, dsty: Int32, src: UnsafeMutablePointer<SDL_Surface>,
 		srcx: Int32, srcy: Int32, w: Int32, h: Int32, do_clip: clipval) {
 		queueBlit(destinationPosition: (x: dstx, y: dsty), source: src, sourcePosition: (srcx, srcy), size: (w, h), clip: do_clip)
 	}
 	
-	func queueBlit(x x: Int32, y: Int32, src: UnsafeMutablePointer<SDL_Surface>, do_clip: clipval = .DOCLIP) {
-		queueBlit(dstx: x, dsty: y, src: src, srcx: 0, srcy: 0, w: src.memory.w, h: src.memory.h, do_clip: do_clip);
+	func queueBlit(x: Int32, y: Int32, src: UnsafeMutablePointer<SDL_Surface>, do_clip: clipval = .doclip) {
+		queueBlit(dstx: x, dsty: y, src: src, srcx: 0, srcy: 0, w: src.pointee.w, h: src.pointee.h, do_clip: do_clip);
 	}
 
-	private func ADJUSTX(inout X: Int32) {
+	fileprivate func ADJUSTX(_ X: inout Int32) {
 		if X < 0 {
 			X = 0;
-		} else if X > screen.memory.w {
-			X = screen.memory.w
+		} else if X > (screen?.pointee.w)! {
+			X = (screen?.pointee.w)!
 		}
 	}
 	
-	private func ADJUSTY(inout Y: Int32) {
+	fileprivate func ADJUSTY(_ Y: inout Int32) {
 		if Y < 0 {
 			Y = 0;
-		} else if Y > screen.memory.h {
-			Y = screen.memory.h
+		} else if Y > (screen?.pointee.h)! {
+			Y = (screen?.pointee.h)!
 		}
 	}
 
 	
-	private(set) var error: String? = nil
+	fileprivate(set) var error: String? = nil
 	
 	//MARK: Blit queue list
 	static let QUEUE_CHUNK = 16
-	private struct BlitQ {
-		var src: UnsafeMutablePointer<SDL_Surface> = nil
+	fileprivate struct BlitQ {
+		var src: UnsafeMutablePointer<SDL_Surface>? = nil
 		var srcrect: SDL_Rect = SDL_Rect()
 		var dstrect: SDL_Rect = SDL_Rect()
 	};
-	private var blitQ = [BlitQ]()
-	private var blitQlen = 0
-	private var blitQmax = 0
+	fileprivate var blitQ = [BlitQ]()
+	fileprivate var blitQlen = 0
+	fileprivate var blitQmax = 0
 	
 	//MARK: Rectangle update list
 	static let UPDATE_CHUNK = QUEUE_CHUNK*2
@@ -701,27 +703,27 @@ This is a little bit smart -- if the center nearly overlaps the center
 of another rectangle update, expand the existing rectangle to include
 the new area, instead adding another update rectangle.
 */
-	private func addDirtyRect(rect: UnsafeMutablePointer<SDL_Rect>) {
+	fileprivate func addDirtyRect(_ rect: UnsafeMutablePointer<SDL_Rect>) {
 		
 	}
-	private var updatelen = 0
-	private var updatemax = 0
-	private var updatelist = [SDL_Rect]()
-	private var dirtypitch: UInt16 = 0
-	private var dirtymaplen: UInt16 = 0
-	private var dirtymap = [UnsafeMutablePointer<SDL_Rect>]()
-	private func clearDirtyList() {
+	fileprivate var updatelen = 0
+	fileprivate var updatemax = 0
+	fileprivate var updatelist = [SDL_Rect]()
+	fileprivate var dirtypitch: UInt16 = 0
+	fileprivate var dirtymaplen: UInt16 = 0
+	fileprivate var dirtymap = [UnsafeMutablePointer<SDL_Rect>?]()
+	fileprivate func clearDirtyList() {
 		updatelen = 0;
 		for i in 0..<dirtymap.count {
 			dirtymap[i] = nil
 		}
 	}
 	
-	private var BGrgb: (red: UInt8, green: UInt8, blue: UInt8) = (0, 0, 0)
-	private var BGcolor: UInt32 = 0
-	private var image_map = [UInt32](count: 256, repeatedValue: 0)
+	fileprivate var BGrgb: (red: UInt8, green: UInt8, blue: UInt8) = (0, 0, 0)
+	fileprivate var BGcolor: UInt32 = 0
+	fileprivate var image_map = [UInt32](repeating: 0, count: 256)
 	
-	func grabArea(x x: UInt16, y: UInt16, w: UInt16, h: UInt16) -> UnsafeMutablePointer<SDL_Surface> {
+	func grabArea(x: UInt16, y: UInt16, w: UInt16, h: UInt16) -> UnsafeMutablePointer<SDL_Surface>? {
 		return nil
 	}
 }

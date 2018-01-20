@@ -66,7 +66,7 @@ func logicUsage() {
 	print("\t-deathmatch [N]\t\t# Play deathmatch to N frags (default = 8)")
 }
 
-func logicParseArgs(inout argvptr: UnsafeMutablePointer<UnsafeMutablePointer<CChar>>, inout _ argcptr: Int32) -> Bool {
+func logicParseArgs(_ argvptr: inout UnsafeMutablePointer<UnsafeMutablePointer<CChar>?>, _ argcptr: inout Int32) -> Bool {
 	return false
 }
 

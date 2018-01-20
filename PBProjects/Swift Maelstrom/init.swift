@@ -23,23 +23,23 @@ private(set) var gVelocityTable = [MPoint]()
 private(set) var gShotOrigins = [MPoint]()
 private(set) var gThrustOrigins = [MPoint]()
 
-var gTheStars = [Star](count:MAX_STARS, repeatedValue: Star())
-var gStarColors = [UInt32](count: 20, repeatedValue: 0)
+var gTheStars = [Star](repeating: Star(), count: MAX_STARS)
+var gStarColors = [UInt32](repeating: 0, count: 20)
 
 
 /* -- The prize CICN's */
 
-var gAutoFireIcon: UnsafeMutablePointer<SDL_Surface> = nil
-var gAirBrakesIcon: UnsafeMutablePointer<SDL_Surface> = nil
-var gMult2Icon: UnsafeMutablePointer<SDL_Surface> = nil
-var gMult3Icon: UnsafeMutablePointer<SDL_Surface> = nil
-var gMult4Icon: UnsafeMutablePointer<SDL_Surface> = nil
-var gMult5Icon: UnsafeMutablePointer<SDL_Surface> = nil
-var gLuckOfTheIrishIcon: UnsafeMutablePointer<SDL_Surface> = nil
-var gLongFireIcon: UnsafeMutablePointer<SDL_Surface> = nil
-var gTripleFireIcon: UnsafeMutablePointer<SDL_Surface> = nil
-var gKeyIcon: UnsafeMutablePointer<SDL_Surface> = nil
-var gShieldIcon: UnsafeMutablePointer<SDL_Surface> = nil
+var gAutoFireIcon: UnsafeMutablePointer<SDL_Surface>? = nil
+var gAirBrakesIcon: UnsafeMutablePointer<SDL_Surface>? = nil
+var gMult2Icon: UnsafeMutablePointer<SDL_Surface>? = nil
+var gMult3Icon: UnsafeMutablePointer<SDL_Surface>? = nil
+var gMult4Icon: UnsafeMutablePointer<SDL_Surface>? = nil
+var gMult5Icon: UnsafeMutablePointer<SDL_Surface>? = nil
+var gLuckOfTheIrishIcon: UnsafeMutablePointer<SDL_Surface>? = nil
+var gLongFireIcon: UnsafeMutablePointer<SDL_Surface>? = nil
+var gTripleFireIcon: UnsafeMutablePointer<SDL_Surface>? = nil
+var gKeyIcon: UnsafeMutablePointer<SDL_Surface>? = nil
+var gShieldIcon: UnsafeMutablePointer<SDL_Surface>? = nil
 
 var gRock1R: Blit!
 var gRock2R: Blit!
@@ -80,12 +80,12 @@ private func doIntroScreen() {
 	
 }
 
-func drawLoadBar(aVar: Int) {
+func drawLoadBar(_ aVar: Int) {
 	
 }
 
 ///Load in the blits
-private func loadBlits(spriteres: MacResource) throws {
+private func loadBlits(_ spriteres: MacResource) throws {
 	
 	drawLoadBar(1);
 	
@@ -305,8 +305,8 @@ private func initSprites() -> Bool {
 
 ///Build the ship's velocity table
 private func initShots() {
-	gShotOrigins = [MPoint](count: Int(SHIP_FRAMES), repeatedValue: MPoint())
-	gThrustOrigins = [MPoint](count: Int(SHIP_FRAMES), repeatedValue: MPoint())
+	gShotOrigins = [MPoint](repeating: MPoint(), count: Int(SHIP_FRAMES))
+	gThrustOrigins = [MPoint](repeating: MPoint(), count: Int(SHIP_FRAMES))
 	let xx: Int32 = 30;
 	
 	/* Load the shot images */
@@ -610,7 +610,7 @@ private func initShots() {
 }
 
 private func buildVelocityTable() {
-	gVelocityTable = [MPoint](count: Int(SHIP_FRAMES), repeatedValue: MPoint())
+	gVelocityTable = [MPoint](repeating: MPoint(), count: Int(SHIP_FRAMES))
 	#if COMPUTE_VELTABLE || !MULTIPLAYER_SUPPORT
 		/* Calculate the appropriate values */
 		
@@ -619,7 +619,7 @@ private func buildVelocityTable() {
 		
 		for index in 0..<Int(SHIP_FRAMES) {
 			ss = Double(index)
-			ss = -(((ss * factor) * M_PI) / 180.0)
+			ss = -(((ss * factor) * .pi) / 180.0)
 			gVelocityTable[index].h = Int32(sin(ss) * -8.0)
 			gVelocityTable[index].v = Int32(cos(ss) * -8.0)
 			//let a = MPoint(h: Int32(sin(ss) * -8.0), v: Int32(cos(ss) * -8.0))
@@ -734,11 +734,15 @@ private func buildVelocityTable() {
 	#endif
 }
 
+private func exit(_ stat: Int32) {
+	Darwin.exit(stat)
+}
+
 ///Perform some initializations and report failure if we choke
-func doInitializations(video_flags: SDL_WindowFlags) -> Bool {
+func doInitializations(_ video_flags: SDL_WindowFlags) -> Bool {
 	let library = LibPath()
 	//int i;
-	var icon: UnsafeMutablePointer<SDL_Surface>
+	var icon: UnsafeMutablePointer<SDL_Surface>?
 	
 	/* Make sure we clean up properly at exit */
 	var init_flags = (SDL_INIT_VIDEO|SDL_INIT_AUDIO);
@@ -748,7 +752,7 @@ func doInitializations(video_flags: SDL_WindowFlags) -> Bool {
 	if SDL_Init(UInt32(init_flags)) < 0 {
 		init_flags &= ~SDL_INIT_JOYSTICK;
 		if SDL_Init(UInt32(init_flags)) < 0 {
-			error("Couldn't initialize SDL: \(String.fromCString(SDL_GetError())!)");
+			error("Couldn't initialize SDL: \(String(cString: SDL_GetError()))");
 			return false;
 		}
 	}
@@ -769,7 +773,7 @@ func doInitializations(video_flags: SDL_WindowFlags) -> Bool {
 	/* Initialize the first joystick */
 	if ( SDL_NumJoysticks() > 0 ) {
 		if ( SDL_JoystickOpen(0) == nil ) {
-			print("Warning: Couldn't open joystick '\(String.fromCString(SDL_JoystickName(nil))!)' : \(String.fromCString(SDL_GetError())!)")
+			print("Warning: Couldn't open joystick '\(String(cString: SDL_JoystickName(nil)))' : \(String(cString: SDL_GetError()))")
 		}
 	}
 	//#endif
@@ -791,15 +795,15 @@ func doInitializations(video_flags: SDL_WindowFlags) -> Bool {
 	}
 	
 	/* Load the Maelstrom icon */
-	icon = SDL_LoadBMP(library.path("icon.bmp")!.fileSystemRepresentation);
+	icon = SDL_LoadBMP((library.path("icon.bmp")! as NSURL).fileSystemRepresentation);
 	if icon == nil {
-		print("Fatal: Couldn't load icon: \(String.fromCString(SDL_GetError())!)");
+		print("Fatal: Couldn't load icon: \(String(cString: SDL_GetError()))");
 		return false;
 	}
 	
 	/* Initialize the screen */
 	do {
-		screen = try FrameBuf(width: Int32(SCREEN_WIDTH), height: Int32(SCREEN_HEIGHT), videoFlags: video_flags.rawValue, colors: colorsAtGamma(Int32(gGammaCorrect)), icon: icon)
+		screen = try FrameBuf(width: Int32(SCREEN_WIDTH), height: Int32(SCREEN_HEIGHT), videoFlags: video_flags.rawValue, colors: colorsAtGamma(Int32(gGammaCorrect)), icon: icon!)
 	} catch {
 		fatalError("\(error)")
 	}
@@ -816,10 +820,10 @@ func doInitializations(video_flags: SDL_WindowFlags) -> Bool {
 	gBottom = Int32(gScrnRect.bottom - gScrnRect.top)
 	gRight = Int32(gScrnRect.right - gScrnRect.left)
 	
-	gClipRect.x = gLeft+SPRITES_WIDTH;
-	gClipRect.y = gTop+SPRITES_WIDTH;
-	gClipRect.w = gRight-gLeft-2*SPRITES_WIDTH;
-	gClipRect.h = gBottom-gTop-2*SPRITES_WIDTH+STATUS_HEIGHT;
+	gClipRect.x = gLeft.advanced(by: SPRITES_WIDTH)
+	gClipRect.y = gTop.advanced(by: SPRITES_WIDTH);
+	gClipRect.w = (gRight-gLeft).advanced(by: -2*SPRITES_WIDTH);
+	gClipRect.h = (gBottom-gTop).advanced(by: -2*SPRITES_WIDTH+STATUS_HEIGHT)
 	screen.clipBlit(gClipRect);
 	
 	/* Do the Ambrosia Splash screen */
@@ -838,7 +842,7 @@ func doInitializations(video_flags: SDL_WindowFlags) -> Bool {
 	/* -- Throw up our intro screen */
 	screen.fade();
 	doIntroScreen();
-	sound.playSound(.PrizeAppears, priority: 1);
+	sound.playSound(.prizeAppears, priority: 1);
 	screen.fade();
 	
 	/* -- Load in our sprites and other needed resources */
@@ -876,7 +880,7 @@ func doInitializations(video_flags: SDL_WindowFlags) -> Bool {
 }
 
 /// Set a star
-func setStar(which: Int) {
+func setStar(_ which: Int) {
 	gTheStars[which].xCoord = Int16(UInt16(gClipRect.x) + FastRandom(UInt16(gClipRect.w)))
 	gTheStars[which].yCoord = Int16(UInt16(gClipRect.y) + FastRandom(UInt16(gClipRect.h)))
 	gTheStars[which].color = gStarColors[Int(FastRandom(20))];

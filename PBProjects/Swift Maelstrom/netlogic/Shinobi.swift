@@ -14,7 +14,7 @@ class Shinobi: MaelObject {
 		points = ENEMY_PTS
 		hitPoints = ENEMY_HITS
 		
-		sound.playSound(.EnemyAppears, priority: 4)
+		sound.playSound(.enemyAppears, priority: 4)
 	}
 	/*
 Shinobi(int X, int Y, Blit *blit, int ShotOdds) :
@@ -203,11 +203,11 @@ Object::UnBlitSprite();
 }
 */
 	override func hitSound() {
-		sound.playSound(.Bonk, priority: 3)
+		sound.playSound(.bonk, priority: 3)
 	}
 	
 	override func explodeSound() {
-		sound.playSound(.Explosion, priority: 3)
+		sound.playSound(.explosion, priority: 3)
 	}
 /*
 private:

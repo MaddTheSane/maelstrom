@@ -24,21 +24,21 @@ class SDLMain : NSObject, NSApplicationDelegate {
 	@IBOutlet weak var window: NSWindow!
 	@IBOutlet weak var worldScores: NSButton!
 	
-	private var serverStarted = false
+	fileprivate var serverStarted = false
 	
-	@IBAction func cancel(sender: AnyObject?) {
+	@IBAction func cancel(_ sender: AnyObject?) {
 		NSApp.abortModal()
 		window.close()
 		exit(0);
 	}
 	
-	@IBAction func quit(sender: AnyObject?) {
+	@IBAction func quit(_ sender: AnyObject?) {
 		var event = SDL_Event()
 		event.type = SDL_QUIT.rawValue;
 		SDL_PushEvent(&event);
 	}
 	
-	@IBAction func startGame(sender: AnyObject!) {
+	@IBAction func startGame(_ sender: AnyObject!) {
 		// extract settings, add them to arguments array
 		if fullscreen.integerValue == NSOnState {
 			ADD_ARG("-fullscreen");
@@ -83,12 +83,12 @@ class SDLMain : NSObject, NSApplicationDelegate {
 		window.close()
 	}
 	
-	@IBAction func startServer(sender: NSButton) {
+	@IBAction func startServer(_ sender: NSButton) {
 		if !serverStarted {
 			var newPid: pid_t = 0
 			//var args = [UnsafePointer<Int8>](count: 2, repeatedValue: nil)
-			let servLoc = NSBundle.mainBundle().URLForResource("Maelstrom_Server", withExtension: nil)!
-			posix_spawn(&newPid, servLoc.fileSystemRepresentation, nil, nil, nil, nil);
+			let servLoc = Bundle.main.url(forResource: "Maelstrom_Server", withExtension: nil)!
+			posix_spawn(&newPid, (servLoc as NSURL).fileSystemRepresentation, nil, nil, nil, nil);
 			if ( newPid == 0 ) {
 			} else {
 				pid = newPid;
@@ -106,20 +106,20 @@ class SDLMain : NSObject, NSApplicationDelegate {
 		}
 	}
 	
-	@IBAction func toggleFullscreen(sender: AnyObject!) {
+	@IBAction func toggleFullscreen(_ sender: AnyObject!) {
 		
 	}
 	
-	func applicationDidFinishLaunching(notification: NSNotification) {
+	func applicationDidFinishLaunching(_ notification: Notification) {
 		//#if DEBUG
 		//	assert(chdir(NSBundle.mainBundle().bundleURL.URLByDeletingLastPathComponent!.fileSystemRepresentation) == 0)
 		//#else
-			assert(chdir(NSBundle.mainBundle().resourceURL!.fileSystemRepresentation) == 0)
+			assert(chdir((Bundle.main.resourceURL! as NSURL).fileSystemRepresentation) == 0)
 		//#endif
-		NSBundle.mainBundle().executablePath
+		//Bundle.main.executablePath
 		//var parentdir = [Int8](count: Int(MAXPATHLEN), repeatedValue: 0)
 		//strcpy(&parentdir, gArgv[0])
-		gArgv[0] = strdup(NSBundle.mainBundle().resourceURL!.URLByAppendingPathComponent("Maelstrom.app")!.fileSystemRepresentation)
+		gArgv[0] = strdup((Bundle.main.resourceURL!.appendingPathComponent("Maelstrom.app") as NSURL).fileSystemRepresentation)
 		gArgc = 1
 		
 		atexit_b { () -> Void in
@@ -128,9 +128,9 @@ class SDLMain : NSObject, NSApplicationDelegate {
 			}
 		}
 		
-		NSApp.runModalForWindow(window)
+		NSApp.runModal(for: window)
 		
-		SDL_main(gArgc, &gArgv)
+		Swift_Maelstrom.SDL_main(gArgc, &gArgv)
 		exit(0)
 	}
 }

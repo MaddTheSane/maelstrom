@@ -298,7 +298,7 @@ func makeHoming() {
 }	/* -- MakeHoming */
 
 /// Create a large rock
-func makeLargeRock(x x: Int32, y: Int32) {
+func makeLargeRock(x: Int32, y: Int32) {
 /*
 	int	newsprite, xVel, yVel, phaseFreq, rx;
 	
@@ -327,7 +327,7 @@ func makeLargeRock(x x: Int32, y: Int32) {
 }	/* -- MakeLargeRock */
 
 /// Create a steel asteroid
-func makeSteelRoid(x x: Int32, y: Int32) {
+func makeSteelRoid(x: Int32, y: Int32) {
 /*
 	int	newsprite, xVel, yVel, rx;
 	

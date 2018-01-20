@@ -9,7 +9,7 @@
 import Foundation
 import SDL2
 
-private var scoreLocation: NSURL!
+private var scoreLocation: URL!
 private let NUM_SCORES			= 10		// Do not change this!
 
 private let CLR_DIALOG_WIDTH: Int32 =	281
@@ -23,7 +23,7 @@ let hScores = HighScores()
 ///
 /// - parameter mirror: The `MirrorType` to get the reflected values from.
 /// - parameter lastObj: Best used for a fixed-size C array that expects to be NULL-terminated, like a C string. If passed `nil`, no object will be put on the end of the array. Default is `nil`.
-private func getArrayFromMirror<X>(mirror: Mirror, appendLastObject lastObj: X? = nil) -> [X] {
+private func getArrayFromMirror<X>(_ mirror: Mirror, appendLastObject lastObj: X? = nil) -> [X] {
 	var anArray = [X]()
 	for val in mirror.children {
 		let aChar = val.value as! X
@@ -35,8 +35,8 @@ private func getArrayFromMirror<X>(mirror: Mirror, appendLastObject lastObj: X? 
 	return anArray
 }
 
-enum ReflectError: ErrorType {
-	case UnexpectedType(Any.Type)
+enum ReflectError: Error {
+	case unexpectedType(Any.Type)
 }
 
 private func arrayFromObject<X>(reflecting obj: Any, appendLastObject lastObj: X? = nil) throws -> [X] {
@@ -44,7 +44,7 @@ private func arrayFromObject<X>(reflecting obj: Any, appendLastObject lastObj: X
 	let mirror = Mirror(reflecting: obj)
 	for val in mirror.children {
 		guard let aChar = val.value as? X else {
-			throw ReflectError.UnexpectedType(val.value.dynamicType)
+			throw ReflectError.unexpectedType(type(of: (val.value) as AnyObject))
 		}
 		anArray.append(aChar)
 	}
@@ -71,7 +71,7 @@ func <(lhs: HighScores.Score, rhs: HighScores.Score) -> Bool {
 
 final class HighScores {
 	static var netScores = false
-	private var scoreList = [Score](count: NUM_SCORES, repeatedValue: Score())
+	fileprivate var scoreList = [Score](repeating: Score(), count: NUM_SCORES)
 	
 	/** The high scores structure */
 	struct Score: Comparable, Hashable, CustomStringConvertible {
@@ -92,7 +92,7 @@ final class HighScores {
 	}
 	
 	func clearScores() {
-		scoreList = [Score](count: NUM_SCORES, repeatedValue: Score())
+		scoreList = [Score](repeating: Score(), count: NUM_SCORES)
 	}
 	
 	func printHighScores() {
@@ -104,17 +104,17 @@ final class HighScores {
 		var saveScoreArray = [[String: AnyObject]]()
 		for score in scoreList {
 			var scoreDict = [String: NSObject]()
-			scoreDict["name"] = score.name
-			scoreDict["wave"] = Int(score.wave)
-			scoreDict["score"] = Int(score.score)
+			scoreDict["name"] = score.name as NSObject
+			scoreDict["wave"] = Int(score.wave) as NSObject
+			scoreDict["score"] = Int(score.score) as NSObject
 
 			saveScoreArray.append(scoreDict)
 		}
 		let mutData = NSMutableData()
-		let archiver = NSKeyedArchiver(forWritingWithMutableData: mutData)
-		archiver.encodeObject(saveScoreArray as NSArray, forKey: "Scores")
+		let archiver = NSKeyedArchiver(forWritingWith: mutData)
+		archiver.encode(saveScoreArray as NSArray, forKey: "Scores")
 		archiver.finishEncoding()
-		mutData.writeToURL(scoreLocation, atomically: true)
+		mutData.write(to: scoreLocation, atomically: true)
 	}
 	
 	func beginCustomLevel() -> Int32 {
@@ -124,7 +124,6 @@ final class HighScores {
 	func zapHighScores() -> Bool {
 		let x: Int32
 		let y: Int32
-		var splash: UnsafeMutablePointer<SDL_Surface> = nil
 		var doClear = false
 		
 		/* Set up all the components of the dialog box */
@@ -139,8 +138,7 @@ final class HighScores {
 			print("Can't use Chicago font!\n");
 			return false;
 		}
-		splash = loadTitle(screen, title_id: 102)
-		if splash == nil {
+		guard let splash = loadTitle(screen, title_id: 102) else {
 			print("Can't load score zapping splash!");
 			return false;
 		}
@@ -181,19 +179,19 @@ final class HighScores {
 
 	func loadScores() {
 		//We aren't going to write to our own files within our bundle: It's a bad idea, and would ruin code signing
-		let fm = NSFileManager.defaultManager()
+		let fm = FileManager.default
 		do {
-			var ourDir = try fm.URLForDirectory(.ApplicationSupportDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
+			var ourDir = try fm.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
 			for pathComp in ["Maelstrom", "Scores"] {
-				ourDir = ourDir.URLByAppendingPathComponent(pathComp)!
+				ourDir = ourDir.appendingPathComponent(pathComp)
 			}
 			scoreLocation = ourDir
 			
-			guard ourDir.checkResourceIsReachableAndReturnError(nil) else {
+			guard (ourDir as NSURL).checkResourceIsReachableAndReturnError(nil) else {
 				//Create the app support directory, just in case
 				
 				do {
-					try fm.createDirectoryAtURL(scoreLocation.URLByDeletingLastPathComponent!, withIntermediateDirectories: true, attributes: nil)
+					try fm.createDirectory(at: scoreLocation.deletingLastPathComponent(), withIntermediateDirectories: true, attributes: nil)
 				} catch _ {}
 				
 				//load old scores
@@ -204,7 +202,7 @@ final class HighScores {
 					saveScores()
 				}
 				
-				guard let oldScorePath = NSBundle.mainBundle().URLForResource(MAELSTROM_SCORES, withExtension: nil) else {
+				guard let oldScorePath = Bundle.main.url(forResource: MAELSTROM_SCORES, withExtension: nil) else {
 					//huh, okay...
 					
 					clearScores()
@@ -212,8 +210,7 @@ final class HighScores {
 					return
 				}
 				
-				let scores_src = SDL_RWFromFile(oldScorePath.fileSystemRepresentation, "rb")
-				guard scores_src != nil else {
+				guard let scores_src = SDL_RWFromFile((oldScorePath as NSURL).fileSystemRepresentation, "rb") else {
 					//huh, okay...
 					
 					clearScores()
@@ -225,9 +222,9 @@ final class HighScores {
 					SDL_RWclose(scores_src);
 				}
 				
-				var oldScores = [OldScores](count: NUM_SCORES, repeatedValue: OldScores())
+				var oldScores = [OldScores](repeating: OldScores(), count: NUM_SCORES)
 				for i in 0..<NUM_SCORES {
-					SDL_RWread(scores_src, &oldScores[i].name, sizeofValue(oldScores[i].name), 1)
+					SDL_RWread(scores_src, &oldScores[i].name, MemoryLayout.size(ofValue: oldScores[i].name), 1)
 					oldScores[i].wave = SDL_ReadBE32(scores_src)
 					oldScores[i].score = SDL_ReadBE32(scores_src)
 				}
@@ -240,15 +237,15 @@ final class HighScores {
 			
 			//Load new scores
 			do {
-				let fileData = try NSData(contentsOfURL: scoreLocation, options: [])
-				let keyedUnarchiver = NSKeyedUnarchiver(forReadingWithData: fileData)
-				guard let preScores = keyedUnarchiver.decodeObjectForKey("Scores") as? [[String: NSObject]] else {
+				let fileData = try Data(contentsOf: scoreLocation, options: [])
+				let keyedUnarchiver = NSKeyedUnarchiver(forReadingWith: fileData)
+				guard let preScores = keyedUnarchiver.decodeObject(forKey: "Scores") as? [[String: NSObject]] else {
 					saveScores()
 					return
 				}
 				
 				assert(preScores.count == NUM_SCORES)
-				for (i,aDict) in preScores.enumerate() {
+				for (i,aDict) in preScores.enumerated() {
 					var aScore = Score()
 					aScore.name = aDict["name"] as! String
 					aScore.wave = UInt32(aDict["wave"] as! Int)
@@ -267,17 +264,17 @@ final class HighScores {
 		}
 	}
 	
-	private func loadOldScores(oldScores: [OldScores]) {
-		for (i, oldscore) in oldScores.enumerate() {
+	fileprivate func loadOldScores(_ oldScores: [OldScores]) {
+		for (i, oldscore) in oldScores.enumerated() {
 			let cChar: [Int8] = try! arrayFromObject(reflecting: oldscore.name, appendLastObject: 0)
-			let aName = String.fromCString(cChar)!
+			let aName = String(cString: cChar)
 			let newScore = Score(name: aName, wave: oldscore.wave, score: oldscore.score)
 			scoreList[i] = newScore
 		}
 		sortScores()
 	}
 	
-	private func sortScores() {
-		scoreList.sortInPlace(>)
+	fileprivate func sortScores() {
+		scoreList.sort(by: >)
 	}
 }

@@ -53,70 +53,74 @@ extension UInt16: ByteSwappable { }
 extension Int32: ByteSwappable { }
 extension UInt32: ByteSwappable { }
 
-private func sndCopy<X where X: ByteSwappable>(inout V: X, inout _ D: UnsafeMutablePointer<UInt8>) {
-	V = UnsafeMutablePointer<X>(D).memory
-	D += sizeof(X)
+private func sndCopy<X>(_ V: inout X, _ D: inout UnsafeMutablePointer<UInt8>) where X: ByteSwappable {
+	V = D.withMemoryRebound(to: X.self, capacity: 1) { (aPtr) -> X in
+		return aPtr.pointee
+	}
+	D = D.advanced(by: MemoryLayout<X>.size)
 	V = V.bigEndian
 }
 
-private func sndCopy<X where X: ByteSwappable>(inout V: X, inout _ D: UnsafePointer<UInt8>) {
-	V = UnsafeMutablePointer<X>(D).memory
-	D += sizeof(X)
+private func sndCopy<X>(_ V: inout X, _ D: inout UnsafePointer<UInt8>) where X: ByteSwappable {
+	V = D.withMemoryRebound(to: X.self, capacity: 1) { (aPtr) -> X in
+		return aPtr.pointee
+	}
+	D = D.advanced(by: MemoryLayout<X>.size)
 	V = V.bigEndian
 }
 
 
 final class Wave {
 	///The SDL-ready audio specification
-	private(set) var spec = SDL_AudioSpec()
-	private var soundData: UnsafeMutablePointer<UInt8> = nil
-	private var soundDataLen: UInt32 = 0
+	fileprivate(set) var spec = SDL_AudioSpec()
+	fileprivate var soundData: UnsafeMutablePointer<UInt8>? = nil
+	fileprivate var soundDataLen: UInt32 = 0
 	
 	///Current position of the WAVE file
-	private var soundptr: UnsafeMutablePointer<UInt8> = nil
-	private var soundlen: Int32 = 0
+	fileprivate var soundptr: UnsafeMutablePointer<UInt8>? = nil
+	fileprivate var soundlen: Int32 = 0
 	
-	enum Errors: ErrorType {
-		case SDLError(String)
-		case MultiTypeSound
-		case UnknownSoundFormat(UInt16)
-		case UnknownSoundCommand(UInt16)
-		case OffsetTooLarge
-		case NonStandardSoundEncoding(UInt8)
-		case TruncatedSoundResource
-		case NotSampledSound
-		case SamplesDoNotFollowHeader
-		case MultiCommandNotSupported
+	enum Errors: Error {
+		case sdlError(String)
+		case multiTypeSound
+		case unknownSoundFormat(UInt16)
+		case unknownSoundCommand(UInt16)
+		case offsetTooLarge
+		case nonStandardSoundEncoding(UInt8)
+		case truncatedSoundResource
+		case notSampledSound
+		case samplesDoNotFollowHeader
+		case multiCommandNotSupported
 	}
 	
 	init() {
 		Init()
 	}
 	
-	convenience init(waveURL wavefile: NSURL, desiredRate: Int32? = nil) throws {
+	convenience init(waveURL wavefile: URL, desiredRate: Int32? = nil) throws {
 		self.init()
 		try load(waveURL: wavefile, desiredRate: desiredRate)
 	}
 	
-	convenience init(snd: NSData, desiredRate: Int32? = nil) throws {
+	convenience init(snd: Data, desiredRate: Int32? = nil) throws {
 		self.init()
 		try load(sndData: snd, desiredRate: desiredRate)
 	}
 	
 	///Load WAVE resources, converting to the desired sample rate
-	func load(waveURL wavefile: NSURL, desiredRate: Int32? = nil) throws {
-		var samples: UnsafeMutablePointer<UInt8> = nil
+	func load(waveURL wavefile: URL, desiredRate: Int32? = nil) throws {
+		var samples: UnsafeMutablePointer<UInt8>? = nil
 		
 		/* Free any existing WAVE data */
 		Free();
 		Init();
 		
 		/* Load the WAVE file */
-		if SDL_LoadWAV(wavefile.fileSystemRepresentation, &spec, &samples, &soundDataLen) == nil {
-			throw Errors.SDLError(String.fromCString(SDL_GetError())!)
+		if SDL_LoadWAV((wavefile as NSURL).fileSystemRepresentation, &spec, &samples, &soundDataLen) == nil {
+			throw Errors.sdlError(String(cString: SDL_GetError()))
 		}
 		/* Copy malloc()'d data to new'd data */
-		soundData = UnsafeMutablePointer<UInt8>(malloc(Int(soundDataLen)))
+		soundData = malloc(Int(soundDataLen)).assumingMemoryBound(to: UInt8.self)
 		memcpy(soundData, samples, Int(soundDataLen));
 		SDL_FreeWAV(samples);
 		
@@ -128,10 +132,10 @@ final class Wave {
 	}
 	
 	/// Most of this information came from the "Inside Macintosh" book series
-	func load(sndData snd: NSData, desiredRate: Int32? = nil) throws {
+	func load(sndData snd: Data, desiredRate: Int32? = nil) throws {
 		var snd_version: UInt16 = 0
 		var snd_channels: Int32 = 0
-		var samples: UnsafeMutablePointer<UInt8> = nil
+		var samples: UnsafeMutablePointer<UInt8>? = nil
 		var desired_rate = desiredRate ?? 0
 		
 		/* Free any existing WAVE data */
@@ -139,7 +143,7 @@ final class Wave {
 		Init();
 		
 		/* Start loading the WAVE from the SND */
-		var data = UnsafePointer<UInt8>(snd.bytes)
+		var data = (snd as NSData).bytes.bindMemory(to: UInt8.self, capacity: snd.count)
 		sndCopy(&snd_version, &data);
 		
 		snd_channels = 1;			/* Is this always true? */
@@ -153,11 +157,11 @@ final class Wave {
 			
 			sndCopy(&n_types, &data)
 			if n_types != 1 {
-				throw Errors.MultiTypeSound
+				throw Errors.multiTypeSound
 			}
 			sndCopy(&f_type, &data)
 			if f_type != SAMPLED_SND {
-				throw Errors.NotSampledSound
+				throw Errors.notSampledSound
 			}
 			sndCopy(&init_op, &data);
 		} else if snd_version == FORMAT_2 {
@@ -166,7 +170,7 @@ final class Wave {
 			
 			sndCopy(&ref_cnt, &data);
 		} else {
-			throw Errors.UnknownSoundFormat(snd_version)
+			throw Errors.unknownSoundFormat(snd_version)
 		}
 		
 		/* Next is the Sound commands section */
@@ -178,21 +182,21 @@ final class Wave {
 			
 			sndCopy(&num_cmds, &data);
 			if num_cmds != 1 {
-				throw Errors.MultiCommandNotSupported
+				throw Errors.multiCommandNotSupported
 			}
 			sndCopy(&command, &data);
 			if command != BUFFER_CMD && command != SOUND_CMD {
-				throw Errors.UnknownSoundCommand(command)
+				throw Errors.unknownSoundCommand(command)
 			}
 			sndCopy(&param1, &data);
 			/* Param1 is ignored (should be 0x0000) */
 			
 			sndCopy(&param2, &data);
 			/* Set 'data' to the offset of the sampled data */
-			if Int(param2) > snd.length {
-				throw Errors.OffsetTooLarge
+			if Int(param2) > snd.count {
+				throw Errors.offsetTooLarge
 			}
-			data = UnsafePointer<UInt8>(snd.bytes).advancedBy(Int(param2))
+			data = (snd as NSData).bytes.bindMemory(to: UInt8.self, capacity: snd.count).advanced(by: Int(param2))
 		}
 		
 		/* Next is the sampled sound header */
@@ -208,30 +212,30 @@ final class Wave {
 			sndCopy(&sample_offset, &data);
 			// FIXME: What's the interpretation of this offset?
 			if sample_offset != 0 {
-				throw Errors.SamplesDoNotFollowHeader
+				throw Errors.samplesDoNotFollowHeader
 			}
 			sndCopy(&num_samples, &data);
 			sndCopy(&sample_rate, &data);
 			/* Sound loops are ignored for now */
 			sndCopy(&loop_start, &data);
 			sndCopy(&loop_end, &data);
-			encoding = data.memory
+			encoding = data.pointee
 			data = data.successor()
 			if encoding != stdSH {
-				throw Errors.NonStandardSoundEncoding(encoding)
+				throw Errors.nonStandardSoundEncoding(encoding)
 			}
 			/* Frequency base might be used later */
 			//freq_base = data.memory
 			data = data.successor()
 			
 			/* Now allocate room for the sound */
-			if Int(num_samples) > snd.length - data.distanceTo(UnsafePointer<UInt8>(snd.bytes)) {
-				throw Errors.TruncatedSoundResource
+			if Int(num_samples) > snd.count - data.distance(to: (snd as NSData).bytes.bindMemory(to: UInt8.self, capacity: snd.count)) {
+				throw Errors.truncatedSoundResource
 			}
 			
 			/* Convert the audio data to desired sample rates */
 			
-			samples = UnsafeMutablePointer(data)
+			samples = UnsafeMutablePointer(mutating: data)
 			switch sample_rate {
 			case rate11khz, rate11khz2:
 				/* Assuming 8-bit mono samples */
@@ -240,7 +244,7 @@ final class Wave {
 				}
 				num_samples =
 					convertRate(sample_rate>>16, rateOut: desired_rate,
-						samples: &samples, countOfSamples: num_samples, sampleSize: 1);
+						samples: &samples!, countOfSamples: num_samples, sampleSize: 1);
 				
 			case rate22khz:
 				/* Assuming 8-bit mono samples */
@@ -249,7 +253,7 @@ final class Wave {
 				}
 				num_samples =
 				convertRate(sample_rate>>16, rateOut: desired_rate,
-				samples: &samples, countOfSamples: num_samples, sampleSize: 1);
+				samples: &samples!, countOfSamples: num_samples, sampleSize: 1);
 				
 			case rate44khz:
 				fallthrough
@@ -260,7 +264,7 @@ final class Wave {
 				}
 				num_samples =
 					convertRate(sample_rate>>16, rateOut: desired_rate,
-						samples: &samples, countOfSamples: num_samples, sampleSize: 1);
+						samples: &samples!, countOfSamples: num_samples, sampleSize: 1);
 				break;
 			}
 			sample_rate = UInt32(desired_rate);
@@ -275,8 +279,8 @@ final class Wave {
 			
 			/* Save the audio data */
 			soundDataLen = num_samples*UInt32(snd_channels)
-			if samples == UnsafeMutablePointer(data) {
-				soundData = UnsafeMutablePointer<UInt8>(malloc(Int(soundDataLen)))
+			if samples == UnsafeMutablePointer(mutating: data) {
+				soundData = malloc(Int(soundDataLen)).assumingMemoryBound(to: UInt8.self)
 				memcpy(soundData, samples, Int(soundDataLen));
 			} else {
 				soundData = samples;
@@ -290,18 +294,18 @@ final class Wave {
 		soundlen = Int32(soundDataLen)
 	}
 	
-	func forward(distance: UInt32) {
+	func forward(_ distance: UInt32) {
 		soundlen -= Int32(distance)
-		soundptr += Int(distance)
+		soundptr = soundptr?.advanced(by: Int(distance))
 	}
 	
 	var dataLeft: UInt32 {
 		return UInt32(soundlen > 0 ? soundlen : 0)
 	}
 	
-	var data: UnsafeMutablePointer<UInt8> {
+	var data: UnsafeMutablePointer<UInt8>? {
 		if soundlen > 0 {
-			return soundptr
+			return soundptr!
 		}
 		return nil
 	}
@@ -317,7 +321,7 @@ final class Wave {
 				let datalen: UInt32
 				
 				datalen = convertRate(UInt32(spec.freq), rateOut: desired_rate,
-				samples: &samples, countOfSamples: soundDataLen/UInt32(samplesize), sampleSize: UInt8(samplesize));
+				samples: &samples!, countOfSamples: soundDataLen/UInt32(samplesize), sampleSize: UInt8(samplesize));
 				if samples != soundData {
 					/* Create new sound data */
 					//free(soundData)
@@ -343,12 +347,12 @@ final class Wave {
 		return spec.channels == 2
 	}
 	
-	private func Init() {
+	fileprivate func Init() {
 		soundData = nil;
 		soundDataLen = 0
 	}
 	
-	private func Free() {
+	fileprivate func Free() {
 		if soundData != nil {
 			free(soundData)
 			soundData = nil
@@ -366,31 +370,30 @@ final class Wave {
 }
 
 ///Utility function
-private func convertRate(rate_in: UInt32, rateOut rate_out: Int32, inout
-	samples: UnsafeMutablePointer<UInt8>, countOfSamples  n_samples: UInt32, sampleSize s_size: UInt8) -> UInt32 {
+private func convertRate(_ rate_in: UInt32, rateOut rate_out: Int32, samples: inout UnsafeMutablePointer<UInt8>, countOfSamples  n_samples: UInt32, sampleSize s_size: UInt8) -> UInt32 {
 		var iPos: Double = 0
 		var oPos: UInt32 = 0
 		
 		let nIn = UInt32(n_samples)*UInt32(s_size)
 		let input = samples
 		let nOut = UInt32((Double(rate_out)/Double(rate_in))*Double(n_samples))+1;
-		let output = UnsafeMutablePointer<UInt8>(malloc(Int(nOut) * Int(s_size)))
+		let output = malloc(Int(nOut) * Int(s_size)).assumingMemoryBound(to: UInt8.self)
 		let iSize = Double(rate_in)/Double(rate_out)*Double(s_size)
 		#if CONVERTRATE_DEBUG
 			print(String(format: "%g seconds of input", Double(n_samples) / Double(rate_in)))
 			print(String(format: "Input rate: %hu, Output rate: %hu, Input increment: %g", rate_in, rate_out, iSize/Double(s_size)))
 			print(String(format: "%g seconds of output", Double(nOut)/Double(rate_out)))
 		#endif
-		for ( iPos = 0, oPos = 0; UInt32(iPos) < nIn; ) {
+		repeat {
 			#if CONVERTRATE_DEBUG
 				if oPos >= nOut * UInt32(s_size) {
 					print("Warning: buffer output overflow!")
 				}
 			#endif
-			memcpy(output.advancedBy(Int(oPos)), input.advancedBy(Int(iPos)), Int(s_size));
+			memcpy(output.advanced(by: Int(oPos)), input.advanced(by: Int(iPos)), Int(s_size));
 			iPos += iSize;
 			oPos += UInt32(s_size);
-		}
+		} while UInt32(iPos) < nIn
 		samples = output;
 		return oPos/UInt32(s_size)
 }

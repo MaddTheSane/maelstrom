@@ -640,7 +640,7 @@
 				TargetAttributes = {
 					5515E81A1BE609700048605C = {
 						CreatedOnToolsVersion = 7.1;
-						LastSwiftMigration = 0810;
+						LastSwiftMigration = 0830;
 					};
 				};
 			};
@@ -875,7 +875,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.maddthesane.Swift-Maelstrom";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Swift Maelstrom/bridge.h";
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -921,7 +921,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.maddthesane.Swift-Maelstrom";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Swift Maelstrom/bridge.h";
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};

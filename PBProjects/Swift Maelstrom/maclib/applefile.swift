@@ -33,7 +33,7 @@ struct Point {
 struct FInfo {
 	/// Masks for finder flag bits (field `fdFlags` in struct
 	/// `FInfo`).
-	struct FinderFlags: OptionSetType {
+	struct FinderFlags: OptionSet {
 		let rawValue: UInt16
 		init(rawValue rv: UInt16) {
 			rawValue = rv
@@ -148,25 +148,25 @@ struct AppleSingleEntry {
 	///     14   AS_AFPINFO                                        xxx
 	///     15   AS_AFPDIRID                                       xxx
 	enum EntryID: UInt32 {
-		case Invalid = 0
+		case invalid = 0
 		
 		/// data fork of file - arbitrary length octet string
-		case Data = 1
+		case data = 1
 		
 		/// resource fork - arbitrary length opaque octet string;
 		/// as created and managed by Mac O.S. resoure manager
-		case Resource = 2
+		case resource = 2
 		
 		/// file's name as created on home file system - arbitrary
 		/// length octet string; usually short, printable ASCII
-		case RealName = 3
+		case realName = 3
 		
 		/// standard Macintosh comment - arbitrary length octet
 		/// string; printable ASCII, claimed 200 chars or less
-		case Comment = 4
+		case comment = 4
 		
 		/// standard Mac black and white icon
-		case IconBW = 5
+		case iconBW = 5
 		
 		/// "standard" Macintosh color icon - several competing
 		///              color icons are defined.  Given the copyright dates
@@ -186,33 +186,33 @@ struct AppleSingleEntry {
 		/// If entry ID 6 is one of these, take your pick.  See Inside
 		/// Macintosh, Volume VI, pages 2-18 to 2-22 and 9-9 to 9-13, for
 		/// descriptions.
-		case IconColor = 6
+		case iconColor = 6
 		
 		/// file dates; create, modify, etc
-		case FileDates = 8
+		case fileDates = 8
 		
 		/// Macintosh Finder info & extended info
-		case FinderInfo = 9
+		case finderInfo = 9
 		
 		/// Mac file info, attributes, etc
-		case MacInfo = 10
+		case macInfo = 10
 		
 		/// ProDOS file information
-		case ProDOSInfo = 11
+		case proDOSInfo = 11
 		
 		/// MS-DOS file info, attributes, etc
-		case MSDOSInfo = 12
+		case msdosInfo = 12
 		
 		/// short file name on AFP server - arbitrary length
 		/// octet string; usualy printable ASCII starting with
 		/// `'!'` (`0x21`)
-		case AFPName = 13
+		case afpName = 13
 		
 		/// AFP server file information
-		case AFPInfo = 14
+		case afpInfo = 14
 		
 		/// AFP server directory ID
-		case AFPDirID = 15
+		case afpDirID = 15
 	}
 	
 	/// entry ID 5, standard Mac black and white icon
@@ -257,7 +257,7 @@ struct AppleSingleEntry {
 	
 	/// entry ID 10, Macintosh file information
 	struct MacInfo {
-		struct Attributes: OptionSetType {
+		struct Attributes: OptionSet {
 			let rawValue: UInt8
 			
 			init(rawValue rv: UInt8) {
@@ -297,7 +297,7 @@ struct AppleSingleEntry {
 	/// is unspecific, I've placed them in the low order portion of the
 	/// field (based on example of other `ASMacInfo` & `ASProdosInfo`).
 	struct MSDOSInfo {
-		struct DOSAttributes: OptionSetType {
+		struct DOSAttributes: OptionSet {
 			let rawValue: UInt8
 			
 			init(rawValue rv: UInt8) {
@@ -328,7 +328,7 @@ struct AppleSingleEntry {
 	
 	/// entry ID 14, AFP server file information
 	struct AFPInfo {
-		struct Attributes: OptionSetType {
+		struct Attributes: OptionSet {
 			let rawValue: UInt8
 			
 			init(rawValue rv: UInt8) {
@@ -359,7 +359,7 @@ struct AppleSingleEntry {
 
 	
 	var entryID: EntryID {
-		return EntryID(rawValue: entryIDValue) ?? .Invalid
+		return EntryID(rawValue: entryIDValue) ?? .invalid
 	}
 	
 	/// entry type: see list, 0 invalid

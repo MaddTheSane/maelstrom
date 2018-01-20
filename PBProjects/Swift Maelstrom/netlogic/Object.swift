@@ -18,15 +18,15 @@ class MaelObject {
 	var exploding: Bool = false
 	var solid = true
 	var shootable = true
-	private(set) var timeToLive: Int32 = -1
+	fileprivate(set) var timeToLive: Int32 = -1
 	var hitPoints: Int32 = DEFAULT_HITS
 	
 	var hitRect = Rect()
 	var playground = Rect()
 	
-	private var phase: Int32 = 0
-	private var phaseTime: Int32 = 0
-	private var nextPhase: Int32 = 0
+	fileprivate var phase: Int32 = 0
+	fileprivate var phaseTime: Int32 = 0
+	fileprivate var nextPhase: Int32 = 0
 
 	var myBlit: Blit {
 		didSet {
@@ -74,13 +74,13 @@ class MaelObject {
 		return -1
 	}
 	
-	func shake(shakiness: Int32) {
+	func shake(_ shakiness: Int32) {
 		let Xvec = ((vec.x < 0) ? shakiness : -shakiness);
 		let Yvec = ((vec.y < 0) ? shakiness : -shakiness);
 		accelerate(xVec: Xvec, yVec: Yvec);
 	}
 	
-	func accelerate(xVec xVec: Int32, yVec: Int32) {
+	func accelerate(xVec: Int32, yVec: Int32) {
 		guard !exploding else {
 			return
 		}
@@ -97,11 +97,11 @@ class MaelObject {
 	
 	/* Sound functions */
 	func hitSound() {
-		sound.playSound(.SteelHit, priority: 3)
+		sound.playSound(.steelHit, priority: 3)
 	}
 	
 	func explodeSound() {
-		sound.playSound(.Explosion, priority: 3)
+		sound.playSound(.explosion, priority: 3)
 	}
 	
 	/*
@@ -201,7 +201,7 @@ return(0);
 */
 	
 	/** We've been globally damaged!  (returns 1 if we are dead) */
-	func beenDamaged(damage: Int32) -> Int32 {
+	func beenDamaged(_ damage: Int32) -> Int32 {
 		hitPoints -= damage
 		if hitPoints <= 0 {
 			return explode()
@@ -231,7 +231,7 @@ return(0);
 		return 0;
 	}
 	
-	func setTTL(ttl: Int32) {
+	func setTTL(_ ttl: Int32) {
 		timeToLive = ttl + 1
 	}
 	
@@ -278,7 +278,7 @@ final class Nova :  MaelObject {
 		timeToLive = Int32(gNova.sprites.count) * phaseTime
 		points = NOVA_PTS
 		phase = 0;
-		sound.playSound(.NovaAppears, priority: 4)
+		sound.playSound(.novaAppears, priority: 4)
 		#if SERIOUS_DEBUG
 			//error("Created a nova!\n");
 		#endif
@@ -286,7 +286,7 @@ final class Nova :  MaelObject {
 	
 	override func beenTimedOut() -> Int32 {
 		if !exploding {
-			sound.playSound(.NovaBoom, priority: 5)
+			sound.playSound(.novaBoom, priority: 5)
 		}
 		
 		return -1
@@ -311,7 +311,7 @@ final class Nova :  MaelObject {
 	return(-1);
 	}
 	*/
-	override func shake(shakiness: Int32) {
+	override func shake(_ shakiness: Int32) {
 		//Do nothing
 	}
 }
@@ -319,21 +319,21 @@ final class Nova :  MaelObject {
 final class Prize: MaelObject {
 	
 	override func explodeSound() {
-		sound.playSound(.Idiot, priority: 4)
+		sound.playSound(.idiot, priority: 4)
 	}
 }
 
 final class Bonus: MaelObject {
-	private var bonus = 0
+	fileprivate var bonus = 0
 	
 	override func beenTimedOut() -> Int32 {
 		if bonus != 0 {
-			sound.playSound(.MultiplierGone, priority: 4)
+			sound.playSound(.multiplierGone, priority: 4)
 		}
 		return -1
 	}
 	
-	override func shake(shakiness: Int32) {
+	override func shake(_ shakiness: Int32) {
 		//Do nothing
 	}
 }
@@ -428,7 +428,7 @@ error("Created a damaged ship!\n");
 	}
 	*/
 	override func explodeSound() {
-		sound.playSound(.ShipHit, priority: 5)
+		sound.playSound(.shipHit, priority: 5)
 	}
 }
 

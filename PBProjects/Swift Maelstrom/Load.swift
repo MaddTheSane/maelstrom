@@ -10,34 +10,34 @@ import Foundation
 import SDL2
 
 final class LibPath {
-	private static let searchURLs: [NSURL] = {
-		let ourBundle = NSBundle.mainBundle()
-		var toRet = [NSURL]()
+	fileprivate static let searchURLs: [URL] = {
+		let ourBundle = Bundle.main
+		var toRet = [URL]()
 		
 		do {
-			let fm = NSFileManager.defaultManager()
-			var userDir = try fm.URLForDirectory(.ApplicationSupportDirectory, inDomain: .UserDomainMask, appropriateForURL: ourBundle.bundleURL, create: false)
-			userDir = userDir.URLByAppendingPathComponent("Maelstrom", isDirectory: true)!
-			if !userDir.checkResourceIsReachableAndReturnError(nil) {
-				try fm.createDirectoryAtURL(userDir, withIntermediateDirectories: true, attributes: nil)
+			let fm = FileManager.default
+			var userDir = try fm.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: ourBundle.bundleURL, create: false)
+			userDir = userDir.appendingPathComponent("Maelstrom", isDirectory: true)
+			if !(userDir as NSURL).checkResourceIsReachableAndReturnError(nil) {
+				try fm.createDirectory(at: userDir, withIntermediateDirectories: true, attributes: nil)
 			}
 			toRet.append(userDir)
 		} catch _ {}
 		
-		toRet.append(ourBundle.bundleURL.URLByDeletingLastPathComponent!)
+		toRet.append(ourBundle.bundleURL.deletingLastPathComponent())
 		toRet.append(ourBundle.resourceURL!)
 		
 		return toRet
 	}()
 	
-	func path(fileName: String) -> NSURL? {
+	func path(_ fileName: String) -> URL? {
 		//The SDL port of Maelstrom has some wonky file-name conventions due to different ways of storing Mac resource forks
 		let posibleFileNames: [String] = {
 			var toRet = [String]()
 			toRet.append(fileName)
 			toRet.append("%\(fileName)")
 			toRet.append("._\(fileName)")
-			toRet.append((fileName as NSString).stringByAppendingPathExtension("bin")!)
+			toRet.append((fileName as NSString).appendingPathExtension("bin")!)
 			
 			let tmpRet = toRet.map({ (aName) -> String in
 				var tmpName = aName
@@ -45,16 +45,16 @@ final class LibPath {
 				return tmpName
 			})
 			
-			toRet.appendContentsOf(tmpRet)
+			toRet.append(contentsOf: tmpRet)
 			
 			return toRet
 		}()
 		for url in LibPath.searchURLs {
 			for aFileName in posibleFileNames {
-				let combined = url.URLByAppendingPathComponent(aFileName)
-				if combined!.checkResourceIsReachableAndReturnError(nil) {
+				let combined = url.appendingPathComponent(aFileName)
+				if (combined as NSURL).checkResourceIsReachableAndReturnError(nil) {
 					//But the APIs still expect the base file name
-					return url.URLByAppendingPathComponent(fileName)
+					return url.appendingPathComponent(fileName)
 				}
 			}
 		}
@@ -63,36 +63,32 @@ final class LibPath {
 	}
 }
 
-func loadTitle(screen: FrameBuf, title_id: Int32) -> UnsafeMutablePointer<SDL_Surface> {
+func loadTitle(_ screen: FrameBuf, title_id: Int32) -> UnsafeMutablePointer<SDL_Surface>? {
 	let path = LibPath()
-	var bmp: UnsafeMutablePointer<SDL_Surface> = nil
-	var title: UnsafeMutablePointer<SDL_Surface> = nil
+	var title: UnsafeMutablePointer<SDL_Surface>? = nil
 
 	/* Open the title file -- we know its colormap is our global one */
-	let file = ("Images" as NSString).stringByAppendingPathComponent("Maelstrom_Titles#\(title_id).bmp")
-	bmp = SDL_LoadBMP(path.path(file)!.fileSystemRepresentation);
-	if bmp == nil {
-		return nil;
+	let file = ("Images" as NSString).appendingPathComponent("Maelstrom_Titles#\(title_id).bmp")
+	guard let bmp = SDL_LoadBMP((path.path(file)! as NSURL).fileSystemRepresentation) else {
+		return nil
 	}
 	
 	/* Create an image from the BMP */
-	title = screen.loadImage(w: UInt16(bmp.memory.w), h: UInt16(bmp.memory.h), pixels: UnsafeMutablePointer<UInt8>(bmp.memory.pixels), mask: nil)
+	title = screen.loadImage(w: UInt16(bmp.pointee.w), h: UInt16(bmp.pointee.h), pixels: bmp.pointee.pixels.assumingMemoryBound(to: UInt8.self), mask: nil)
 	SDL_FreeSurface(bmp)
 	return title
 }
 
-func getCIcon(screen: FrameBuf, cicn_id: Int16) -> UnsafeMutablePointer<SDL_Surface> {
+func getCIcon(_ screen: FrameBuf, cicn_id: Int16) -> UnsafeMutablePointer<SDL_Surface>? {
 	let path = LibPath()
 	var w: UInt16 = 0
 	var h: UInt16 = 0
 	var pixels: [UInt8]
 	var mask: [UInt8]
-	var cicn: UnsafeMutablePointer<SDL_Surface> = nil
 	
 	/* Open the cicn sprite file.. */
-	let file = ("Images" as NSString).stringByAppendingPathComponent("Maelstrom_Icon#\(cicn_id).bmp")
-	let cicn_src = SDL_RWFromFile(path.path(file)!.fileSystemRepresentation, "r")
-	if cicn_src == nil {
+	let file = ("Images" as NSString).appendingPathComponent("Maelstrom_Icon#\(cicn_id).bmp")
+	guard let cicn_src = SDL_RWFromFile((path.path(file)! as NSURL).fileSystemRepresentation, "r") else {
 		print("GetCIcon(\(cicn_id)): Can't open CICN \(path.path(file)!): ");
 		return nil;
 	}
@@ -103,20 +99,20 @@ func getCIcon(screen: FrameBuf, cicn_id: Int16) -> UnsafeMutablePointer<SDL_Surf
 	
 	w = SDL_ReadBE16(cicn_src);
 	h = SDL_ReadBE16(cicn_src);
-	pixels = [UInt8](count: Int(w*h), repeatedValue: 0)
+	pixels = [UInt8](repeating: 0, count: Int(w*h))
 	if SDL_RWread(cicn_src, &pixels, 1, Int(w*h)) != Int(w*h) {
 		print("GetCIcon(\(cicn_id)): Corrupt CICN!");
 		return nil;
 	}
-	mask = [UInt8](count: Int(w/8*h), repeatedValue: 0)
+	mask = [UInt8](repeating: 0, count: Int(w/8*h))
 	if SDL_RWread(cicn_src, &mask, 1, Int((w/8)*h)) != Int((w/8)*h) {
 		print("GetCIcon(\(cicn_id)): Corrupt CICN!");
 		return nil;
 	}
 	
-	cicn = screen.loadImage(w: w, h: h, pixels: &pixels, mask: &mask)
-	if cicn == nil {
+	guard let cicn = screen.loadImage(w: w, h: h, pixels: &pixels, mask: &mask) else {
 		print("GetCIcon(\(cicn_id)): Couldn't convert CICN!");
+		return nil
 	}
 	return cicn
 }

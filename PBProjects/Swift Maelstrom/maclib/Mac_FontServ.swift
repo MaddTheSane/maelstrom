@@ -9,16 +9,16 @@
 import Foundation
 import SDL2
 
-private func HiByte(word: UInt16) -> UInt8 {
+private func HiByte(_ word: UInt16) -> UInt8 {
 	return UInt8((word >> 8) & 0xFF)
 }
 
-private func LoByte(word: UInt16) -> UInt8 {
+private func LoByte(_ word: UInt16) -> UInt8 {
 	return UInt8(word & 0xFF)
 }
 
 ///Different styles supported by the font server
-struct FontStyle: OptionSetType {
+struct FontStyle: OptionSet {
 	let rawValue: UInt8
 	
 	init(rawValue rv: UInt8) {
@@ -59,34 +59,34 @@ struct FontHdr {
 	var rowWords: UInt16 = 0
 }
 
-private func copy_short(S: UnsafeMutablePointer<Int16>, inout _ D: UnsafePointer<UInt8>) {
+private func copy_short(_ S: UnsafeMutablePointer<Int16>, _ D: inout UnsafePointer<UInt8>) {
 	memcpy(S, D, 2)
 	D += 2
 }
 
-private func copy_short(S: UnsafeMutablePointer<UInt16>, inout _ D: UnsafePointer<UInt8>) {
+private func copy_short(_ S: UnsafeMutablePointer<UInt16>, _ D: inout UnsafePointer<UInt8>) {
 	memcpy(S, D, 2)
 	D += 2
 }
 
-private func copy_int(S: UnsafeMutablePointer<Int32>, inout _ D: UnsafePointer<UInt8>) {
+private func copy_int(_ S: UnsafeMutablePointer<Int32>, _ D: inout UnsafePointer<UInt8>) {
 	memcpy(S, D, 4)
 	D += 4
 }
 
-private func copy_int(S: UnsafeMutablePointer<UInt32>, inout _ D: UnsafePointer<UInt8>) {
+private func copy_int(_ S: UnsafeMutablePointer<UInt32>, _ D: inout UnsafePointer<UInt8>) {
 	memcpy(S, D, 4)
 	D += 4
 }
 
 class FontServer {
-	private struct FontEntry {
+	fileprivate struct FontEntry {
 		var size: UInt16 = 0
 		var style: UInt16 = 0
 		var ID: UInt16 = 0
 	}
 	
-	private struct FOND {
+	fileprivate struct FOND {
 		var flags: UInt16 = 0
 		var ID: UInt16 = 0
 		var firstCH: UInt16 = 0
@@ -151,9 +151,9 @@ class FontServer {
 		
 		/// The width of the specified text in pixels when displayed with the
 		/// specified font and style.
-		func textWidth(text: String, style: FontStyle) -> UInt16 {
+		func textWidth(_ text: String, style: FontStyle) -> UInt16 {
 			//First, convert to MacRoman.
-			guard let macRomanStr = text.cStringUsingEncoding(NSMacOSRomanStringEncoding) else {
+			guard let macRomanStr = text.cString(using: String.Encoding.macOSRoman) else {
 				return 0
 			}
 			var extra_width: UInt16 = 0
@@ -185,71 +185,75 @@ class FontServer {
 		}
 	}
 
-	enum Errors: ErrorType {
-		case NoFONDResource
-		case FontFamilyNotFound
-		case FontFamilyLacksPointSize
-		case BadFontMagicNumber(UInt16)
+	enum Errors: Error {
+		case noFONDResource
+		case fontFamilyNotFound
+		case fontFamilyLacksPointSize
+		case badFontMagicNumber(UInt16)
 	}
 
-	private var text_allocated = 0
-	private var fontres: MacResource!
+	fileprivate var text_allocated = 0
+	fileprivate var fontres: MacResource!
 
-	init(fontAtURL fontfile: NSURL) throws {
+	init(fontAtURL fontfile: URL) throws {
 		fontres = try MacResource(fileURL: fontfile);
 
 		if fontres.countOfResources(type: MaelOSType(stringValue: "FOND")!) == 0 {
-			throw Errors.NoFONDResource
+			throw Errors.noFONDResource
 		}
 	}
 	
-	func newFont(fontName: String, pointSize ptsize: Int32) throws -> MFont {
-		var fond: NSData!
+	func newFont(_ fontName: String, pointSize ptsize: Int32) throws -> MFont {
+		var fond: Data!
 		var fondStruct = FOND()
 		var fent = FontEntry()
 		do {
 			/* Get the font family */
 			fond = try fontres.resource(type: MaelOSType(stringValue: "FOND")!, name: fontName)
 		} catch _ {
-			throw Errors.FontFamilyNotFound
+			throw Errors.fontFamilyNotFound
 		}
 		
 		/* Find out what font ID we need */
-		var data = UnsafePointer<UInt8>(fond.bytes)
-		copy_short(&fondStruct.flags, &data);
-		copy_short(&fondStruct.ID, &data);
-		copy_short(&fondStruct.firstCH, &data);
-		copy_short(&fondStruct.lastCH, &data);
-		copy_short(&fondStruct.MaxAscent, &data);
-		copy_short(&fondStruct.MaxDescent, &data);
-		copy_short(&fondStruct.MaxLead, &data);
-		copy_short(&fondStruct.MaxWidth, &data);
-		copy_int(&fondStruct.WidthOff, &data);
-		copy_int(&fondStruct.KernOff, &data);
-		copy_int(&fondStruct.StyleOff, &data);
-		memcpy(&fondStruct.StyleProp, data, 18); data += 18;
-		copy_int(&fondStruct.Intl_info, &data);
-		copy_short(&fondStruct.Version, &data);
-		copy_short(&fondStruct.num_fonts, &data);
-		bytesex16(&fondStruct.num_fonts);
-		fondStruct.num_fonts += 1;
-
-		var i = 0
 		
-		for i=0; i<Int(fondStruct.num_fonts); ++i, data += sizeof(FontEntry) {
-			memcpy(&fent, data, sizeof(FontEntry));
-			func aSwap(fe: UnsafeMutablePointer<FontEntry>) {
-				byteswap(UnsafeMutablePointer<UInt16>(fe), count: 3)
+		try fond.withUnsafeBytes { (data1: UnsafePointer<UInt8>) -> Void in
+			var data = data1
+			copy_short(&fondStruct.flags, &data);
+			copy_short(&fondStruct.ID, &data);
+			copy_short(&fondStruct.firstCH, &data);
+			copy_short(&fondStruct.lastCH, &data);
+			copy_short(&fondStruct.MaxAscent, &data);
+			copy_short(&fondStruct.MaxDescent, &data);
+			copy_short(&fondStruct.MaxLead, &data);
+			copy_short(&fondStruct.MaxWidth, &data);
+			copy_int(&fondStruct.WidthOff, &data);
+			copy_int(&fondStruct.KernOff, &data);
+			copy_int(&fondStruct.StyleOff, &data);
+			memcpy(&fondStruct.StyleProp, data, 18); data = data.advanced(by: 18);
+			copy_int(&fondStruct.Intl_info, &data);
+			copy_short(&fondStruct.Version, &data);
+			copy_short(&fondStruct.num_fonts, &data);
+			bytesex16(&fondStruct.num_fonts);
+
+		var ii = 0
+		
+		for i in 0 ..< Int(fondStruct.num_fonts)  {
+			memcpy(&fent, data, MemoryLayout<FontEntry>.size);
+			func aSwap(_ fe: UnsafeMutablePointer<FontEntry>) {
+				fe.withMemoryRebound(to: UInt16.self, capacity: 3, { byteswap($0, 3) })
 			}
 			//byteswap((Uint16 *)&Fent, 3);
 			aSwap(&fent)
 			if Int(fent.size) == Int(ptsize) && fent.style == 0 {
 				break;
 			}
+			//data += MemoryLayout<FontEntry>.size
+			ii = i
 		}
 		
-		if i == Int(fondStruct.num_fonts) {
-			throw Errors.FontFamilyLacksPointSize
+		if ii == Int(fondStruct.num_fonts) {
+			throw Errors.fontFamilyLacksPointSize
+		}
 		}
 
 		/* Now, fent.ID is the ID of the correct NFNT resource */
@@ -260,14 +264,14 @@ class FontServer {
 		so we can use it.  (Code taken from 'mac2bdf' -- Thanks! :)
 	 */
 		var swapFont = false
-		font.header = UnsafePointer<FontHdr>(fontData.bytes).memory
+		font.header = (fontData as NSData).bytes.bindMemory(to: FontHdr.self, capacity: fontData.count).pointee
 		if ( ((font.header.fontType & ~3) != FontHdr.PropFont) &&
 			((font.header.fontType & ~3) != FontHdr.FixedFont) ) {
 				swapFont = true
 		}
 		if swapFont {
-			func aSwap(fe: UnsafeMutablePointer<FontHdr>) {
-				byteswap(UnsafeMutablePointer<UInt16>(fe), count: sizeof(FontHdr) / sizeof(UInt16))
+			func aSwap(_ fe: UnsafeMutablePointer<FontHdr>) {
+				fe.withMemoryRebound(to: UInt16.self, capacity: 13, { byteswap($0, MemoryLayout<FontHdr>.size / MemoryLayout<UInt16>.size) })
 			}
 			aSwap(&font.header)
 		}
@@ -277,10 +281,10 @@ class FontServer {
 		use these to indicate the presence of optional 'width' and 'height'
 		tables, which are for fractional character spacing (unused).
 	 */
-		font.header = UnsafePointer<FontHdr>(fontData.bytes).memory
+		font.header = (fontData as NSData).bytes.bindMemory(to: FontHdr.self, capacity: fontData.count).pointee
 		if ( ((font.header.fontType & ~3) != FontHdr.PropFont) &&
 			((font.header.fontType & ~3) != FontHdr.FixedFont) ) {
-				throw Errors.BadFontMagicNumber(font.header.fontType)
+				throw Errors.badFontMagicNumber(font.header.fontType)
 		}
 
 		let nchars = font.header.lastChar - (font.header.firstChar + 1) + 1
@@ -288,15 +292,18 @@ class FontServer {
 		let nwords = font.header.rowWords * font.header.fRectHeight
 		
 		do {
-			let tmpBitImage = UnsafePointer<UInt16>(fontData.bytes.advancedBy(sizeof(FontHdr)))
-			let tmpLocTable = tmpBitImage.advancedBy(Int(nwords))
-			let tmpOwTable = UnsafePointer<Int16>(tmpLocTable.advancedBy(Int(nchars) + 1))
+			let tmpBitImage = (fontData as NSData).bytes.advanced(by: MemoryLayout<FontHdr>.size).assumingMemoryBound(to: UInt16.self) //UnsafePointer<UInt16>((fontData as NSData).bytes.advanced(by: sizeof(FontHdr)))
+			let tmpLocTable = tmpBitImage.advanced(by: Int(nwords))
+			font.owTable = tmpLocTable.advanced(by: Int(nchars) + 1).withMemoryRebound(to: Int16.self, capacity: Int(nchars), { (tmpOwTable) -> [Int16] in
+				let tmpBufOwTable = UnsafeBufferPointer(start: tmpOwTable, count: Int(nchars))
+				return Array(tmpBufOwTable)
+			})//UnsafePointer<Int16>(tmpLocTable.advanced(by: Int(nchars) + 1))
 			let tmpBufBitImage = UnsafeBufferPointer(start: tmpBitImage, count: Int(nwords))
 			let tmpBufLocTable = UnsafeBufferPointer(start: tmpLocTable, count: Int(nchars) + 1)
-			let tmpBufOwTable = UnsafeBufferPointer(start: tmpOwTable, count: Int(nchars))
+			//let tmpBufOwTable = UnsafeBufferPointer(start: tmpOwTable, count: Int(nchars))
 			font.bitImage = Array(tmpBufBitImage)
 			font.locTable = Array(tmpBufLocTable)
-			font.owTable = Array(tmpBufOwTable)
+			//font.owTable = Array(tmpBufOwTable)
 		}
 
 		/* Note -- there may be excess data at the end of the resource
@@ -304,9 +311,9 @@ class FontServer {
 		
 		/* Byteswap the tables */
 		if swapFont {
-			byteswap(&font.bitImage, count: Int(nwords))
-			byteswap(&font.locTable, count: Int(nchars) + 1)
-			for (i, val) in font.owTable.enumerate() {
+			byteswap(&font.bitImage, Int(nwords))
+			byteswap(&font.locTable, Int(nchars) + 1)
+			for (i, val) in font.owTable.enumerated() {
 				font.owTable[i] = val.bigEndian
 			}
 		}
@@ -315,16 +322,16 @@ class FontServer {
 	}
 	
 	/// Determine the final width of a text block (in pixels)
-	func textWidth(text: String, font: MFont, style: FontStyle) -> UInt16 {
+	func textWidth(_ text: String, font: MFont, style: FontStyle) -> UInt16 {
 		return font.textWidth(text, style: style)
 	}
 	/// Determine the final height of a text block (in pixels)
-	func textHeight(font font: MFont) -> UInt16 {
+	func textHeight(font: MFont) -> UInt16 {
 		return font.textHeight
 	}
 
 	///Determine the final width and height of a text block (in pixels)
-	func textSize(text: String, font: MFont, style: FontStyle) -> (width: UInt16, height: UInt16) {
+	func textSize(_ text: String, font: MFont, style: FontStyle) -> (width: UInt16, height: UInt16) {
 		let width = textWidth(text, font: font, style: style)
 		let height = textHeight(font: font)
 		return (width, height)
@@ -332,8 +339,8 @@ class FontServer {
 	
 	/// Returns a bitmap image filled with the requested text.
 	/// The text should be freed with `freeText()` after it is used.
-	func newTextImage(text: String, font: MFont, style: FontStyle, foreground: SDL_Color, background: SDL_Color) -> UnsafeMutablePointer<SDL_Surface> {
-		guard let aChars = text.cStringUsingEncoding(NSMacOSRomanStringEncoding) else {
+	func newTextImage(_ text: String, font: MFont, style: FontStyle, foreground: SDL_Color, background: SDL_Color) -> UnsafeMutablePointer<SDL_Surface>? {
+		guard let aChars = text.cString(using: String.Encoding.macOSRoman) else {
 			error = "FontServ: Encoding error"
 			return nil
 		}
@@ -347,17 +354,17 @@ class FontServer {
 		}()
 		
 		///Set bit `i` of a scan line
-		func SETBIT(scanline: UnsafeMutablePointer<UInt8>, _ i: Int, _ bit: UInt8) {
+		func SETBIT(_ scanline: UnsafeMutablePointer<UInt8>, _ i: Int, _ bit: UInt8) {
 			scanline[(i)/8] |= bit << (7 - UInt8((i)%8))
 		}
 		
 		///Get bit `i` of a scan line
-		func GETBIT(scanline: UnsafeMutablePointer<UInt16>, _ i: Int) -> UInt8 {
+		func GETBIT(_ scanline: UnsafeMutablePointer<UInt16>, _ i: Int) -> UInt8 {
 			return UInt8(scanline[(i)/16] >> (15 - UInt16(i%16))) & 1
 		}
 		
-		var image: UnsafeMutablePointer<SDL_Surface> = nil
-		var bitmap: UnsafeMutablePointer<UInt8> = nil
+		var image: UnsafeMutablePointer<SDL_Surface>? = nil
+		var bitmap: UnsafeMutablePointer<UInt8>? = nil
 		
 		var bold_offset = 0
 		
@@ -431,12 +438,12 @@ class FontServer {
 			error = String(format: "Unable to allocate bitmap: %s", SDL_GetError());
 			return nil
 		}
-		bitmap = UnsafeMutablePointer<UInt8>(image.memory.pixels)
+		bitmap = image?.pointee.pixels.assumingMemoryBound(to: UInt8.self)
 		
 		/* Print the individual characters */
 		/* Note: this could probably be optimized.. eh, who cares. :) */
 		var bit_offset = 0
-		for var boldness=0; boldness <= bold_offset; boldness += 1 {
+		for boldness in 0 ... bold_offset {
 			bit_offset=0;
 			for aChar in bChars {
 				/* check to see if this character is defined */
@@ -456,14 +463,14 @@ class FontServer {
 				font.locTable[Int(ascii)]);
 				for y in 0..<height {
 					var dst_offset = 0
-					var src_scanline: UnsafeMutablePointer<UInt16> = nil
+					var src_scanline: UnsafeMutablePointer<UInt16>? = nil
 					
-					dst_offset = (Int(y)*Int(image.memory.pitch)*8 +
+					dst_offset = (Int(y)*Int((image?.pointee.pitch)!)*8 +
 						bit_offset+Int(space_offset))
-					src_scanline = UnsafeMutablePointer<UInt16>(font.bitImage).advancedBy(Int(y) * Int(font.header.rowWords))
+					src_scanline = UnsafeMutablePointer<UInt16>(mutating: font.bitImage).advanced(by: Int(y) * Int(font.header.rowWords))
 					for bit in 0..<glyph_width {
-						SETBIT(bitmap, dst_offset+Int(bit)+boldness,
-							GETBIT(src_scanline, Int(glyph_line_offset+bit)))
+						SETBIT(bitmap!, dst_offset+Int(bit)+boldness,
+							GETBIT(src_scanline!, Int(glyph_line_offset+bit)))
 					}
 				}
 				#if WIDE_BOLD
@@ -475,51 +482,51 @@ class FontServer {
 		}
 		if style.contains(.Underline) {
 			let y = height-(font.header).descent+1
-			bit_offset =  Int(y)*Int(image.memory.pitch)*8
+			bit_offset =  Int(y)*Int((image?.pointee.pitch)!)*8
 			for bit in 0..<width {
-				SETBIT(bitmap, bit_offset+Int(bit), 0x01);
+				SETBIT(bitmap!, bit_offset+Int(bit), 0x01);
 			}
 		}
 		
 		/* Map the image and return */
 		SDL_SetColorKey(image, 1/*SDL_SRCCOLORKEY*/, 0);
-		image.memory.format.memory.palette.memory.colors[0] = background
-		image.memory.format.memory.palette.memory.colors[1] = foreground
+		image?.pointee.format.pointee.palette.pointee.colors[0] = background
+		image?.pointee.format.pointee.palette.pointee.colors[1] = foreground
 		text_allocated += 1;
-		return image
+		return image!
 	}
 	
 	/// Returns a bitmap image filled with the requested text.
 	/// The text should be freed with `freeText()` after it is used.
-	func newTextImage(text: String, font: MFont, style: FontStyle, foreground: (red: UInt8, green: UInt8, blue: UInt8)) -> UnsafeMutablePointer<SDL_Surface> {
+	func newTextImage(_ text: String, font: MFont, style: FontStyle, foreground: (red: UInt8, green: UInt8, blue: UInt8)) -> UnsafeMutablePointer<SDL_Surface>? {
 		let background = SDL_Color(r: 0xFF, g: 0xFF, b: 0xFF, a: 0xFF)
 		let fgColor = SDL_Color(r: foreground.red, g: foreground.green, b: foreground.blue, a: 0xFF)
 		
 		return newTextImage(text, font: font, style: style, foreground: fgColor, background: background)
 	}
 	
-	func freeText(text: UnsafeMutablePointer<SDL_Surface>) {
+	func freeText(_ text: UnsafeMutablePointer<SDL_Surface>) {
 		text_allocated -= 1
 		SDL_FreeSurface(text)
 	}
 	
 	/// Inverts the color of the text image
-	func invertText(text: UnsafeMutablePointer<SDL_Surface>) -> Bool {
+	func invertText(_ text: UnsafeMutablePointer<SDL_Surface>) -> Bool {
 		var colors = [SDL_Color]()
 		colors.reserveCapacity(2)
 		
 		/* Only works on bitmap images */
-		if text.memory.format.memory.BitsPerPixel != 1 {
+		if text.pointee.format.pointee.BitsPerPixel != 1 {
 			error = "Not a text bitmap"
 			return false
 		}
 		
 		/* Swap background and foreground colors */
-		colors.append(text.memory.format.memory.palette.memory.colors[1])
-		colors.append(text.memory.format.memory.palette.memory.colors[0])
-		SDL_SetPaletteColors(text.memory.format.memory.palette, colors, 0, 2);
+		colors.append(text.pointee.format.pointee.palette.pointee.colors[1])
+		colors.append(text.pointee.format.pointee.palette.pointee.colors[0])
+		SDL_SetPaletteColors(text.pointee.format.pointee.palette, colors, 0, 2);
 		return true
 	}
 
-	private(set) var error: String? = nil
+	fileprivate(set) var error: String? = nil
 }

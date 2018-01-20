@@ -11,47 +11,47 @@ import SDL2
 
 private let Version = "Maelstrom v1.4.3 (GPL version 3.0.6) -- 10/19/2002 by Sam Lantinga\n"
 
-func error(err: String, line: Int = #line, file: StaticString = #file) {
+func error(_ err: String, line: Int = #line, file: StaticString = #file) {
 	print("\(file):\(line), \(err)")
 }
 
 // Sound resource definitions...
 enum SoundResource: UInt16 {
-	case Shot = 100
-	case Multiplier
-	case Explosion
-	case ShipHit
-	case Boom1
-	case Boom2
-	case MultiplierGone
-	case MultShot
-	case SteelHit
-	case Bonk
-	case Riff
-	case PrizeAppears
-	case GotPrize
-	case GameOver
-	case NewLife
-	case BonusAppears
-	case BonusShot
-	case NoBonus
-	case GravAppears
-	case HomingAppears
-	case ShieldOn
-	case NoShield
-	case NovaAppears
-	case NovaBoom
-	case Lucky
-	case DamagedAppears
-	case SavedShip
-	case Funk
-	case EnemyAppears
-	case PrettyGood = 131
-	case Thruster
-	case EnemyFire
-	case Freeze
-	case Idiot
-	case Pause
+	case shot = 100
+	case multiplier
+	case explosion
+	case shipHit
+	case boom1
+	case boom2
+	case multiplierGone
+	case multShot
+	case steelHit
+	case bonk
+	case riff
+	case prizeAppears
+	case gotPrize
+	case gameOver
+	case newLife
+	case bonusAppears
+	case bonusShot
+	case noBonus
+	case gravAppears
+	case homingAppears
+	case shieldOn
+	case noShield
+	case novaAppears
+	case novaBoom
+	case lucky
+	case damagedAppears
+	case savedShip
+	case funk
+	case enemyAppears
+	case prettyGood = 131
+	case thruster
+	case enemyFire
+	case freeze
+	case idiot
+	case pause
 }
 
 let MAX_SPRITE_FRAMES = 60
@@ -132,15 +132,15 @@ typealias StarPtr = UnsafeMutablePointer<Star>
 ///Sprite blitting information structure
 final class Blit {
 	let isSmall: Bool
-	private(set) var hitRect: Rect = Rect()
-	private(set) var sprites: [(mask: [UInt8], sprite: UnsafeMutablePointer<SDL_Surface>)] = []
+	fileprivate(set) var hitRect: Rect = Rect()
+	fileprivate(set) var sprites: [(mask: [UInt8], sprite: UnsafeMutablePointer<SDL_Surface>)] = []
 
-	private init(isSmall small: Bool) {
+	fileprivate init(isSmall small: Bool) {
 		isSmall = small
 	}
 	
-	enum Errors: ErrorType {
-		case CouldNotCreateImage
+	enum Errors: Error {
+		case couldNotCreateImage
 	}
 	
 	#if false
@@ -156,7 +156,7 @@ final class Blit {
 		
 		reversed.hitRect = self.hitRect
 		/* -- Reverse the sprite images */
-		reversed.sprites = self.sprites.reverse()
+		reversed.sprites = self.sprites.reversed()
 		
 		return reversed
 	}
@@ -171,7 +171,11 @@ final class Blit {
 		
 		for index in 0..<numFrames {
 			let m = try spriteres.resource(type: MaelOSType(stringValue: "ics#")!, id: UInt16(baseID+index))
-			var mask = Array(UnsafeBufferPointer(start: UnsafePointer<UInt8>(m.bytes).advancedBy(32), count: 32))
+			var mask: [UInt8] = m.withUnsafeBytes({ (ct: UnsafePointer<UInt8>) -> [UInt8] in
+				let ct2 = ct.advanced(by: 32)
+				let ct3 = UnsafeBufferPointer(start: ct2, count: 32)
+				return Array(ct3)
+			})
 			
 			let S = try spriteres.resource(type: MaelOSType(stringValue: "ics8")!, id: UInt16(baseID+index))
 			
@@ -190,8 +194,8 @@ final class Blit {
 					}
 				}
 			}
-			for row in (top..<15).reverse() {
-				for col in (left..<15).reverse() {
+			for row in (top..<15).reversed() {
+				for col in (left..<15).reversed() {
 					let offset = (row*16)+col;
 					if ((mask[offset/8] >> UInt8(7-(offset%8))) & 0x01) == 0x01 {
 						if row > bottom {
@@ -206,15 +210,14 @@ final class Blit {
 			hitRect = Rect(top: Int16(top), left: Int16(left), bottom: Int16(bottom), right: Int16(right))
 			
 			/* Load the image */
-			let aSprite = screen.loadImage(w: 16, h: 16, pixels: UnsafeMutablePointer<UInt8>(S.bytes), mask: &mask)
-			guard aSprite != nil else {
-				throw Errors.CouldNotCreateImage
+			guard let aSprite = screen.loadImage(w: 16, h: 16, pixels: UnsafeMutablePointer<UInt8>(mutating: (S as NSData).bytes.bindMemory(to: UInt8.self, capacity: S.count)), mask: &mask) else {
+				throw Errors.couldNotCreateImage
 			}
 			
 			/* Create the bytemask */
-			let maskLen = (m.length - 32) * 8
-			var blitMask = [UInt8](count: maskLen, repeatedValue: 0)
-			for offset in 0 ..< m.length {
+			let maskLen = (m.count - 32) * 8
+			var blitMask = [UInt8](repeating: 0, count: maskLen)
+			for offset in 0 ..< m.count {
 				blitMask[offset] =
 					((mask[offset/8]>>UInt8(7-(offset%8)))&0x01);
 			}
@@ -232,7 +235,11 @@ final class Blit {
 		
 		for index in 0..<numFrames {
 			let m = try spriteres.resource(type: MaelOSType(stringValue: "ics#")!, id: UInt16(baseID+index))
-			var mask = Array(UnsafeBufferPointer(start: UnsafePointer<UInt8>(m.bytes).advancedBy(128), count: 128))
+			var mask: [UInt8] = m.withUnsafeBytes({ (ct: UnsafePointer<UInt8>) -> [UInt8] in
+				let ct2 = ct.advanced(by: 128)
+				let ct3 = UnsafeBufferPointer(start: ct2, count: 128)
+				return Array(ct3)
+			})
 			
 			let S = try spriteres.resource(type: MaelOSType(stringValue: "ics8")!, id: UInt16(baseID+index))
 			
@@ -251,8 +258,8 @@ final class Blit {
 					}
 				}
 			}
-			for row in (top..<31).reverse() {
-				for col in (left..<31).reverse() {
+			for row in (top..<31).reversed() {
+				for col in (left..<31).reversed() {
 					let offset = (row*32)+col;
 					if ((mask[offset/8] >> UInt8(7-(offset%8))) & 0x01) == 0x01 {
 						if row > bottom {
@@ -267,15 +274,14 @@ final class Blit {
 			hitRect = Rect(top: Int16(top), left: Int16(left), bottom: Int16(bottom), right: Int16(right))
 			
 			/* Load the image */
-			let aSprite = screen.loadImage(w: 32, h: 32, pixels: UnsafeMutablePointer<UInt8>(S.bytes), mask: &mask)
-			guard aSprite != nil else {
-				throw Errors.CouldNotCreateImage
+			guard let aSprite = screen.loadImage(w: 32, h: 32, pixels: UnsafeMutablePointer<UInt8>(mutating: (S as NSData).bytes.bindMemory(to: UInt8.self, capacity: S.count)), mask: &mask) else {
+				throw Errors.couldNotCreateImage
 			}
 			
 			/* Create the bytemask */
-			let maskLen = (m.length - 128) * 8
-			var blitMask = [UInt8](count: maskLen, repeatedValue: 0)
-			for offset in 0 ..< m.length {
+			let maskLen = (m.count - 128) * 8
+			var blitMask = [UInt8](repeating: 0, count: maskLen)
+			for offset in 0 ..< m.count {
 				blitMask[offset] =
 					((mask[offset/8]>>UInt8(7-(offset%8)))&0x01);
 			}
@@ -290,8 +296,9 @@ var gStartLevel: Int32 = 0
 var gNoDelay: Int32 = 0
 
 extension Sound {
-	func playSound(sndID: SoundResource, priority: UInt8, callback: ((channel: UInt8) -> ())? = nil) -> Bool {
-		return self.playSound(sndID.rawValue, priority: priority, callback: callback)
+	@discardableResult
+	func playSound(_ sndID: SoundResource, priority: UInt8, callback: ((_ channel: UInt8) -> ())? = nil) -> Bool {
+		return self.playSound(SoundResource(rawValue: sndID.rawValue)!, priority: priority, callback: callback)
 	}
 }
 
@@ -306,15 +313,15 @@ var screen: FrameBuf!
 
 private var gRunning = false
 
-private var progname: UnsafeMutablePointer<CChar> = nil
+private var progname: UnsafeMutablePointer<CChar>? = nil
 
 /// Print a usage message and quit.
 ///
 /// In several places we depend on this function exiting.
 private func printUsage() {
-	print("\nUsage: %s [-netscores] -printscores", progname);
+	print("\nUsage: %s [-netscores] -printscores", progname!);
 	print("or");
-	print("Usage: %s <options>\n\n", progname);
+	print("Usage: %s <options>\n\n", progname!);
 	print("Where <options> can be any of:\n")
 	print("\t-fullscreen\t\t# Run Maelstrom in full-screen mode")
 	print("\t-gamma [0-8]\t\t# Set the gamma correction")
@@ -351,28 +358,28 @@ private func runSpeedTest() {
 	print("Graphics speed test took \((now-then)/test_reps) microseconds per cycle.");
 }
 
-func drawText(x x: UInt16, y: UInt16, text: String, font: FontServer.MFont, style: FontStyle,
+@discardableResult
+func drawText(x: UInt16, y: UInt16, text: String, font: FontServer.MFont, style: FontStyle,
 	R: UInt8, G: UInt8, B: UInt8) -> Int32 {
 	return drawText(x: Int32(x), y: Int32(y), text: text, font: font, style: style, R: R, G: G, B: B)
 }
 
-func drawText(x x: Int32, y: Int32, text: String, font: FontServer.MFont, style: FontStyle,
+@discardableResult
+func drawText(x: Int32, y: Int32, text: String, font: FontServer.MFont, style: FontStyle,
 	R: UInt8, G: UInt8, B: UInt8) -> Int32
 {
-	var width: Int32 = 0
-	let textimage = fontserv.newTextImage(text, font: font, style: style, foreground: (R, G, B))
-	if textimage == nil {
+	guard let textimage = fontserv.newTextImage(text, font: font, style: style, foreground: (R, G, B)) else {
 		return 0
-	} else {
-		screen.queueBlit(x: x, y: y - textimage.memory.h + 2, src: textimage, do_clip: .NOCLIP)
-		width = textimage.memory.w;
-		fontserv.freeText(textimage)
 	}
+	screen.queueBlit(x: x, y: y - textimage.pointee.h + 2, src: textimage, do_clip: .noclip)
+	let width = textimage.pointee.w;
+	fontserv.freeText(textimage)
+	
 	return width
 }
 
 private func drawMainScreen() {
-	var title: UnsafeMutablePointer<SDL_Surface> = nil
+	var title: UnsafeMutablePointer<SDL_Surface>? = nil
 	var pt = MPoint()
 	var width:UInt16 = 0
 	var height:UInt16 = 0
@@ -422,16 +429,16 @@ private func drawMainScreen() {
 	screen.drawRect(x: Int16(xOff)-7, y: Int16(yOff)-7, width: Int16(width+14), height: Int16(height+14), color: clr);
 	
 	/* -- Draw the dividers */
-	botDiv = UInt16(yOff + 5) + UInt16(title.memory.h) + 5;
-	rightDiv = xOff + 5 + UInt16(title.memory.w) + 5;
+	botDiv = UInt16(yOff + 5) + UInt16((title?.pointee.h)!) + 5;
+	rightDiv = xOff + 5 + UInt16((title?.pointee.w)!) + 5;
 	screen.drawLine(x1: rightDiv, y1: yOff, x2: rightDiv, y2: yOff+height, color: ltClr);
 	screen.drawLine(x1: xOff, y1: botDiv, x2: rightDiv, y2: botDiv, color: ltClr);
 	screen.drawLine(x1: rightDiv, y1: 263+yOff, x2: xOff+width, y2: 263+yOff, color: ltClr);
 	/* -- Draw the title image */
 	screen.unlock();
-	screen.queueBlit(x: Int32(xOff+5), y: Int32(yOff+5), src: title, do_clip: .NOCLIP);
+	screen.queueBlit(x: Int32(xOff+5), y: Int32(yOff+5), src: title!, do_clip: .noclip);
 	screen.update();
-	screen.freeImage(title);
+	screen.freeImage(title!);
 	
 	
 	/* -- Draw the high scores */
@@ -502,25 +509,25 @@ private func drawMainScreen() {
 	drawKey(&pt, key: "P", text: " Start playing Maelstrom", callback: runPlayGame);
 	
 	pt.h = Int32(rightDiv) + 10;
-	pt.v += offset;
+	pt.v = pt.v.advanced(by: offset)
 	drawKey(&pt, key: "C", text: " Configure the game controls", callback: runConfigureControls);
 	
 	pt.h = Int32(rightDiv) + 10;
-	pt.v += offset;
+	pt.v = pt.v.advanced(by: offset)
 	drawKey(&pt, key: "Z", text: " Zap the high scores", callback: runZapScores);
 	
 	pt.h = Int32(rightDiv) + 10;
-	pt.v += offset;
+	pt.v = pt.v.advanced(by: offset)
 	drawKey(&pt, key: "A", text: " About Maelstrom...", callback: runDoAbout);
 	
-	pt.v += offset;
-	
+	pt.v = pt.v.advanced(by: offset)
+
 	pt.h = Int32(rightDiv) + 10;
-	pt.v += offset;
+	pt.v = pt.v.advanced(by: offset)
 	drawKey(&pt, key: "Q", text: " Quit Maelstrom", callback: runQuitGame);
 	
 	pt.h = Int32(rightDiv) + 10;
-	pt.v += offset;
+	pt.v = pt.v.advanced(by: offset)
 	drawKey(&pt, key: "0", text: " ", callback: decrementSound);
 	
 	guard let afont = try? fontserv.newFont("Geneva", pointSize: 9) else {
@@ -528,7 +535,7 @@ private func drawMainScreen() {
 	}
 	font = afont
 	
-	drawText(x: pt.h+gKeyIcon.memory.w+3, y: pt.v+19, text: "-",
+	drawText(x: pt.h+gKeyIcon!.pointee.w+3, y: pt.v+19, text: "-",
 		font: font, style: [], R: 0xFF, G: 0xFF, B: 0x00);
 	
 	pt.h = Int32(rightDiv) + 50;
@@ -555,24 +562,24 @@ private func drawMainScreen() {
 
 private func runZapScores() {
 	Delay(SOUND_DELAY);
-	sound.playSound(.MultShot, priority: 5);
+	sound.playSound(.multShot, priority: 5);
 	if hScores.zapHighScores() {
 		/* Fade the screen and redisplay scores */
 		screen.fade();
 		Delay(SOUND_DELAY);
-		sound.playSound(.Explosion, priority: 5);
+		sound.playSound(.explosion, priority: 5);
 		gUpdateBuffer = true;
 	}
 }
 
 
-private func setSoundLevel(volume: Int) {
+private func setSoundLevel(_ volume: Int) {
 	/* Make sure the device is working */
 	sound.volume = UInt8(volume)
 	
 	/* Set the new sound level! */
 	gSoundLevel = UInt8(volume)
-	sound.playSound(.NewLife, priority: 5)
+	sound.playSound(.newLife, priority: 5)
 	
 	/* -- Draw the new sound level */
 	drawSoundLevel();
@@ -582,13 +589,13 @@ private func setSoundLevel(volume: Int) {
 private func runDoAbout() {
 	gNoDelay = 0;
 	Delay(SOUND_DELAY);
-	sound.playSound(.NovaAppears, priority: 5);
+	sound.playSound(.novaAppears, priority: 5);
 	doAbout();
 }
 
 private func runConfigureControls() {
 	Delay(SOUND_DELAY);
-	sound.playSound(.HomingAppears, priority: 5);
+	sound.playSound(.homingAppears, priority: 5);
 	configureControls();
 }
 
@@ -597,7 +604,7 @@ private func runPlayGame()
 	gStartLives = 3;
 	gStartLevel = 1;
 	gNoDelay = 0;
-	sound.playSound(.NewLife, priority: 5);
+	sound.playSound(.newLife, priority: 5);
 	Delay(SOUND_DELAY);
 	newGame();
 	//Message(NULL);		/* Clear any messages */
@@ -606,7 +613,8 @@ private func runPlayGame()
 
 let KMOD_ALT = KMOD_LALT.rawValue | KMOD_RALT.rawValue
 
-func SDL_main(argc2: Int32, _ argv2: UnsafeMutablePointer<UnsafeMutablePointer<Int8>>) -> Int32 {
+@discardableResult
+func SDL_main(_ argc2: Int32, _ argv2: UnsafeMutablePointer<UnsafeMutablePointer<Int8>?>) -> Int32 {
 	var argc = argc2
 	var argv = argv2
 	var video_flags = SDL_WindowFlags(0)
@@ -723,7 +731,7 @@ func SDL_main(argc2: Int32, _ argv2: UnsafeMutablePointer<UnsafeMutablePointer<I
 	}
 	
 	gRunning = true;
-	sound.playSound(.NovaBoom, priority: 5);
+	sound.playSound(.novaBoom, priority: 5);
 	screen.fade();		/* Fade-out */
 	Delay(SOUND_DELAY);
 	
@@ -770,11 +778,11 @@ func SDL_main(argc2: Int32, _ argv2: UnsafeMutablePointer<UnsafeMutablePointer<I
 				/* -- Start the game */
 			case SDLK_l:
 				Delay(SOUND_DELAY);
-				sound.playSound(.Lucky, priority: 5);
+				sound.playSound(.lucky, priority: 5);
 				gStartLevel = hScores.beginCustomLevel()
 				if ( gStartLevel > 0 ) {
 					Delay(SOUND_DELAY);
-					sound.playSound(.NewLife, priority: 5);
+					sound.playSound(.newLife, priority: 5);
 					Delay(SOUND_DELAY);
 					newGame();
 				}
@@ -795,7 +803,7 @@ func SDL_main(argc2: Int32, _ argv2: UnsafeMutablePointer<UnsafeMutablePointer<I
 				/* -- Give 'em a little taste of the peppers */
 			case SDLK_x:
 				Delay(SOUND_DELAY);
-				sound.playSound(.EnemyAppears, priority: 5);
+				sound.playSound(.enemyAppears, priority: 5);
 				showDawn();
 				break;
 				
@@ -817,7 +825,7 @@ func SDL_main(argc2: Int32, _ argv2: UnsafeMutablePointer<UnsafeMutablePointer<I
 			// Dink! :-)
 			default:
 				Delay(SOUND_DELAY);
-				sound.playSound(.SteelHit, priority: 5)
+				sound.playSound(.steelHit, priority: 5)
 				break;
 			}
 		} else
@@ -840,7 +848,7 @@ func SDL_main(argc2: Int32, _ argv2: UnsafeMutablePointer<UnsafeMutablePointer<I
 
 private func runQuitGame() {
 	Delay(SOUND_DELAY);
-	sound.playSound(.MultiplierGone, priority: 5)
+	sound.playSound(.multiplierGone, priority: 5)
 	while sound.playing {
 		Delay(SOUND_DELAY);
 	}
@@ -849,36 +857,35 @@ private func runQuitGame() {
 
 /* -- Draw the key and its function */
 
-private func drawKey(inout pt: MPoint, key: String, text: String, callback: (()-> Void)?)
+private func drawKey(_ pt: inout MPoint, key: String, text: String, callback: (()-> Void)?)
 {
 	guard let geneva = try? fontserv.newFont("Geneva", pointSize: 9) else {
 		fatalError("Can't use Geneva font! -- Exiting.\n");
 		//exit(255);
 	}
-	screen.queueBlit(x: pt.h, y: pt.v, src: gKeyIcon);
+	screen.queueBlit(x: pt.h, y: pt.v, src: gKeyIcon!);
 	screen.update();
 	
 	drawText(x: pt.h+14, y: pt.v+20, text: key, font: geneva, style: .Bold, R: 0xFF, G: 0xFF, B: 0xFF);
 	drawText(x: pt.h+13, y: pt.v+19, text: key, font: geneva, style: .Bold, R: 0x00, G: 0x00, B: 0x00);
-	drawText(x: pt.h+gKeyIcon.memory.w+3, y: pt.v+19, text: text,
+	drawText(x: pt.h+gKeyIcon!.pointee.w+3, y: pt.v+19, text: text,
 	font: geneva, style: .Bold, R: 0xFF, G: 0xFF, B: 0x00);
 	
-	buttons.addButton(x: UInt16(pt.h), y: UInt16(pt.v), width: UInt16(gKeyIcon.memory.w), height: UInt16(gKeyIcon.memory.h), callback: callback);
+	buttons.addButton(x: UInt16(pt.h), y: UInt16(pt.v), width: UInt16(gKeyIcon!.pointee.w), height: UInt16(gKeyIcon!.pointee.h), callback: callback);
 }
 
 private let xOff = (SCREEN_WIDTH - 512) / 2;
 private let yOff = (SCREEN_HEIGHT - 384) / 2;
-private var geneva9: FontServer.MFont! = nil
-private var drawSoundLevelOnce: dispatch_once_t = 0
+private var geneva9: FontServer.MFont = {
+	guard let geneva = try? fontserv.newFont("Geneva", pointSize: 9) else {
+		fatalError("Can't use Geneva font! -- Exiting.");
+	}
+	return geneva
+}()
+private var drawSoundLevelOnce: Int = 0
 
 /// Draw the current sound volume
 private func drawSoundLevel() {
-	dispatch_once(&drawSoundLevelOnce) { () -> Void in
-		guard let geneva = try? fontserv.newFont("Geneva", pointSize: 9) else {
-			fatalError("Can't use Geneva font! -- Exiting.");
-		}
-		geneva9 = geneva
-	}
 	let text = String(gSoundLevel)
 	drawText(x: xOff+309-7, y: yOff+240-6, text: text, font: geneva9, style: .Bold,
 		R: UInt8(30000>>8), G: UInt8(30000>>8), B: 0xFF);
@@ -889,7 +896,7 @@ private func incrementSound() {
 	if gSoundLevel < 8 {
 		gSoundLevel += 1
 		sound.volume = gSoundLevel
-		sound.playSound(.NewLife, priority: 5);
+		sound.playSound(.newLife, priority: 5);
 		
 		/* -- Draw the new sound level */
 		drawSoundLevel();
@@ -900,7 +907,7 @@ private func decrementSound() {
 	if gSoundLevel > 0 {
 		gSoundLevel -= 1
 		sound.volume = gSoundLevel;
-		sound.playSound(.NewLife, priority: 5);
+		sound.playSound(.newLife, priority: 5);
 		
 		/* -- Draw the new sound level */
 		drawSoundLevel();

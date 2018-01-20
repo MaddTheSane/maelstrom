@@ -10,7 +10,7 @@ import Foundation
 import SDL2
 
 /// Delay(x) -- sleep for x number of 1/60 second slices
-func Delay(x: UInt32) {
+func Delay(_ x: UInt32) {
 	SDL_Delay(((x)*1000)/60)
 }
 

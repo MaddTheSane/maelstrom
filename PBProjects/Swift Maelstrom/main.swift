@@ -9,19 +9,20 @@
 import Cocoa
 
 var gArgc: Int32 = 0
-var gArgv = [UnsafeMutablePointer<Int8>](count: 20, repeatedValue: nil)
-func ADD_ARG(x: UnsafePointer<Int8>) {
+var gArgv = [UnsafeMutablePointer<Int8>?](repeating: nil, count: 20)
+func ADD_ARG(_ x: UnsafePointer<Int8>) {
 	assert(gArgc < 20)
 	gArgv[Int(gArgc)] = strdup(x)
 	gArgc += 1
 }
 
-for i in 0..<Process.argc {
-	ADD_ARG(Process.unsafeArgv[Int(i)])
+for i in 0..<CommandLine.argc {
+	ADD_ARG(CommandLine.unsafeArgv[Int(i)]!)
 }
 
 //if Process.argc == 1 {
-	NSApplicationMain(Process.argc, Process.unsafeArgv)
+	let ret = NSApplicationMain(CommandLine.argc, CommandLine.unsafeArgv)
+	exit(ret)
 //} else {
 //	SDL_main(Process.argc, Process.unsafeArgv)
 //}
