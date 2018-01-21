@@ -9,7 +9,7 @@
 #import "XattrResFork.h"
 #include <sys/xattr.h>
 
-typedef struct  {
+typedef struct fmem {
 	ssize_t pos;
 	char *buffer;
 	size_t size;

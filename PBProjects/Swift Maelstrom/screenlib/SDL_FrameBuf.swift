@@ -44,7 +44,7 @@ private func memswap(_ dst2: UnsafeMutablePointer<UInt8>, src src2: UnsafeMutabl
 }
 
 class FrameBuf {
-	enum clipval {
+	enum Clip {
 		case doclip
 		case noclip
 	}
@@ -65,6 +65,22 @@ class FrameBuf {
 
 	func clipBlit(_ cliprect: SDL_Rect) {
 		clip = cliprect
+	}
+	
+	private func ADJUSTX(_ x: inout Int16) {
+		if x < 0 {
+			x = 0
+		} else if x > screen!.pointee.w {
+			x = Int16(screen!.pointee.w)
+		}
+	}
+	
+	private func ADJUSTY(_ x: inout Int16) {
+		if x < 0 {
+			x = 0
+		} else if x > screen!.pointee.h {
+			x = Int16(screen!.pointee.h)
+		}
 	}
 	
 	/* List of loaded images */
@@ -165,7 +181,7 @@ class FrameBuf {
 		/* Create a dirty rectangle map of the screen */
 		dirtypitch = UInt16(LOWER_PREC(width))
 		dirtymaplen = UInt16(LOWER_PREC(height)) * dirtypitch;
-		dirtymap   = [UnsafeMutablePointer<SDL_Rect>?](repeating: nil, count: Int(dirtymaplen))
+		dirtymap   = [SDL_Rect?](repeating: nil, count: Int(dirtymaplen))
 		
 		/* Create the update list */
 		updatelist = [SDL_Rect](repeating: SDL_Rect(), count: FrameBuf.UPDATE_CHUNK)
@@ -310,7 +326,7 @@ SDL_SetWindowGammaRamp(window, ramp, ramp, ramp);
 		dirty.y = Int32(y)
 		dirty.w = 1;
 		dirty.h = 1;
-		addDirtyRect(&dirty);
+		addDirtyRect(dirty);
 	}
 	
 	///Simple, slow, line drawing algorithm.  Improvement, anyone? :-)
@@ -487,46 +503,43 @@ AddDirtyRect(&dirty);
 		fillRect(x: Int16(x), y: Int16(y), w: Int16(w), h: Int16(h), color: color)
 	}
 	
-	func fillRect(x: Int16, y: Int16, w: Int16, h: Int16, color: UInt32) {
-		//TODO: implement
+	func fillRect(x x1: Int16, y y1: Int16, w w1: Int16, h h1: Int16, color: UInt32) {
+		var dirty = SDL_Rect()
+		var x = x1
+		var y = y1
+		var w = w1
+		var h = h1
+		ADJUSTX(&x)
+		ADJUSTY(&y)
+		if Int32(x+w) > screen!.pointee.w {
+			w = Int16(screen!.pointee.w - Int32(x))
+		}
+		if Int32(y+h) > screen!.pointee.h {
+			h = Int16(screen!.pointee.h - Int32(y))
+		}
+		
+		/* Set the dirty rectangle */
 
+		dirty.x = Int32(x)
+		dirty.y = Int32(y)
+		dirty.w = Int32(w)
+		dirty.h = Int32(h)
+
+		/* Semi-efficient, for now. :) */
+		LOCK_IF_NEEDED()
+		let screen_bpp = screen!.pointee.format!.pointee.BytesPerPixel
+		var screen_loc = screen_mem!.advanced(by: Int(y) * Int(screen!.pointee.pitch) + Int(x) * Int(screen_bpp))
+		let skip = Int(screen!.pointee.pitch - (Int32(w) * Int32(screen_bpp)))
+		while h > 0 {
+			h -= 1
+			for _ in (0 ..< w).reversed() {
+				putPixel!(screen_loc, screen, color)
+				screen_loc = screen_loc.advanced(by: Int(screen_bpp))
+			}
+			screen_loc = screen_loc.advanced(by: skip)
+		}
+		addDirtyRect(dirty)
 	}
-	
-	/*
-	
-void
-FrameBuf:: FillRect(Sint16 x, Sint16 y, Uint16 w, Uint16 h, Uint32 color)
-{
-SDL_Rect dirty;
-Uint16 i, skip;
-Uint8 screen_bpp;
-Uint8 *screen_loc;
-
-/* Adjust the bounds */
-ADJUSTX(x); ADJUSTY(y);
-if ( (x+w) > screen->w ) w = (screen->w-x);
-if ( (y+h) > screen->h ) h = (screen->h-y);
-
-/* Set the dirty rectangle */
-dirty.x = x;
-dirty.y = y;
-dirty.w = w;
-dirty.h = h;
-
-/* Semi-efficient, for now. :) */
-LOCK_IF_NEEDED();
-screen_bpp = screen->format->BytesPerPixel;
-screen_loc = screen_mem + y*screen->pitch + x*screen_bpp;
-skip = screen->pitch - (w*screen_bpp);
-while ( h-- ) {
-for ( i=w; i!=0; --i ) {
-PutPixel(screen_loc, screen, color);
-screen_loc += screen_bpp;
-}
-screen_loc += skip;
-}
-AddDirtyRect(&dirty);
-}*/
 	
 	/* Setup routines */
 	func setPalette(_ colors: UnsafePointer<SDL_Color>) {
@@ -556,8 +569,7 @@ AddDirtyRect(&dirty);
 		focusFG();
 	}
 
-	func clear(x: Int16, y: Int16, w w1: UInt16, h h1: UInt16,
-		do_clip: clipval = .noclip) {
+	func clear(x: Int16, y: Int16, w w1: UInt16, h h1: UInt16, do_clip: Clip = .noclip) {
 			var w = Int(w1)
 			var h = Int32(h1)
 			/* If we're focused on the foreground, copy from background */
@@ -589,7 +601,7 @@ AddDirtyRect(&dirty);
 
 	func queueBlit(destinationPosition dstPos: (x: Int32, y: Int32),
 		source src: UnsafeMutablePointer<SDL_Surface>, sourcePosition srcPos: (x: Int32, y: Int32),
-		size: (w: Int32, h: Int32), clip do_clip: clipval) {
+		size: (w: Int32, h: Int32), clip do_clip: Clip) {
 			var diff: Int32 = 0
 			var w = size.w
 			var h = size.h
@@ -654,16 +666,16 @@ AddDirtyRect(&dirty);
 			blitQ[blitQlen].dstrect.y = dsty;
 			blitQ[blitQlen].dstrect.w = w;
 			blitQ[blitQlen].dstrect.h = h;
-			addDirtyRect(&blitQ[blitQlen].dstrect);
+			addDirtyRect(blitQ[blitQlen].dstrect);
 			blitQlen += 1;
 	}
 
 	func queueBlit(dstx: Int32, dsty: Int32, src: UnsafeMutablePointer<SDL_Surface>,
-		srcx: Int32, srcy: Int32, w: Int32, h: Int32, do_clip: clipval) {
+		srcx: Int32, srcy: Int32, w: Int32, h: Int32, do_clip: Clip) {
 		queueBlit(destinationPosition: (x: dstx, y: dsty), source: src, sourcePosition: (srcx, srcy), size: (w, h), clip: do_clip)
 	}
 	
-	func queueBlit(x: Int32, y: Int32, src: UnsafeMutablePointer<SDL_Surface>, do_clip: clipval = .doclip) {
+	func queueBlit(x: Int32, y: Int32, src: UnsafeMutablePointer<SDL_Surface>, do_clip: Clip = .doclip) {
 		queueBlit(dstx: x, dsty: y, src: src, srcx: 0, srcy: 0, w: src.pointee.w, h: src.pointee.h, do_clip: do_clip);
 	}
 
@@ -699,20 +711,36 @@ AddDirtyRect(&dirty);
 	
 	//MARK: Rectangle update list
 	static let UPDATE_CHUNK = QUEUE_CHUNK*2
-/** Add a rectangle to the update list
-This is a little bit smart -- if the center nearly overlaps the center
-of another rectangle update, expand the existing rectangle to include
-the new area, instead adding another update rectangle.
-*/
-	fileprivate func addDirtyRect(_ rect: UnsafeMutablePointer<SDL_Rect>) {
-		
+	/** Add a rectangle to the update list
+	This is a little bit smart -- if the center nearly overlaps the center
+	of another rectangle update, expand the existing rectangle to include
+	the new area, instead adding another update rectangle.
+	*/
+	fileprivate func addDirtyRect(_ rect: SDL_Rect) {
+		let mapoffset = Int((rect.y + rect.h/2)/16) * Int(dirtypitch) + (Int(rect.x + rect.w / 2)/16)
+		/* Overlapping dirty rectangle -- expand it */
+		if var newrect = dirtymap[mapoffset] {
+			let x1 = min(rect.x, newrect.x)
+			let y1 = min(rect.y, newrect.y)
+			let x2 = max(rect.x + rect.w, newrect.x + newrect.w)
+			let y2 = max(rect.y + rect.h, newrect.y + newrect.h)
+			newrect.x = x1
+			newrect.y = y1
+			newrect.w = x2 - x1
+			newrect.h = y2 - y1
+			dirtymap[mapoffset] = newrect
+		} else {
+			updatelen += 1
+			dirtymap.append(rect)
+		}
 	}
+	
 	fileprivate var updatelen = 0
 	fileprivate var updatemax = 0
 	fileprivate var updatelist = [SDL_Rect]()
 	fileprivate var dirtypitch: UInt16 = 0
 	fileprivate var dirtymaplen: UInt16 = 0
-	fileprivate var dirtymap = [UnsafeMutablePointer<SDL_Rect>?]()
+	fileprivate var dirtymap = [SDL_Rect?]()
 	fileprivate func clearDirtyList() {
 		updatelen = 0;
 		for i in 0..<dirtymap.count {

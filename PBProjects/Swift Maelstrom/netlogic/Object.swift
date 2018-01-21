@@ -162,6 +162,14 @@ mask2 += object->xsize;
 }
 return(0);
 }
+	*/
+	
+	///Should be called in main loop -- return (-1) if dead
+	func hitBy(_ ship: MaelObject) -> Int32 {
+		
+		return 0
+	}
+	/*
 /* Should be called in main loop -- return (-1) if dead */
 virtual int HitBy(Object *ship) {
 Shot *shot;
@@ -175,6 +183,16 @@ return(-1);
 return(0);
 }
 
+	*/
+	
+	/// We've been shot!  (returns 1 if we are dead)
+	func beenShot(by ship: MaelObject, shot: Shot) -> Int32 {
+		
+		return 0
+	}
+	
+	/*
+	
 /* We've been shot!  (returns 1 if we are dead) */
 virtual int BeenShot(Object *ship, Shot *shot) {
 if ( (HitPoints -= shot->damage) <= 0 ) {
@@ -188,21 +206,31 @@ Accelerate(shot->xvel/2, shot->yvel/2);
 }
 return(0);
 }
-
-/* We've been run over!  (returns 1 if we are dead) */
-virtual int BeenRunOver(Object *ship) {
-if ( ship->IsPlayer() )
-ship->BeenDamaged(PLAYER_HITS);
-if ( (HitPoints -= 1) <= 0 ) {
-ship->IncrScore(Points);
-return(Explode());
-} else {
-HitSound();
-ship->Accelerate(xvec/2, yvec/2);
-}
-return(0);
-}
 */
+	
+	/// We've been run over!  (returns 1 if we are dead)
+	func beenRunOver(by ship: MaelObject) -> Int32 {
+		if ship.isPlayer {
+			ship.beenDamaged(PLAYER_HITS)
+		}
+		hitPoints -= 1
+		if hitPoints <= 0 {
+			ship.increaseScore(points)
+			return explode()
+		} else {
+			hitSound()
+			ship.accelerate(xVec: vec.x / 2, yVec: vec.y / 2)
+		}
+		return 0
+	}
+	
+	func increaseScore(_ pts: Int32) {
+		
+	}
+	
+	func increaseFrags() {
+		
+	}
 	
 	/** We've been globally damaged!  (returns 1 if we are dead) */
 	func beenDamaged(_ damage: Int32) -> Int32 {
@@ -322,9 +350,86 @@ final class Nova :  MaelObject {
 
 final class Prize: MaelObject {
 	
+	init(X: Int32, Y: Int32, Xvec: Int32, Yvec: Int32) {
+		super.init(X: X, Y: Y, Xvec: Xvec, Yvec: Yvec, blit: gPrize, phaseTime: 2)
+		setTTL(PRIZE_DURATION)
+		sound.playSound(.prizeAppears, priority: 4)
+	}
+	
 	override func explodeSound() {
 		sound.playSound(.idiot, priority: 4)
 	}
+	
+	/*
+Prize(int X, int Y, int xVel, int yVel);
+~Prize() { }
+
+/* When we are run over, we give prizes! */
+int BeenRunOver(Object *ship) {
+int i;
+
+if ( ! ship->IsPlayer() || ! ship->Alive() )
+return(0);
+
+switch (FastRandom(NUM_PRIZES)) {
+case 0:
+/* -- They got machine guns! */
+ship->SetSpecial(MACHINE_GUNS);
+break;
+case 1:
+/* -- They got Air brakes */
+ship->SetSpecial(AIR_BRAKES);
+break;
+case 2:
+/* -- They might get Lucky */
+ship->SetSpecial(LUCKY_IRISH);
+break;
+case 3:
+/* -- They triple fire */
+ship->SetSpecial(TRIPLE_FIRE);
+break;
+case 4:
+/* -- They got long range */
+ship->SetSpecial(LONG_RANGE);
+break;
+case 5:
+/* -- They got more shields */
+ship->IncrShieldLevel((MAX_SHIELD/5)+
+FastRandom(MAX_SHIELD/2));
+break;
+case 6:
+/* -- Put 'em on ICE */
+sound->PlaySound(gFreezeSound, 4);
+gFreezeTime = FREEZE_DURATION;
+break;
+case 7:
+/* Blow up everything */
+sound->PlaySound(gNovaBoom, 5);
+OBJ_LOOP(i, gNumSprites) {
+if ( gSprites[i] == this )
+continue;
+if (gSprites[i]->BeenDamaged(1) < 0) {
+delete gSprites[i];
+gSprites[i] = gSprites[gNumSprites];
+}
+}
+OBJ_LOOP(i, gNumPlayers)
+gPlayers[i]->CutThrust(SHAKE_DURATION);
+gShakeTime = SHAKE_DURATION;
+break;
+}
+sound->PlaySound(gGotPrize, 4);
+return(1);
+}
+
+int BeenTimedOut(void) {
+/* If we time out, we explode, then die. */
+if ( Exploding )
+return(-1);
+else
+return(Explode());
+}
+*/
 }
 
 final class Bonus: MaelObject {
@@ -335,6 +440,16 @@ final class Bonus: MaelObject {
 			sound.playSound(.multiplierGone, priority: 4)
 		}
 		return -1
+	}
+	
+	override func beenShot(by ship: MaelObject, shot: Shot) -> Int32 {
+		
+		
+		return 0
+	}
+	
+	override func beenDamaged(_ damage: Int32) -> Int32 {
+		return 0
 	}
 	
 	override func shake(_ shakiness: Int32) {
@@ -371,6 +486,10 @@ error("Created a damaged ship!\n");
 		} else {
 			return -1
 		}
+	}
+	
+	override func explode() -> Int32 {
+		return 0
 	}
 	
 	/*
@@ -433,6 +552,22 @@ error("Created a damaged ship!\n");
 	*/
 	override func explodeSound() {
 		sound.playSound(.shipHit, priority: 5)
+	}
+}
+
+final class Shrapnel: MaelObject {
+	
+	init(X: Int32, Y: Int32, Xvec: Int32, Yvec: Int32, blit: Blit) {
+		super.init(X: X, Y: Y, Xvec: Xvec, Yvec: Yvec, blit: blit, phaseTime: 2)
+		solid = false
+		shootable = false
+		phase = 0;
+		timeToLive = Int32(myBlit.sprites.count) * phaseTime
+		
+	}
+	
+	override func beenDamaged(_ damage: Int32) -> Int32 {
+		return 0
 	}
 }
 
