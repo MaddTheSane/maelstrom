@@ -164,7 +164,7 @@ return(0);
 }
 	*/
 	
-	///Should be called in main loop -- return (-1) if dead
+	///Should be called in main loop -- return `-1` if dead
 	func hitBy(_ ship: MaelObject) -> Int32 {
 		
 		return 0
@@ -187,26 +187,19 @@ return(0);
 	
 	/// We've been shot!  (returns 1 if we are dead)
 	func beenShot(by ship: MaelObject, shot: Shot) -> Int32 {
-		
+		hitPoints -= shot.damage
+		if hitPoints <= 0 {
+			ship.increaseScore(points)
+			if isPlayer {
+				ship.increaseFrags()
+			}
+			return explode()
+		} else {
+			hitSound()
+			accelerate(xVec: shot.xvel / 2, yVec: shot.yvel / 2)
+		}
 		return 0
 	}
-	
-	/*
-	
-/* We've been shot!  (returns 1 if we are dead) */
-virtual int BeenShot(Object *ship, Shot *shot) {
-if ( (HitPoints -= shot->damage) <= 0 ) {
-ship->IncrScore(Points);
-if ( IsPlayer() )
-ship->IncrFrags();
-return(Explode());
-} else {
-HitSound();
-Accelerate(shot->xvel/2, shot->yvel/2);
-}
-return(0);
-}
-*/
 	
 	/// We've been run over!  (returns 1 if we are dead)
 	func beenRunOver(by ship: MaelObject) -> Int32 {
@@ -241,8 +234,6 @@ return(0);
 		hitSound()
 		return 0
 	}
-
-	
 
 	/** What happens when we have been shot up or crashed into. */
 	/** Returns 1 if we die here, instead of go into explosion */
@@ -290,21 +281,67 @@ return(0);
 		hitRect.top = myBlit.hitRect.top+Int16(position.y>>Int32(SPRITE_PRECISION))
 		hitRect.bottom = myBlit.hitRect.bottom+Int16(position.y>>Int32(SPRITE_PRECISION))
 	}
-	/*
-virtual void Phase(void) {
-if ( phasetime != NO_PHASE_CHANGE ) {
-if ( nextphase++ >= phasetime ) {
-nextphase = 0;
-if ( ++phase >= myblit->numFrames )
-phase = 0;
+	
+	func doPhase() {
+		if phaseTime != NO_PHASE_CHANGE {
+			let lastNextPhase = nextPhase
+			nextPhase += 1
+			if lastNextPhase >= phaseTime {
+				nextPhase = 0
+				phase += 1
+				if Int(phase) >= myBlit.sprites.count {
+					phase = 0
+				}
+			}
+		}
+	}
+	
+	/* Player access functions (not used here) */
+	func setSpecial(_ spec: Player.Features) {
+		
+	}
+	
+	func increaseShieldLevel(_ level: Int32) {
+		
+	}
+	
+	func multiplier(_ multiplier: Int32) {
+		
+	}
+	
+	func increaseBonus(_ bonus: Int32) {
+		
+	}
+	
+	func increaseLives(_ lives: Int32) {
+		
+	}
 }
-}
-}
-*/
+
+final class Multiplier: MaelObject {
+	private var multiplier: Int32 = 0
+	
+	override func beenShot(by ship: MaelObject, shot: Shot) -> Int32 {
+		ship.multiplier(multiplier)
+		sound.playSound(.multShot, priority: 4)
+		return 1
+	}
+	
+	override func beenDamaged(_ damage: Int32) -> Int32 {
+		return 0
+	}
+	
+	override func beenTimedOut() -> Int32 {
+		sound.playSound(.multiplierGone, priority: 4)
+		return -1
+	}
+	
+	override func shake(_ shakiness: Int32) {
+		//do nothing
+	}
 }
 
 final class Nova :  MaelObject {
-
 	init(x: Int32, y: Int32) {
 		super.init(X: x, Y: y, Xvec: 0, Yvec: 0, blit: gNova, phaseTime: 4)
 		timeToLive = Int32(gNova.sprites.count) * phaseTime
@@ -319,30 +356,23 @@ final class Nova :  MaelObject {
 	override func beenTimedOut() -> Int32 {
 		if !exploding {
 			sound.playSound(.novaBoom, priority: 5)
+			for i in (0 ..< gNumSprites).reversed() {
+				if gSprites[i] === self {
+					continue
+				}
+				if gSprites[i].beenDamaged(1) < 0 {
+					gSprites[i] = gSprites[gNumSprites]
+				}
+			}
+			for i in (0 ..< gNumPlayers).reversed() {
+				Player.players[Int(i)]!.cutThrust(SHAKE_DURATION)
+			}
+			gShakeTime = SHAKE_DURATION
 		}
 		
 		return -1
 	}
-	/*
-	int BeenTimedOut(void) {
-	if ( ! Exploding ) {
-	int i;
-	sound->PlaySound(gNovaBoom, 5);
-	OBJ_LOOP(i, gNumSprites) {
-	if ( gSprites[i] == this )
-	continue;
-	if (gSprites[i]->BeenDamaged(1) < 0) {
-	delete gSprites[i];
-	gSprites[i] = gSprites[gNumSprites];
-	}
-	}
-	OBJ_LOOP(i, gNumPlayers)
-	gPlayers[i]->CutThrust(SHAKE_DURATION);
-	gShakeTime = SHAKE_DURATION;
-	}
-	return(-1);
-	}
-	*/
+
 	override func shake(_ shakiness: Int32) {
 		//Do nothing
 	}
@@ -360,80 +390,88 @@ final class Prize: MaelObject {
 		sound.playSound(.idiot, priority: 4)
 	}
 	
-	/*
-Prize(int X, int Y, int xVel, int yVel);
-~Prize() { }
+	/* When we are run over, we give prizes! */
+	override func beenRunOver(by ship: MaelObject) -> Int32 {
+		
+		guard ship.isPlayer, ship.alive else {
+			return 0
+		}
+		
+		let prize = FastRandom(UInt16(NUM_PRIZES))
+		switch prize {
+		case 0:
+			/* -- They got machine guns! */
+			ship.setSpecial(.machineGuns)
 
-/* When we are run over, we give prizes! */
-int BeenRunOver(Object *ship) {
-int i;
+		case 1:
+			/* -- They got Air brakes */
+			ship.setSpecial(.airBrakes)
+			
+		case 2:
+			/* -- They might get Lucky */
+			ship.setSpecial(.luckyIrish)
+			
+		case 3:
+			/* -- They triple fire */
+			ship.setSpecial(.tripleFire)
 
-if ( ! ship->IsPlayer() || ! ship->Alive() )
-return(0);
+		case 4:
+			/* -- They got long range */
+			ship.setSpecial(.longRange)
 
-switch (FastRandom(NUM_PRIZES)) {
-case 0:
-/* -- They got machine guns! */
-ship->SetSpecial(MACHINE_GUNS);
-break;
-case 1:
-/* -- They got Air brakes */
-ship->SetSpecial(AIR_BRAKES);
-break;
-case 2:
-/* -- They might get Lucky */
-ship->SetSpecial(LUCKY_IRISH);
-break;
-case 3:
-/* -- They triple fire */
-ship->SetSpecial(TRIPLE_FIRE);
-break;
-case 4:
-/* -- They got long range */
-ship->SetSpecial(LONG_RANGE);
-break;
-case 5:
-/* -- They got more shields */
-ship->IncrShieldLevel((MAX_SHIELD/5)+
-FastRandom(MAX_SHIELD/2));
-break;
-case 6:
-/* -- Put 'em on ICE */
-sound->PlaySound(gFreezeSound, 4);
-gFreezeTime = FREEZE_DURATION;
-break;
-case 7:
-/* Blow up everything */
-sound->PlaySound(gNovaBoom, 5);
-OBJ_LOOP(i, gNumSprites) {
-if ( gSprites[i] == this )
-continue;
-if (gSprites[i]->BeenDamaged(1) < 0) {
-delete gSprites[i];
-gSprites[i] = gSprites[gNumSprites];
-}
-}
-OBJ_LOOP(i, gNumPlayers)
-gPlayers[i]->CutThrust(SHAKE_DURATION);
-gShakeTime = SHAKE_DURATION;
-break;
-}
-sound->PlaySound(gGotPrize, 4);
-return(1);
-}
+		case 5:
+			/* -- They got more shields */
+			ship.increaseShieldLevel(MAX_SHIELD/5 + Int32(FastRandom(Uint16(MAX_SHIELD/2))))
 
-int BeenTimedOut(void) {
-/* If we time out, we explode, then die. */
-if ( Exploding )
-return(-1);
-else
-return(Explode());
-}
-*/
+		case 6:
+			/* -- Put 'em on ICE */
+			sound.playSound(.freeze, priority: 4)
+			gFreezeTime = FREEZE_DURATION;
+
+		case 7:
+			/* Blow up everything */
+			sound.playSound(.novaBoom, priority: 5)
+			for i in (0 ..< gNumSprites).reversed() {
+				if gSprites[i] === self {
+					continue
+				}
+				
+				if gSprites[i].beenDamaged(1) < 0 {
+					gSprites[i] = gSprites[gNumSprites]
+				}
+			}
+			for i in (0 ..< gNumPlayers).reversed() {
+				Player.players[Int(i)]!.cutThrust(SHAKE_DURATION)
+				gShakeTime = SHAKE_DURATION
+			}
+
+		default:
+			fatalError("Unknown random number \(prize) outside of prize range!")
+		}
+		
+		sound.playSound(.gotPrize, priority: 4)
+		return 1
+	}
+	
+	override func beenTimedOut() -> Int32 {
+		/* If we time out, we explode, then die. */
+		if exploding {
+			return -1
+		} else {
+			return explode()
+		}
+	}
 }
 
 final class Bonus: MaelObject {
-	fileprivate var bonus = 0
+	private var bonus: Int32
+	init(X: Int32, Y: Int32, Xvec: Int32, Yvec: Int32, bonus: Int32) {
+		self.bonus = bonus
+		super.init(X: X, Y: Y, Xvec: Xvec, Yvec: Yvec, blit: gBonusBlit, phaseTime: 2)
+		setTTL(BONUS_DURATION)
+		solid = false
+		sound.playSound(.bonusAppears, priority: 4)
+	}
 	
 	override func beenTimedOut() -> Int32 {
 		if bonus != 0 {
@@ -443,8 +481,19 @@ final class Bonus: MaelObject {
 	}
 	
 	override func beenShot(by ship: MaelObject, shot: Shot) -> Int32 {
+		/* Increment the ship's bonus. :) */
+		ship.increaseBonus(bonus)
+		sound.playSound(.bonusShot, priority: 4)
 		
+		/* Display point bonus */
+		shootable = false
+		myBlit = gPointBlit
+		phaseTime = NO_PHASE_CHANGE
+		phase = bonus / 1000
+		setTTL(POINT_DURATION)
+		vec = (0,0)
 		
+		bonus = 0
 		return 0
 	}
 	
@@ -458,27 +507,17 @@ final class Bonus: MaelObject {
 }
 
 final class DamagedShip : MaelObject {
-/*
-DamagedShip::DamagedShip(int X, int Y, int xVel, int yVel) :
-Object(X, Y, xVel, yVel, gDamagedShip, 1)
-{
-Set_TTL(DAMAGED_DURATION*phasetime);
-sound->PlaySound(gDamagedAppears, 4);
-#ifdef SERIOUS_DEBUG
-error("Created a damaged ship!\n");
-#endif
-}
-*/
-	//DamagedShip(int X, int Y, int xVel, int yVel);
-	//~DamagedShip() { }
-	
-	/*
-	int BeenRunOver(Object *ship) {
-		ship->IncrLives(1);
-		sound->PlaySound(gSavedShipSound, 4);
-		return(1);
+	init(X: Int32, Y: Int32, Xvec: Int32, Yvec: Int32) {
+		super.init(X: X, Y: Y, Xvec: Xvec, Yvec: Yvec, blit: gDamagedShip, phaseTime: 1)
+		setTTL(DAMAGED_DURATION * phaseTime)
+		sound.playSound(.damagedAppears, priority: 4)
 	}
-	*/
+	
+	override func beenRunOver(by ship: MaelObject) -> Int32 {
+		ship.increaseLives(1)
+		sound.playSound(.savedShip, priority: 4)
+		return 1
+	}
 	
 	override func beenTimedOut() -> Int32 {
 		if !exploding {
@@ -489,67 +528,68 @@ error("Created a damaged ship!\n");
 	}
 	
 	override func explode() -> Int32 {
-		return 0
-	}
-	
-	/*
-	
-	int Explode(void) {
 		/* Create some shrapnel */
-		int newsprite, xVel, yVel, rx;
-		
+
 		/* Don't do anything if we're already exploding */
-		if ( Exploding ) {
-			return(0);
+		if exploding {
+			return 0
 		}
 		
 		/* Type 1 shrapnel */
-		rx = (SCALE_FACTOR);
-		xVel = yVel = 0;
+		let rx = SCALE_FACTOR
+		var xVel: Int32 = 0
+		var yVel: Int32 = 0
+
+		while xVel == 0 {
+			xVel = Int32(FastRandom(UInt16(rx / 2))) + SCALE_FACTOR
+		}
+		while yVel == 0 {
+			yVel = Int32(FastRandom(UInt16(rx/2))) - rx / 2
+		}
+		if yVel > 0 {
+			yVel += SCALE_FACTOR
+		} else {
+			yVel -= SCALE_FACTOR;
+		}
 		
-		while (xVel == 0)
-		xVel = FastRandom(rx / 2) + SCALE_FACTOR;
-		while (yVel == 0)
-		yVel = FastRandom(rx) - (rx / 2);
-		if (yVel > 0)
-		yVel += SCALE_FACTOR;
-		else
-		yVel -= SCALE_FACTOR;
-		
-		newsprite = gNumSprites;
-		gSprites[newsprite]=new Shrapnel(x, y, xVel, yVel, gShrapnel1);
-		
+		var newsprite = gNumSprites
+		gSprites[newsprite] = Shrapnel(X: position.x, Y: position.y, Xvec: xVel, Yvec: yVel, blit: gShrapnel1)
+
 		/* Type 2 shrapnel */
-		rx = (SCALE_FACTOR);
-		xVel = yVel = 0;
+		xVel = 0
+		yVel = 0
+
+		while xVel == 0 {
+			xVel = Int32(FastRandom(UInt16(rx / 2))) + SCALE_FACTOR
+		}
+		xVel *= -1
+		while yVel == 0 {
+			yVel = Int32(FastRandom(UInt16(rx/2))) - rx / 2
+		}
+		if yVel > 0 {
+			yVel += SCALE_FACTOR
+		} else {
+			yVel -= SCALE_FACTOR;
+		}
 		
-		while (xVel == 0)
-		xVel = FastRandom(rx / 2) + SCALE_FACTOR;
-		xVel *= -1;
-		while (yVel == 0)
-		yVel = FastRandom(rx) - (rx / 2);
-		if (yVel > 0)
-		yVel += SCALE_FACTOR;
-		else
-		yVel -= SCALE_FACTOR;
-		
-		newsprite = gNumSprites;
-		gSprites[newsprite]=new Shrapnel(x, y, xVel, yVel, gShrapnel2);
-		
+		newsprite = gNumSprites
+		gSprites[newsprite] = Shrapnel(X: position.x, Y: position.y, Xvec: xVel, Yvec: yVel, blit: gShrapnel2)
+
 		/* Finish our explosion */
-		Exploding = 1;
-		solid = 0;
-		shootable = 0;
+		exploding = true;
+		solid = false;
+		shootable = false;
 		phase = 0;
-		nextphase = 0;
-		phasetime = 2;
-		xvec = yvec = 0;
-		myblit = gShipExplosion;
-		TTL = (myblit->numFrames*phasetime);
-		ExplodeSound();
-		return(0);
+		nextPhase = 0;
+		phaseTime = 2;
+		vec = (0, 0)
+		myBlit = gShipExplosion;
+		timeToLive = Int32(myBlit.sprites.count) * phaseTime
+		explodeSound()
+
+		return 0
 	}
-	*/
+	
 	override func explodeSound() {
 		sound.playSound(.shipHit, priority: 5)
 	}

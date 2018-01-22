@@ -190,4 +190,7 @@ func haltNetData() {
 	SDLNet_Quit();
 }
 
+#else
+let gNumPlayers: Int32 = 1
+
 #endif

@@ -63,7 +63,7 @@ let SOUND_DELAY:UInt32 = 6
 let FADE_STEPS = 40
 
 /// Time in 60'th of second between frames
-let FRAME_DELAY = 2
+let FRAME_DELAY: Int32 = 2
 
 let buttons = ButtonList()
 

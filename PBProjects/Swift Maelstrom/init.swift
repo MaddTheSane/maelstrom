@@ -9,6 +9,8 @@
 import Foundation
 import SDL2
 
+var gLastDrawn = 0
+var gNumSprites = 0
 var gLastHigh: Int32 = -1
 
 var gScrnRect = Rect()
@@ -206,7 +208,7 @@ private func loadBlits(_ spriteres: MacResource) throws {
 		
 		/* -- Load in the enemy ship */
 		
-		gEnemyShip2 = try Blit(largeSprite: (), resource: spriteres, baseID: 1700, frames: 40)
+		gEnemyShip = try Blit(largeSprite: (), resource: spriteres, baseID: 1700, frames: 40)
 		drawLoadBar(0);
 		
 		/* -- Load in the enemy ship */
@@ -296,8 +298,8 @@ private func initStars() {
 
 private func initSprites() -> Bool {
 	/* Initialize sprite variables */
-	//gNumSprites = 0;
-	//gLastDrawn = 0L;
+	gNumSprites = 0;
+	gLastDrawn = 0
 	
 	/* Initialize player sprites */
 	return(initPlayerSprites());

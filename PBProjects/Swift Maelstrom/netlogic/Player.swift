@@ -9,33 +9,42 @@
 import Foundation
 import SDL2
 
+let MAX_PLAYERS = 3
+
 final class Player: MaelObject {
 	///Special features of the player
-	struct PlayerFeatures: OptionSet {
+	struct Features: OptionSet {
 		let rawValue: UInt8
 		init(rawValue rv: UInt8) {
 			rawValue = rv
 		}
 		
-		static var machineGuns: PlayerFeatures {
-			return PlayerFeatures(rawValue: 0x01)
+		/// The players!!
+		static var players = [Player?](repeating: nil, count: MAX_PLAYERS)
+		
+		static var machineGuns: Features {
+			return Features(rawValue: 0x01)
 		}
-		static var airBrakes: PlayerFeatures {
-			return PlayerFeatures(rawValue: 0x02)
+		static var airBrakes: Features {
+			return Features(rawValue: 0x02)
 		}
-		static var tripleFire: PlayerFeatures {
-			return PlayerFeatures(rawValue: 0x04)
+		static var tripleFire: Features {
+			return Features(rawValue: 0x04)
 		}
-		static var longRange: PlayerFeatures {
-			return PlayerFeatures(rawValue: 0x08)
+		static var longRange: Features {
+			return Features(rawValue: 0x08)
 		}
-		static var luckyIrish: PlayerFeatures {
-			return PlayerFeatures(rawValue: 0x80)
+		static var luckyIrish: Features {
+			return Features(rawValue: 0x80)
 		}
 	}
 	
 	override var isPlayer: Bool {
 		return true
+	}
+	
+	func cutThrust(_ dur: Int32) {
+		
 	}
 	
 	// MARK: The Shot sprites for the Shinobi and Player
