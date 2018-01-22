@@ -11,6 +11,10 @@ import SDL2
 
 private var pid: Int32 = -1;
 
+func colorsAtGamma(_ gamma: UInt8) -> UnsafeBufferPointer<SDL_Color> {
+	let toRet2 = __colorsAtGamma(gamma)
+	return UnsafeBufferPointer(start: toRet2, count: 256)
+}
 
 class SDLMain : NSObject, NSApplicationDelegate {
 	@IBOutlet weak var fragCount: NSTextField!
@@ -119,7 +123,9 @@ class SDLMain : NSObject, NSApplicationDelegate {
 		//Bundle.main.executablePath
 		//var parentdir = [Int8](count: Int(MAXPATHLEN), repeatedValue: 0)
 		//strcpy(&parentdir, gArgv[0])
-		gArgv[0] = strdup((Bundle.main.resourceURL!.appendingPathComponent("Maelstrom.app") as NSURL).fileSystemRepresentation)
+		gArgv[0] = Bundle.main.resourceURL!.appendingPathComponent("Maelstrom.app").withUnsafeFileSystemRepresentation { (path) -> UnsafeMutablePointer<Int8> in
+			return strdup(path)
+		}
 		gArgc = 1
 		
 		atexit_b { () -> Void in

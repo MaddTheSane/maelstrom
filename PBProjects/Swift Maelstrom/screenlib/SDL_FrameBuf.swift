@@ -147,7 +147,7 @@ class FrameBuf {
 		}
 	}
 	
-	init(width: Int32, height: Int32, videoFlags: UInt32, colors: UnsafePointer<SDL_Color>? = nil, icon: UnsafeMutablePointer<SDL_Surface>? = nil) throws {
+	init(width: Int32, height: Int32, videoFlags: UInt32, colors: UnsafeBufferPointer<SDL_Color>? = nil, icon: UnsafeMutablePointer<SDL_Surface>? = nil) throws {
 		window = SDL_CreateWindow("title", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, videoFlags);
 		if window == nil {
 			error = String(format: "Couldn't create window: %s", SDL_GetError())
@@ -201,8 +201,8 @@ class FrameBuf {
 		
 		/* Copy the image colormap and set a black background */
 		setBackground(R: 0, G: 0, B: 0);
-		if colors != nil {
-			setPalette(colors!);
+		if let colors = colors {
+			setPalette(colors)
 		}
 		
 		/* Figure out what putpixel routine to use */
@@ -542,19 +542,17 @@ AddDirtyRect(&dirty);
 	}
 	
 	/* Setup routines */
-	func setPalette(_ colors: UnsafePointer<SDL_Color>) {
-		//int i;
-		
+	func setPalette(_ colors: UnsafeBufferPointer<SDL_Color>) {
 		if screenfg?.pointee.format.pointee.palette != nil {
-			let palette = SDL_AllocPalette(256);
-			SDL_SetPaletteColors(palette, colors, 0, 256);
+			let palette = SDL_AllocPalette(Int32(colors.count))
+			SDL_SetPaletteColors(palette, colors.baseAddress, 0, Int32(colors.count))
 			SDL_SetSurfacePalette(screenfg, palette);
 			SDL_SetSurfacePalette(screenbg, screenfg?.pointee.format.pointee.palette);
 			SDL_FreePalette(palette);
 		}
-		for i in 0..<256 {
+		for (i, color) in colors.enumerated() {
 			image_map[i] = SDL_MapRGB(screenfg?.pointee.format,
-				colors[i].r, colors[i].g, colors[i].b);
+				color.r, color.g, color.b);
 		}
 		setBackground(R: BGrgb.0, G: BGrgb.1, B: BGrgb.2);
 	}

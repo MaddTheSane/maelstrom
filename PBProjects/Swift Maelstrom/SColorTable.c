@@ -2353,7 +2353,7 @@ static const SDL_Color colors[1+MAX_GAMMA][256] = {
 	},
 };
 
-const SDL_Color *colorsAtGamma(int gamma)
+const SDL_Color *colorsAtGamma(unsigned char gamma)
 {
 	return colors[gamma];
 }

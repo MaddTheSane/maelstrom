@@ -21,8 +21,10 @@ extension String {
 		if aChar == bChar {
 			return
 		}
-		while let charRange = range(of: String(aChar)) {
-			replaceSubrange(charRange, with: String(bChar))
+		let aStr = String(aChar)
+		let bStr = String(bChar)
+		while let charRange = range(of: aStr) {
+			replaceSubrange(charRange, with: bStr)
 		}
 	}
 }
@@ -39,7 +41,7 @@ struct MaelOSType: Hashable, CustomStringConvertible {
 	var d: UInt8
 	
 	init?(stringValue: String) {
-		if var aStr = stringValue.cString(using: String.Encoding.macOSRoman) {
+		if var aStr = stringValue.cString(using: .macOSRoman) {
 			while aStr.count < 4 {
 				aStr.append(0)
 			}
@@ -73,9 +75,9 @@ struct MaelOSType: Hashable, CustomStringConvertible {
 	}
 	
 	var stringValue: String {
-		let array = [a, b, c, d]
-		if let nsStr = NSString(bytes: array, length: 4, encoding: String.Encoding.macOSRoman.rawValue) {
-			return nsStr as String
+		let array = Data([a, b, c, d])
+		if let nsStr = String(data: array, encoding: .macOSRoman) {
+			return nsStr
 		}
 		
 		return String(format: "0x%02X%02X%02X%02X", a, b, c, d)

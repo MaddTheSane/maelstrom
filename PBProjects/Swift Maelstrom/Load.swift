@@ -18,14 +18,16 @@ final class LibPath {
 			let fm = FileManager.default
 			var userDir = try fm.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: ourBundle.bundleURL, create: false)
 			userDir = userDir.appendingPathComponent("Maelstrom", isDirectory: true)
-			if !(userDir as NSURL).checkResourceIsReachableAndReturnError(nil) {
+			if !((try? (userDir).checkResourceIsReachable()) ?? false) {
 				try fm.createDirectory(at: userDir, withIntermediateDirectories: true, attributes: nil)
 			}
 			toRet.append(userDir)
 		} catch _ {}
 		
 		toRet.append(ourBundle.bundleURL.deletingLastPathComponent())
-		toRet.append(ourBundle.resourceURL!)
+		if let resURL = ourBundle.resourceURL {
+			toRet.append(resURL)
+		}
 		
 		return toRet
 	}()

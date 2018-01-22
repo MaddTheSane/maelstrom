@@ -13,6 +13,6 @@
 
 #define MAX_GAMMA	8L
 
-const SDL_Color *colorsAtGamma(int gamma);
+const SDL_Color * _Nonnull colorsAtGamma(unsigned char gamma) __attribute__((swift_private));
 
 #endif /* SColorTable_h */
