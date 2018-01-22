@@ -47,7 +47,7 @@ class MaelObject {
 		return true
 	}
 	
-	init(X: Int32, Y: Int32, Xvec: Int32, Yvec: Int32, blit: Blit, phaseTime: Int32) {
+	init(X: Int32, Y: Int32, xVec Xvec: Int32, yVec Yvec: Int32, blit: Blit, phaseTime: Int32) {
 		myBlit = blit
 		points = DEFAULT_POINTS;
 
@@ -67,6 +67,11 @@ class MaelObject {
 		setPos(x: X, y: Y)
 		
 		setTTL(-1)
+		gNumSprites += 1
+	}
+	
+	deinit {
+		gNumSprites -= 1
 	}
 
 	/// We expired (returns -1 if we are dead)
@@ -102,6 +107,16 @@ class MaelObject {
 	
 	func explodeSound() {
 		sound.playSound(.explosion, priority: 3)
+	}
+	
+	/// This function returns `0`, or `-1` if the sprite died
+	func move(frozen: Bool) -> Int32 {
+		return 0
+	}
+	
+	/// This function is called to see if we shot something
+	func shotHit(_ hitRect: inout Rect) -> Shot? {
+		return nil
 	}
 	
 	func collide(against object: MaelObject) -> Int {
@@ -204,7 +219,7 @@ return(0);
 	/// We've been run over!  (returns 1 if we are dead)
 	func beenRunOver(by ship: MaelObject) -> Int32 {
 		if ship.isPlayer {
-			ship.beenDamaged(PLAYER_HITS)
+			_=ship.beenDamaged(PLAYER_HITS)
 		}
 		hitPoints -= 1
 		if hitPoints <= 0 {
@@ -239,7 +254,7 @@ return(0);
 	/** Returns 1 if we die here, instead of go into explosion */
 	func explode() -> Int32 {
 		if exploding {
-			return(0);
+			return 0
 		}
 		exploding = true
 		solid = false;
@@ -343,7 +358,7 @@ final class Multiplier: MaelObject {
 
 final class Nova :  MaelObject {
 	init(x: Int32, y: Int32) {
-		super.init(X: x, Y: y, Xvec: 0, Yvec: 0, blit: gNova, phaseTime: 4)
+		super.init(X: x, Y: y, xVec: 0, yVec: 0, blit: gNova, phaseTime: 4)
 		timeToLive = Int32(gNova.sprites.count) * phaseTime
 		points = NOVA_PTS
 		phase = 0;
@@ -381,7 +396,7 @@ final class Nova :  MaelObject {
 final class Prize: MaelObject {
 	
 	init(X: Int32, Y: Int32, Xvec: Int32, Yvec: Int32) {
-		super.init(X: X, Y: Y, Xvec: Xvec, Yvec: Yvec, blit: gPrize, phaseTime: 2)
+		super.init(X: X, Y: Y, xVec: Xvec, yVec: Yvec, blit: gPrize, phaseTime: 2)
 		setTTL(PRIZE_DURATION)
 		sound.playSound(.prizeAppears, priority: 4)
 	}
@@ -467,7 +482,7 @@ final class Bonus: MaelObject {
 	private var bonus: Int32
 	init(X: Int32, Y: Int32, Xvec: Int32, Yvec: Int32, bonus: Int32) {
 		self.bonus = bonus
-		super.init(X: X, Y: Y, Xvec: Xvec, Yvec: Yvec, blit: gBonusBlit, phaseTime: 2)
+		super.init(X: X, Y: Y, xVec: Xvec, yVec: Yvec, blit: gBonusBlit, phaseTime: 2)
 		setTTL(BONUS_DURATION)
 		solid = false
 		sound.playSound(.bonusAppears, priority: 4)
@@ -508,7 +523,7 @@ final class Bonus: MaelObject {
 
 final class DamagedShip : MaelObject {
 	init(X: Int32, Y: Int32, Xvec: Int32, Yvec: Int32) {
-		super.init(X: X, Y: Y, Xvec: Xvec, Yvec: Yvec, blit: gDamagedShip, phaseTime: 1)
+		super.init(X: X, Y: Y, xVec: Xvec, yVec: Yvec, blit: gDamagedShip, phaseTime: 1)
 		setTTL(DAMAGED_DURATION * phaseTime)
 		sound.playSound(.damagedAppears, priority: 4)
 	}
@@ -549,11 +564,10 @@ final class DamagedShip : MaelObject {
 		if yVel > 0 {
 			yVel += SCALE_FACTOR
 		} else {
-			yVel -= SCALE_FACTOR;
+			yVel -= SCALE_FACTOR
 		}
 		
-		var newsprite = gNumSprites
-		gSprites[newsprite] = Shrapnel(X: position.x, Y: position.y, Xvec: xVel, Yvec: yVel, blit: gShrapnel1)
+		gSprites.append(Shrapnel(X: position.x, Y: position.y, xVec: xVel, yVec: yVel, blit: gShrapnel1))
 
 		/* Type 2 shrapnel */
 		xVel = 0
@@ -569,11 +583,10 @@ final class DamagedShip : MaelObject {
 		if yVel > 0 {
 			yVel += SCALE_FACTOR
 		} else {
-			yVel -= SCALE_FACTOR;
+			yVel -= SCALE_FACTOR
 		}
 		
-		newsprite = gNumSprites
-		gSprites[newsprite] = Shrapnel(X: position.x, Y: position.y, Xvec: xVel, Yvec: yVel, blit: gShrapnel2)
+		gSprites.append(Shrapnel(X: position.x, Y: position.y, xVec: xVel, yVec: yVel, blit: gShrapnel2))
 
 		/* Finish our explosion */
 		exploding = true;
@@ -596,9 +609,8 @@ final class DamagedShip : MaelObject {
 }
 
 final class Shrapnel: MaelObject {
-	
-	init(X: Int32, Y: Int32, Xvec: Int32, Yvec: Int32, blit: Blit) {
-		super.init(X: X, Y: Y, Xvec: Xvec, Yvec: Yvec, blit: blit, phaseTime: 2)
+	init(X: Int32, Y: Int32, xVec Xvec: Int32, yVec Yvec: Int32, blit: Blit) {
+		super.init(X: X, Y: Y, xVec: Xvec, yVec: Yvec, blit: blit, phaseTime: 2)
 		solid = false
 		shootable = false
 		phase = 0;
@@ -608,6 +620,165 @@ final class Shrapnel: MaelObject {
 	
 	override func beenDamaged(_ damage: Int32) -> Int32 {
 		return 0
+	}
+}
+
+final class Gravity: MaelObject {
+	
+	override func move(frozen: Bool) -> Int32 {
+		
+		return super.move(frozen: frozen)
+	}
+	
+	override func shake(_ shakiness: Int32) {
+		// do nothing
+	}
+}
+
+/*
+class Gravity : public Object {
+
+public:
+Gravity(int X, int Y);
+~Gravity() { }
+
+int Move(int Frozen) {
+int i;
+
+/* Don't gravitize while exploding */
+if ( Exploding )
+return(Object::Move(Frozen));
+
+/* Warp the courses of the players */
+OBJ_LOOP(i, gNumPlayers) {
+int X, Y, xAccel, yAccel;
+
+if ( ! gPlayers[i]->Alive() )
+continue;
+
+/* Gravitize! */
+gPlayers[i]->GetPos(&X, &Y);
+
+if ( ((X>>SPRITE_PRECISION)+(SPRITES_WIDTH/2)) <=
+((x>>SPRITE_PRECISION)+(SPRITES_WIDTH/2)) )
+xAccel = GRAVITY_MOVE;
+else
+xAccel = -GRAVITY_MOVE;
+
+if ( ((Y>>SPRITE_PRECISION)+(SPRITES_WIDTH/2)) <=
+((y>>SPRITE_PRECISION)+(SPRITES_WIDTH/2)) )
+yAccel = GRAVITY_MOVE;
+else
+yAccel = -GRAVITY_MOVE;
+
+gPlayers[i]->Accelerate(xAccel, yAccel);
+}
+
+/* Phase normally */
+return(Object::Move(Frozen));
+}
+void Shake(int shakiness) { }
+};
+*/
+
+class HomingSuper: MaelObject {
+	final func acquireTarget() -> Int32 {
+		var newTarget: Int32 = -1
+		var i: Int32 = 0
+		
+		for ii in 0 ..< gNumPlayers {
+			if Player.players[Int(ii)]!.alive {
+				i = ii
+				break
+			}
+		}
+		if i != gNumPlayers {	// Player(s) alive!
+			repeat {
+				newTarget = FastRandom(gNumPlayers)
+			} while !Player.players[Int(newTarget)]!.alive
+		}
+		return newTarget
+	}
+}
+
+
+final class Homing: HomingSuper {
+	var target: Int32 = -1
+	
+	init(X: Int32, Y: Int32, xVec: Int32, yVec: Int32) {
+		super.init(X: X, Y: Y, xVec: xVec, yVec: yVec, blit: ((xVec > 0) ? gMineBlitR : gMineBlitL), phaseTime: 2)
+		hitPoints = HOMING_HITS
+		points = HOMING_PTS
+		target = acquireTarget()
+		sound.playSound(.homingAppears, priority: 4)
+		#if SERIOUS_DEBUG
+			error("Created a homing mine!\n");
+		#endif
+	}
+
+	override func move(frozen: Bool) -> Int32 {
+		
+		
+		return super.move(frozen: frozen)
+	}
+}
+/*
+class Homing : public Object {
+
+public:
+Homing(int X, int Y, int xVel, int yVel);
+~Homing() { }
+
+int Move(int Frozen) {
+if ( ((target >= 0) && gPlayers[target]->Alive()) ||
+((target=AcquireTarget()) >= 0) ) {
+int X, Y, xAccel=0, yAccel=0;
+
+gPlayers[target]->GetPos(&X, &Y);
+if ( ((X>>SPRITE_PRECISION)+(SPRITES_WIDTH/2)) <=
+((x>>SPRITE_PRECISION)+(SPRITES_WIDTH/2)) )
+xAccel -= HOMING_MOVE;
+else
+xAccel += HOMING_MOVE;
+if ( ((Y>>SPRITE_PRECISION)+(SPRITES_WIDTH/2)) <=
+((y>>SPRITE_PRECISION)+(SPRITES_WIDTH/2)) )
+yAccel -= HOMING_MOVE;
+else
+yAccel += HOMING_MOVE;
+Accelerate(xAccel, yAccel);
+}
+return(Object::Move(Frozen));
+}
+
+protected:
+int target;
+};
+*/
+
+final class SmallRock: MaelObject {
+	init(X: Int32, Y: Int32, xVel: Int32, yVel: Int32, phaseTime: Int32) {
+		super.init(X: X, Y: Y, xVec: xVel, yVec: yVel, blit: ((xVel > 0) ? gRock3R : gRock3L), phaseTime: phaseTime)
+		points = SMALL_ROID_PTS
+		gNumRocks += 1
+	}
+
+	deinit {
+		gNumRocks -= 1
+	}
+	
+	override func explode() -> Int32 {
+		/* Don't do anything if we're already exploding */
+		if exploding {
+			return 0
+		}
+		
+		/* Speed things up. :-) */
+		gBoomDelay = max(BOOM_MIN, gBoomDelay - 1)
+		#if SERIOUS_DEBUG
+			error("-   Small rock! (\(gNumRocks))\n");
+		#endif
+
+		return super.explode()
 	}
 }
 

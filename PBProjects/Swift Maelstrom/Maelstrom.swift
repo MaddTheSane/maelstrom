@@ -91,7 +91,7 @@ let SHIELD_WIDTH	= 55
 let INITIAL_BONUS	= 2000
 
 let ENEMY_HITS: Int32	= 3
-let HOMING_HITS			= 9
+let HOMING_HITS: Int32	= 9
 let STEEL_SPECIAL		= 10
 let DEFAULT_HITS:Int32	= 1
 
@@ -125,6 +125,14 @@ struct Star {
 	var xCoord: Int16 = 0
 	var yCoord: Int16 = 0
 	var color: UInt32 = 0
+}
+
+func FastRandom(_ range: Int32) -> Int32 {
+	return Int32(FastRandom(Uint16(range)))
+}
+
+func FastRandom(_ range: Int) -> Int {
+	return Int(FastRandom(Uint16(range)))
 }
 
 typealias StarPtr = UnsafeMutablePointer<Star>

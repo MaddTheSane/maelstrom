@@ -10,7 +10,7 @@ import Foundation
 
 class Shinobi: MaelObject {
 	init(x: Int32, y: Int32, blit: Blit, shotOdds: Int32) {
-		super.init(X: x, Y: y, Xvec: 0, Yvec: 0, blit: blit, phaseTime: 1)
+		super.init(X: x, Y: y, xVec: 0, yVec: 0, blit: blit, phaseTime: 1)
 		points = ENEMY_PTS
 		hitPoints = ENEMY_HITS
 		

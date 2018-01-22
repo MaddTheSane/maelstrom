@@ -19,9 +19,6 @@ final class Player: MaelObject {
 			rawValue = rv
 		}
 		
-		/// The players!!
-		static var players = [Player?](repeating: nil, count: MAX_PLAYERS)
-		
 		static var machineGuns: Features {
 			return Features(rawValue: 0x01)
 		}
@@ -39,6 +36,9 @@ final class Player: MaelObject {
 		}
 	}
 	
+	/// The players!!
+	static var players = [Player?](repeating: nil, count: MAX_PLAYERS)
+
 	override var isPlayer: Bool {
 		return true
 	}
@@ -46,6 +46,27 @@ final class Player: MaelObject {
 	func cutThrust(_ dur: Int32) {
 		
 	}
+	
+	override func setSpecial(_ spec: Player.Features) {
+		
+	}
+	
+	override func increaseShieldLevel(_ level: Int32) {
+		
+	}
+	
+	override func multiplier(_ multiplier: Int32) {
+		
+	}
+	
+	override func increaseBonus(_ bonus: Int32) {
+		
+	}
+	
+	override func increaseLives(_ lives: Int32) {
+		
+	}
+
 	
 	// MARK: The Shot sprites for the Shinobi and Player
 	/// The Shot sprites for the Player
