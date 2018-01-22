@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9059" systemVersion="15B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9059"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -670,26 +670,20 @@
         <window title="Swift Maelstrom" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <rect key="contentRect" x="335" y="390" width="459" height="533"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1057"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
             <view key="contentView" id="EiT-Mj-1SZ">
                 <rect key="frame" x="0.0" y="0.0" width="459" height="533"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="fDP-zq-V2m">
-                        <rect key="frame" x="18" y="497" width="155" height="18"/>
-                        <animations/>
+                        <rect key="frame" x="18" y="497" width="153" height="18"/>
                         <buttonCell key="cell" type="check" title="Run Game Fullscreen" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="mKp-Lr-jCp">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="leC-Y6-Esc">
-                        <rect key="frame" x="43" y="475" width="285" height="16"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="281" id="as4-Am-2Is"/>
-                            <constraint firstAttribute="height" constant="16" id="rnW-xb-3p3"/>
-                        </constraints>
-                        <animations/>
+                        <rect key="frame" x="43" y="477" width="269" height="14"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Running in fullscreen may not work on all systems." id="EwI-Pt-iR2">
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -697,22 +691,14 @@
                         </textFieldCell>
                     </textField>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="7H7-hk-YoN">
-                        <rect key="frame" x="18" y="408" width="191" height="18"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="187" id="SHK-Bv-Exk"/>
-                        </constraints>
-                        <animations/>
+                        <rect key="frame" x="18" y="410" width="188" height="18"/>
                         <buttonCell key="cell" type="check" title="Use World High Scores List" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="g1P-Ll-4A6">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="QnF-31-pPD">
-                        <rect key="frame" x="43" y="388" width="307" height="14"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="303" id="tlw-lA-eOE"/>
-                        </constraints>
-                        <animations/>
+                        <rect key="frame" x="43" y="390" width="292" height="14"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="You must be connected to the internet for this to work!" id="QmH-YB-Oxg">
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -720,22 +706,14 @@
                         </textFieldCell>
                     </textField>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="tZl-Sk-utR">
-                        <rect key="frame" x="175" y="73" width="136" height="32"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="124" id="d2M-63-ST2"/>
-                        </constraints>
-                        <animations/>
+                        <rect key="frame" x="173" y="93" width="113" height="32"/>
                         <buttonCell key="cell" type="push" title="Start Server" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="5Mq-Ih-vdf">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="wFj-Je-9V8">
-                        <rect key="frame" x="18" y="364" width="154" height="18"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="150" id="LiS-Jt-o7e"/>
-                        </constraints>
-                        <animations/>
+                        <rect key="frame" x="18" y="366" width="152" height="18"/>
                         <buttonCell key="cell" type="check" title="Join a Network Game" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="hBg-pT-ngw">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
@@ -743,7 +721,6 @@
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="CEz-IB-SDc">
                         <rect key="frame" x="379" y="13" width="66" height="32"/>
-                        <animations/>
                         <buttonCell key="cell" type="push" title="Go!" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="aRu-NM-tIZ">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -751,18 +728,16 @@
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="U3L-9X-6bQ">
                         <rect key="frame" x="313" y="13" width="66" height="32"/>
-                        <animations/>
                         <buttonCell key="cell" type="push" title="Quit" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="jQJ-ZF-Qb6">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="lMO-6T-nyC">
-                        <rect key="frame" x="223" y="275" width="32" height="22"/>
+                        <rect key="frame" x="215" y="278" width="32" height="22"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="32" id="NfR-BY-M9C"/>
                         </constraints>
-                        <animations/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="2" drawsBackground="YES" id="ckI-IQ-wt7">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -770,8 +745,7 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="IVG-BW-s98">
-                        <rect key="frame" x="79" y="274" width="131" height="20"/>
-                        <animations/>
+                        <rect key="frame" x="79" y="281" width="130" height="17"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Number of Players:" id="EO9-BK-V2f">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -779,23 +753,15 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zlU-vn-zd6">
-                        <rect key="frame" x="91" y="243" width="231" height="24"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="227" id="HsY-gA-2wK"/>
-                            <constraint firstAttribute="height" constant="24" id="sDO-NX-zLj"/>
-                        </constraints>
-                        <animations/>
-                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="jlp-Xc-9Ht">
+                        <rect key="frame" x="91" y="260" width="216" height="14"/>
+                        <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="left" title="All players should use the same number." id="jlp-Xc-9Ht">
                             <font key="font" metaFont="smallSystem"/>
-                            <string key="title">All players should use the same number.
-</string>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="jER-zb-maK">
-                        <rect key="frame" x="223" y="145" width="32" height="22"/>
-                        <animations/>
+                        <rect key="frame" x="215" y="165" width="32" height="22"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="8" drawsBackground="YES" id="kBt-VT-0ZC">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -803,11 +769,7 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="V6P-VV-e55">
-                        <rect key="frame" x="97" y="148" width="76" height="17"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="72" id="Zh9-qO-LXQ"/>
-                        </constraints>
-                        <animations/>
+                        <rect key="frame" x="97" y="168" width="68" height="17"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Frag Limit:" id="ze1-N5-bVQ">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -815,73 +777,44 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="WtL-5U-ShA">
-                        <rect key="frame" x="109" y="126" width="215" height="14"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="211" id="X5K-9s-O2I"/>
-                        </constraints>
-                        <animations/>
-                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="All players should use the same value." id="39n-G0-kUP">
+                        <rect key="frame" x="128" y="146" width="204" height="14"/>
+                        <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="left" title="All players should use the same value." id="39n-G0-kUP">
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Ypl-3X-xZm">
-                        <rect key="frame" x="133" y="61" width="225" height="14"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="221" id="Zey-Ga-JT7"/>
-                        </constraints>
-                        <animations/>
+                        <rect key="frame" x="121" y="81" width="218" height="14"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Server will quit when quitting Maelstrom." id="BBc-Tm-rFJ">
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <box verticalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="W5H-gp-5d9">
-                        <rect key="frame" x="20" y="109" width="426" height="5"/>
-                        <animations/>
-                        <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                        <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                        <font key="titleFont" metaFont="system"/>
+                    <box verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="W5H-gp-5d9">
+                        <rect key="frame" x="20" y="129" width="426" height="5"/>
                     </box>
-                    <box verticalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="wey-vI-xLz">
-                        <rect key="frame" x="20" y="48" width="426" height="5"/>
-                        <animations/>
-                        <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                        <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                        <font key="titleFont" metaFont="system"/>
+                    <box verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="wey-vI-xLz">
+                        <rect key="frame" x="20" y="68" width="426" height="5"/>
                     </box>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="43X-1U-GA5">
-                        <rect key="frame" x="80" y="169" width="98" height="18"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="94" id="lFd-Hy-gBN"/>
-                        </constraints>
-                        <animations/>
+                        <rect key="frame" x="80" y="189" width="96" height="18"/>
                         <buttonCell key="cell" type="check" title="Deathmatch" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="OKe-Op-jad">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="tjs-ex-Fn8">
-                        <rect key="frame" x="91" y="305" width="226" height="16"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="222" id="iRs-xq-knT"/>
-                            <constraint firstAttribute="height" constant="16" id="ieq-Jx-6c0"/>
-                        </constraints>
-                        <animations/>
-                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="WMG-tA-WGV">
+                        <rect key="frame" x="91" y="309" width="218" height="14"/>
+                        <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="left" title="All players should use the same address." id="WMG-tA-WGV">
                             <font key="font" metaFont="smallSystem"/>
-                            <string key="title">All players should use the same address.
-.
-</string>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="hsK-3l-gr3">
-                        <rect key="frame" x="79" y="218" width="139" height="17"/>
-                        <animations/>
+                        <rect key="frame" x="79" y="235" width="130" height="17"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Your Player Number:" id="hbv-rs-4mf">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -889,8 +822,7 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="DJJ-BX-jBX">
-                        <rect key="frame" x="223" y="215" width="32" height="22"/>
-                        <animations/>
+                        <rect key="frame" x="215" y="232" width="32" height="22"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="1" drawsBackground="YES" id="x1c-Rb-nRh">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -898,32 +830,22 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Pdv-CV-ebj">
-                        <rect key="frame" x="91" y="193" width="238" height="17"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="234" id="Kfr-H1-tGh"/>
-                            <constraint firstAttribute="height" constant="17" id="azR-sD-1e1"/>
-                        </constraints>
-                        <animations/>
-                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="All players should have a unique number." id="6bD-g8-bEf">
+                        <rect key="frame" x="91" y="213" width="218" height="14"/>
+                        <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" alignment="left" title="All players should have a unique number." id="6bD-g8-bEf">
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="fSO-OF-IXD">
-                        <rect key="frame" x="18" y="451" width="187" height="18"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="183" id="SoX-hY-qUO"/>
-                        </constraints>
-                        <animations/>
+                        <rect key="frame" x="18" y="453" width="182" height="18"/>
                         <buttonCell key="cell" type="check" title="Use Real-Time Scheduling" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="8Ep-zW-kwt">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="lRL-Iu-vEa">
-                        <rect key="frame" x="43" y="432" width="353" height="14"/>
-                        <animations/>
+                        <rect key="frame" x="43" y="434" width="332" height="14"/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Animation is smoother but other running apps might not like it." id="0mW-mg-eLn">
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -931,8 +853,7 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1fx-Cw-WZf">
-                        <rect key="frame" x="201" y="326" width="192" height="22"/>
-                        <animations/>
+                        <rect key="frame" x="215" y="328" width="178" height="22"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" title="192.168.0.2" drawsBackground="YES" id="XNP-vc-Io7">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -940,16 +861,9 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="q2u-5Y-V4o">
-                        <rect key="frame" x="79" y="329" width="123" height="17"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="119" id="7W4-cv-TMK"/>
-                            <constraint firstAttribute="height" constant="17" id="TXA-RM-faR"/>
-                        </constraints>
-                        <animations/>
-                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="cKL-Dq-Io4">
+                        <rect key="frame" x="79" y="331" width="137" height="17"/>
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Server Address:" id="cKL-Dq-Io4">
                             <font key="font" metaFont="system"/>
-                            <string key="title">Server Address:
-</string>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" red="1" green="0.32487106319999998" blue="0.34788626430000003" alpha="1" colorSpace="calibratedRGB"/>
                         </textFieldCell>
@@ -957,16 +871,18 @@
                 </subviews>
                 <constraints>
                     <constraint firstItem="7H7-hk-YoN" firstAttribute="leading" secondItem="fSO-OF-IXD" secondAttribute="leading" id="0Gc-A1-XPr"/>
+                    <constraint firstItem="lMO-6T-nyC" firstAttribute="baseline" secondItem="IVG-BW-s98" secondAttribute="baseline" id="0j0-Dn-n1v"/>
                     <constraint firstItem="lMO-6T-nyC" firstAttribute="leading" secondItem="DJJ-BX-jBX" secondAttribute="leading" id="0kk-Aj-Rfu"/>
                     <constraint firstItem="fDP-zq-V2m" firstAttribute="centerX" secondItem="wFj-Je-9V8" secondAttribute="centerX" id="1Vw-4e-WPh"/>
+                    <constraint firstItem="Ypl-3X-xZm" firstAttribute="centerX" secondItem="EiT-Mj-1SZ" secondAttribute="centerX" id="1pL-3j-tms"/>
                     <constraint firstItem="WtL-5U-ShA" firstAttribute="top" secondItem="V6P-VV-e55" secondAttribute="bottom" constant="8" symbolic="YES" id="2De-Nb-TKg"/>
-                    <constraint firstItem="tZl-Sk-utR" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="181" id="2fc-nS-sqE"/>
+                    <constraint firstItem="tZl-Sk-utR" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="2fc-nS-sqE"/>
                     <constraint firstItem="QnF-31-pPD" firstAttribute="top" secondItem="7H7-hk-YoN" secondAttribute="bottom" constant="8" symbolic="YES" id="2yS-YD-l9X"/>
                     <constraint firstItem="lRL-Iu-vEa" firstAttribute="top" secondItem="fSO-OF-IXD" secondAttribute="bottom" constant="7" id="3T0-cR-1Y4"/>
-                    <constraint firstAttribute="trailing" secondItem="lRL-Iu-vEa" secondAttribute="trailing" constant="65" id="3dK-BN-0NP"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="lRL-Iu-vEa" secondAttribute="trailing" constant="20" symbolic="YES" id="3dK-BN-0NP"/>
                     <constraint firstItem="W5H-gp-5d9" firstAttribute="top" secondItem="WtL-5U-ShA" secondAttribute="bottom" constant="14" id="3oP-C6-Gbp"/>
                     <constraint firstItem="lMO-6T-nyC" firstAttribute="trailing" secondItem="DJJ-BX-jBX" secondAttribute="trailing" id="43t-CF-axQ"/>
-                    <constraint firstItem="WtL-5U-ShA" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="111" id="4g7-Yh-5rB"/>
+                    <constraint firstItem="WtL-5U-ShA" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="111" id="4g7-Yh-5rB"/>
                     <constraint firstItem="fDP-zq-V2m" firstAttribute="top" secondItem="EiT-Mj-1SZ" secondAttribute="top" constant="20" symbolic="YES" id="4xN-Zy-LFa"/>
                     <constraint firstItem="wFj-Je-9V8" firstAttribute="leading" secondItem="7H7-hk-YoN" secondAttribute="leading" id="5EY-jI-Zs6"/>
                     <constraint firstItem="43X-1U-GA5" firstAttribute="top" secondItem="Pdv-CV-ebj" secondAttribute="bottom" constant="8" symbolic="YES" id="614-42-3Bq"/>
@@ -976,10 +892,11 @@
                     <constraint firstItem="tZl-Sk-utR" firstAttribute="top" secondItem="W5H-gp-5d9" secondAttribute="bottom" constant="10" id="AZ3-gV-9mr"/>
                     <constraint firstItem="q2u-5Y-V4o" firstAttribute="top" secondItem="wFj-Je-9V8" secondAttribute="bottom" constant="20" id="BpQ-Ls-UTY"/>
                     <constraint firstItem="zlU-vn-zd6" firstAttribute="top" secondItem="IVG-BW-s98" secondAttribute="bottom" constant="7" id="CW4-NW-ejO"/>
+                    <constraint firstItem="WtL-5U-ShA" firstAttribute="centerX" secondItem="EiT-Mj-1SZ" secondAttribute="centerX" id="DHc-dG-EAF"/>
                     <constraint firstItem="hsK-3l-gr3" firstAttribute="leading" secondItem="IVG-BW-s98" secondAttribute="leading" id="EBe-XO-Ri4"/>
-                    <constraint firstItem="zlU-vn-zd6" firstAttribute="top" secondItem="lMO-6T-nyC" secondAttribute="bottom" constant="8" symbolic="YES" id="Eaf-sW-nKF"/>
                     <constraint firstItem="jER-zb-maK" firstAttribute="baseline" secondItem="V6P-VV-e55" secondAttribute="baseline" id="HBw-8a-IPF"/>
                     <constraint firstItem="zlU-vn-zd6" firstAttribute="leading" secondItem="tjs-ex-Fn8" secondAttribute="leading" id="JFr-Z5-uCF"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="leC-Y6-Esc" secondAttribute="trailing" constant="20" symbolic="YES" id="JGc-zk-aAn"/>
                     <constraint firstItem="wey-vI-xLz" firstAttribute="top" secondItem="Ypl-3X-xZm" secondAttribute="bottom" constant="10" id="JaF-EJ-jqr"/>
                     <constraint firstItem="W5H-gp-5d9" firstAttribute="leading" secondItem="wFj-Je-9V8" secondAttribute="leading" id="Lqb-Mg-qpb"/>
                     <constraint firstItem="hsK-3l-gr3" firstAttribute="top" secondItem="zlU-vn-zd6" secondAttribute="bottom" constant="8" symbolic="YES" id="MjS-Ef-Kt6"/>
@@ -1000,28 +917,29 @@
                     <constraint firstItem="Ypl-3X-xZm" firstAttribute="top" secondItem="tZl-Sk-utR" secondAttribute="bottom" constant="5" id="cU9-Gr-n7f"/>
                     <constraint firstItem="DJJ-BX-jBX" firstAttribute="baseline" secondItem="hsK-3l-gr3" secondAttribute="baseline" id="ccj-8M-WIY"/>
                     <constraint firstItem="1fx-Cw-WZf" firstAttribute="leading" secondItem="q2u-5Y-V4o" secondAttribute="trailing" constant="1" id="cej-bk-jQl"/>
-                    <constraint firstItem="lMO-6T-nyC" firstAttribute="top" secondItem="tjs-ex-Fn8" secondAttribute="bottom" constant="8" symbolic="YES" id="dTU-9a-X7j"/>
                     <constraint firstItem="lRL-Iu-vEa" firstAttribute="leading" secondItem="QnF-31-pPD" secondAttribute="leading" id="eSd-DE-mIt"/>
                     <constraint firstItem="leC-Y6-Esc" firstAttribute="top" secondItem="fDP-zq-V2m" secondAttribute="bottom" constant="8" symbolic="YES" id="edx-Nm-o3c"/>
-                    <constraint firstItem="lMO-6T-nyC" firstAttribute="leading" secondItem="IVG-BW-s98" secondAttribute="trailing" constant="15" id="ejZ-By-JfU"/>
+                    <constraint firstItem="lMO-6T-nyC" firstAttribute="leading" secondItem="IVG-BW-s98" secondAttribute="trailing" constant="8" symbolic="YES" id="ejZ-By-JfU"/>
                     <constraint firstItem="7H7-hk-YoN" firstAttribute="top" secondItem="lRL-Iu-vEa" secondAttribute="bottom" constant="8" symbolic="YES" id="f4m-Pu-vQp"/>
                     <constraint firstAttribute="trailing" secondItem="1fx-Cw-WZf" secondAttribute="trailing" constant="66" id="fQz-NH-j0C"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="QnF-31-pPD" secondAttribute="trailing" constant="20" symbolic="YES" id="fjn-in-KZu"/>
                     <constraint firstItem="q2u-5Y-V4o" firstAttribute="leading" secondItem="IVG-BW-s98" secondAttribute="leading" id="g3H-nk-8bz"/>
+                    <constraint firstItem="tZl-Sk-utR" firstAttribute="centerX" secondItem="EiT-Mj-1SZ" secondAttribute="centerX" id="hHc-m5-ZXC"/>
                     <constraint firstItem="V6P-VV-e55" firstAttribute="top" secondItem="43X-1U-GA5" secondAttribute="bottom" constant="6" id="jRm-Vj-bu7"/>
-                    <constraint firstItem="DJJ-BX-jBX" firstAttribute="leading" secondItem="hsK-3l-gr3" secondAttribute="trailing" constant="7" id="lD1-9Z-ayk"/>
+                    <constraint firstItem="lMO-6T-nyC" firstAttribute="leading" secondItem="1fx-Cw-WZf" secondAttribute="leading" id="k7d-Nm-jNt"/>
+                    <constraint firstItem="DJJ-BX-jBX" firstAttribute="leading" secondItem="hsK-3l-gr3" secondAttribute="trailing" constant="8" symbolic="YES" id="lD1-9Z-ayk"/>
                     <constraint firstItem="Pdv-CV-ebj" firstAttribute="leading" secondItem="zlU-vn-zd6" secondAttribute="leading" id="nvT-qq-sZK"/>
                     <constraint firstItem="W5H-gp-5d9" firstAttribute="trailing" secondItem="wey-vI-xLz" secondAttribute="trailing" id="pa5-cK-0Z7"/>
                     <constraint firstItem="tjs-ex-Fn8" firstAttribute="top" secondItem="q2u-5Y-V4o" secondAttribute="bottom" constant="8" symbolic="YES" id="usr-x8-EyA"/>
-                    <constraint firstItem="Ypl-3X-xZm" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="135" id="v0M-Kw-vaj"/>
+                    <constraint firstItem="Ypl-3X-xZm" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="v0M-Kw-vaj"/>
                     <constraint firstAttribute="trailing" secondItem="CEz-IB-SDc" secondAttribute="trailing" constant="20" symbolic="YES" id="vS7-4f-N8T"/>
                     <constraint firstItem="leC-Y6-Esc" firstAttribute="leading" secondItem="lRL-Iu-vEa" secondAttribute="leading" id="vjn-EG-bM2"/>
                     <constraint firstItem="wey-vI-xLz" firstAttribute="leading" secondItem="W5H-gp-5d9" secondAttribute="leading" id="wOn-b6-eve"/>
                     <constraint firstItem="fSO-OF-IXD" firstAttribute="top" secondItem="leC-Y6-Esc" secondAttribute="bottom" constant="8" symbolic="YES" id="wsL-zu-hFs"/>
                     <constraint firstItem="1fx-Cw-WZf" firstAttribute="baseline" secondItem="q2u-5Y-V4o" secondAttribute="baseline" id="y9r-hM-c18"/>
                     <constraint firstItem="jER-zb-maK" firstAttribute="leading" secondItem="V6P-VV-e55" secondAttribute="trailing" constant="52" id="yB9-AH-Bth"/>
-                    <constraint firstItem="U3L-9X-6bQ" firstAttribute="top" secondItem="wey-vI-xLz" secondAttribute="bottom" constant="9" id="zjv-gL-4Qd"/>
+                    <constraint firstItem="U3L-9X-6bQ" firstAttribute="top" relation="greaterThanOrEqual" secondItem="wey-vI-xLz" secondAttribute="bottom" constant="9" id="zjv-gL-4Qd"/>
                 </constraints>
-                <animations/>
             </view>
             <point key="canvasLocation" x="294.5" y="357.5"/>
         </window>
