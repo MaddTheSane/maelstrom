@@ -9,8 +9,6 @@
 import Foundation
 import SDL2
 
-let MAX_PLAYERS = 3
-
 final class Player: MaelObject {
 	///Special features of the player
 	struct Features: OptionSet {
@@ -37,7 +35,7 @@ final class Player: MaelObject {
 	}
 	
 	/// The players!!
-	static var players = [Player?](repeating: nil, count: MAX_PLAYERS)
+	static var players = [Player?](repeating: nil, count: Int(MAX_PLAYERS))
 
 	override var isPlayer: Bool {
 		return true

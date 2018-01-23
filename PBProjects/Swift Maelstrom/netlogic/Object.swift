@@ -624,6 +624,14 @@ final class Shrapnel: MaelObject {
 }
 
 final class Gravity: MaelObject {
+	init(x: Int32, y: Int32) {
+		super.init(X: x, Y: y, xVec: 0, yVec: 0, blit: gVortexBlit, phaseTime: 2)
+		points = GRAVITY_PTS
+		sound.playSound(.gravAppears, priority: 4)
+		#if SERIOUS_DEBUG
+			error("Created a gravity well!");
+		#endif
+	}
 	
 	override func move(frozen: Bool) -> Int32 {
 		
@@ -703,7 +711,7 @@ class HomingSuper: MaelObject {
 
 
 final class Homing: HomingSuper {
-	var target: Int32 = -1
+	private var target: Int32 = -1
 	
 	init(X: Int32, Y: Int32, xVec: Int32, yVec: Int32) {
 		super.init(X: X, Y: Y, xVec: xVec, yVec: yVec, blit: ((xVec > 0) ? gMineBlitR : gMineBlitL), phaseTime: 2)

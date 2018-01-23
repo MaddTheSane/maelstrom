@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Shinobi: MaelObject {
+class Shinobi: HomingSuper {
 	init(x: Int32, y: Int32, blit: Blit, shotOdds: Int32) {
 		super.init(X: x, Y: y, xVec: 0, yVec: 0, blit: blit, phaseTime: 1)
 		points = ENEMY_PTS
@@ -36,21 +36,6 @@ gEnemySprite = this;
 }
 */
 	/*
-/* This is duplicated in the Homing class */
-virtual int AcquireTarget(void) {
-int i, newtarget=(-1);
-
-for ( i=0; i<gNumPlayers; ++i ) {
-if ( gPlayers[i]->Alive() )
-break;
-}
-if ( i != gNumPlayers ) {	// Player(s) alive!
-do {
-newtarget = FastRandom(gNumPlayers);
-} while ( ! gPlayers[newtarget]->Alive() );
-}
-return(newtarget);
-}
 
 virtual Shot *ShotHit(Rect *hitRect) {
 int i;
