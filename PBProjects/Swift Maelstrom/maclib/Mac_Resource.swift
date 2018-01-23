@@ -431,13 +431,14 @@ final class MacResource {
 				} else {
 					let cur_offset = ftell(filep);
 					fseek(filep,
-						base+Int(header.map_offset)+Int(resMap.names_offset)+Int(ref_ent.nameOffset) - 1,
+						base+Int(header.map_offset)+Int(resMap.names_offset)+Int(ref_ent.nameOffset),
 						SEEK_SET);
 					fread(&name_len, 1, 1, filep);
 					var aCharName = [UInt8](repeating: 0, count: Int(name_len))
 					fread(&aCharName,
 						1, Int(name_len), filep);
-					if let nsName = NSString(bytes: aCharName, length: aCharName.count, encoding: String.Encoding.macOSRoman.rawValue) as String? {
+					let bCharName = Data(aCharName)
+					if let nsName = String(data: bCharName, encoding: .macOSRoman) {
 						entName = nsName
 					} else {
 						entName = "Encoding failure!"

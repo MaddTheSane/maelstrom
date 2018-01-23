@@ -242,14 +242,14 @@ final class Blit {
 		var bottom = 0
 		
 		for index in 0..<numFrames {
-			let m = try spriteres.resource(type: MaelOSType(stringValue: "ics#")!, id: UInt16(baseID+index))
+			let m = try spriteres.resource(type: MaelOSType(stringValue: "ICN#")!, id: UInt16(baseID+index))
 			var mask: [UInt8] = m.withUnsafeBytes({ (ct: UnsafePointer<UInt8>) -> [UInt8] in
 				let ct2 = ct.advanced(by: 128)
 				let ct3 = UnsafeBufferPointer(start: ct2, count: 128)
 				return Array(ct3)
 			})
 			
-			let S = try spriteres.resource(type: MaelOSType(stringValue: "ics8")!, id: UInt16(baseID+index))
+			let S = try spriteres.resource(type: MaelOSType(stringValue: "icl8")!, id: UInt16(baseID+index))
 			
 			/* -- Figure out the hit rectangle */
 			/* -- Do the top/left first */
@@ -306,7 +306,7 @@ var gNoDelay: Int32 = 0
 extension Sound {
 	@discardableResult
 	func playSound(_ sndID: SoundResource, priority: UInt8, callback: ((_ channel: UInt8) -> ())? = nil) -> Bool {
-		return self.playSound(SoundResource(rawValue: sndID.rawValue)!, priority: priority, callback: callback)
+		return self.playSound(sndID.rawValue, priority: priority, callback: callback)
 	}
 }
 

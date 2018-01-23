@@ -289,7 +289,6 @@ class FontServer {
 		use these to indicate the presence of optional 'width' and 'height'
 		tables, which are for fractional character spacing (unused).
 		*/
-		font.header = (fontData as NSData).bytes.bindMemory(to: FontHdr.self, capacity: fontData.count).pointee
 		if  ((font.header.fontType & ~3) != FontHdr.PropFont) &&
 			((font.header.fontType & ~3) != FontHdr.FixedFont)  {
 				throw Errors.badFontMagicNumber(font.header.fontType)
@@ -368,7 +367,7 @@ class FontServer {
 		
 		///Get bit `i` of a scan line
 		func GETBIT(_ scanline: UnsafeMutablePointer<UInt16>, _ i: Int) -> UInt8 {
-			return UInt8(scanline[(i)/16] >> (15 - UInt16(i%16))) & 1
+			return UInt8((scanline[(i)/16] >> (15 - UInt16(i%16))) & 1)
 		}
 		
 		var image: UnsafeMutablePointer<SDL_Surface>? = nil

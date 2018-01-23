@@ -16,6 +16,7 @@
 		5515E8341BE6878E0048605C /* MacBinary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5515E8331BE6878E0048605C /* MacBinary.swift */; };
 		5515E8361BE68A7D0048605C /* applefile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5515E8351BE68A7D0048605C /* applefile.swift */; };
 		5529FE581C9B8CE100C8512D /* Shinobi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5529FE571C9B8CE100C8512D /* Shinobi.swift */; };
+		553FA84920168F8E00968E4D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5515E8211BE609700048605C /* MainMenu.xib */; };
 		554E20921BFA896E00070D91 /* Images in Resources */ = {isa = PBXBuildFile; fileRef = 55D1287F0F09DA7200E06E2A /* Images */; };
 		554E20951BFA89DC00070D91 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 554E20971BFA89DC00070D91 /* InfoPlist.strings */; };
 		554E209A1BFA99D000070D91 /* SColorTable.c in Sources */ = {isa = PBXBuildFile; fileRef = 554E20981BFA99D000070D91 /* SColorTable.c */; };
@@ -83,7 +84,6 @@
 		55D4F8C41BE96FC400F31A0F /* Maelstrom-Scores in Resources */ = {isa = PBXBuildFile; fileRef = 55D128A10F09DAA400E06E2A /* Maelstrom-Scores */; };
 		55D4F8C71BE971C800F31A0F /* Maelstrom_Server in Resources */ = {isa = PBXBuildFile; fileRef = 55D128720F09D9BD00E06E2A /* Maelstrom_Server */; };
 		55D4F8C81BE9738E00F31A0F /* SDLMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A6164F1BE55FEC00AD2049 /* SDLMain.swift */; };
-		55D4F8C91BE973A400F31A0F /* SDLMain.xib in Resources */ = {isa = PBXBuildFile; fileRef = 557258B519E5CC730073CDF2 /* SDLMain.xib */; };
 		55D4F8CB1BE9747500F31A0F /* Maelstrom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D4F8CA1BE9747500F31A0F /* Maelstrom.swift */; };
 		55D95E3B1C9B77C3008441E2 /* Make.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D95E3A1C9B77C3008441E2 /* Make.swift */; };
 		55EBAE1E17174CFB0029EB7B /* SDL2.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127EF0F09D54000E06E2A /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
@@ -672,10 +672,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				55D4F8C71BE971C800F31A0F /* Maelstrom_Server in Resources */,
+				553FA84920168F8E00968E4D /* MainMenu.xib in Resources */,
 				55D4F8C21BE96FC400F31A0F /* Maelstrom_Sounds in Resources */,
 				55D4F8C11BE96FC400F31A0F /* Maelstrom_Fonts in Resources */,
 				55D4F8C01BE96FBF00F31A0F /* icon.bmp in Resources */,
-				55D4F8C91BE973A400F31A0F /* SDLMain.xib in Resources */,
 				5515E8201BE609700048605C /* Assets.xcassets in Resources */,
 				55D4F8C41BE96FC400F31A0F /* Maelstrom-Scores in Resources */,
 				554E20921BFA896E00070D91 /* Images in Resources */,

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="13771" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
+        <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="13771"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -12,9 +13,18 @@
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="Swift_Maelstrom" customModuleProvider="target">
+        <customObject id="Voe-Tx-rLC" customClass="SDLMain" customModule="Swift_Maelstrom" customModuleProvider="target">
             <connections>
+                <outlet property="fragCount" destination="jER-zb-maK" id="awb-8R-dUF"/>
+                <outlet property="fullscreen" destination="fDP-zq-V2m" id="1If-jK-PKk"/>
+                <outlet property="joinGame" destination="wFj-Je-9V8" id="8Rp-sJ-eWc"/>
+                <outlet property="netAddress" destination="1fx-Cw-WZf" id="Eq1-BQ-g6j"/>
+                <outlet property="numberOfPlayers" destination="lMO-6T-nyC" id="CXS-m0-nIO"/>
+                <outlet property="playDeathmatch" destination="43X-1U-GA5" id="7AD-bw-ecd"/>
+                <outlet property="playerNumber" destination="DJJ-BX-jBX" id="Fr0-eV-rjQ"/>
+                <outlet property="realtime" destination="fSO-OF-IXD" id="Awp-Iw-6uR"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="gIp-Ho-8D9"/>
+                <outlet property="worldScores" destination="7H7-hk-YoN" id="YDG-yi-9cV"/>
             </connections>
         </customObject>
         <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
@@ -58,7 +68,7 @@
                             <menuItem isSeparatorItem="YES" id="kCx-OE-vgT"/>
                             <menuItem title="Quit Swift Maelstrom" keyEquivalent="q" id="4sb-4s-VLi">
                                 <connections>
-                                    <action selector="terminate:" target="-1" id="Te7-pn-YzF"/>
+                                    <action selector="quit:" target="Voe-Tx-rLC" id="AXG-Hc-rNO"/>
                                 </connections>
                             </menuItem>
                         </items>
@@ -711,6 +721,9 @@
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="startServer:" target="Voe-Tx-rLC" id="at6-oR-0DS"/>
+                        </connections>
                     </button>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="wFj-Je-9V8">
                         <rect key="frame" x="18" y="366" width="152" height="18"/>
@@ -724,14 +737,26 @@
                         <buttonCell key="cell" type="push" title="Go!" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="aRu-NM-tIZ">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
                         </buttonCell>
+                        <connections>
+                            <action selector="startGame:" target="Voe-Tx-rLC" id="WTE-hU-pAC"/>
+                        </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="U3L-9X-6bQ">
                         <rect key="frame" x="313" y="13" width="66" height="32"/>
                         <buttonCell key="cell" type="push" title="Quit" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="jQJ-ZF-Qb6">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
+                            <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
                         </buttonCell>
+                        <connections>
+                            <action selector="cancel:" target="Voe-Tx-rLC" id="2rp-Ht-Sb1"/>
+                        </connections>
                     </button>
                     <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="lMO-6T-nyC">
                         <rect key="frame" x="215" y="278" width="32" height="22"/>
@@ -930,6 +955,7 @@
                     <constraint firstItem="DJJ-BX-jBX" firstAttribute="leading" secondItem="hsK-3l-gr3" secondAttribute="trailing" constant="8" symbolic="YES" id="lD1-9Z-ayk"/>
                     <constraint firstItem="Pdv-CV-ebj" firstAttribute="leading" secondItem="zlU-vn-zd6" secondAttribute="leading" id="nvT-qq-sZK"/>
                     <constraint firstItem="W5H-gp-5d9" firstAttribute="trailing" secondItem="wey-vI-xLz" secondAttribute="trailing" id="pa5-cK-0Z7"/>
+                    <constraint firstItem="U3L-9X-6bQ" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="phh-qz-JdZ"/>
                     <constraint firstItem="tjs-ex-Fn8" firstAttribute="top" secondItem="q2u-5Y-V4o" secondAttribute="bottom" constant="8" symbolic="YES" id="usr-x8-EyA"/>
                     <constraint firstItem="Ypl-3X-xZm" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="v0M-Kw-vaj"/>
                     <constraint firstAttribute="trailing" secondItem="CEz-IB-SDc" secondAttribute="trailing" constant="20" symbolic="YES" id="vS7-4f-N8T"/>

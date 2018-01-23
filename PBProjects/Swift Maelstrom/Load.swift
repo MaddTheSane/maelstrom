@@ -89,7 +89,7 @@ func getCIcon(_ screen: FrameBuf, cicn_id: Int16) -> UnsafeMutablePointer<SDL_Su
 	var mask: [UInt8]
 	
 	/* Open the cicn sprite file.. */
-	let file = ("Images" as NSString).appendingPathComponent("Maelstrom_Icon#\(cicn_id).bmp")
+	let file = ("Images" as NSString).appendingPathComponent("Maelstrom_Icon#\(cicn_id).cicn")
 	guard let cicn_src = SDL_RWFromFile((path.path(file)! as NSURL).fileSystemRepresentation, "r") else {
 		print("GetCIcon(\(cicn_id)): Can't open CICN \(path.path(file)!): ");
 		return nil;

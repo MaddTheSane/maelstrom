@@ -134,7 +134,7 @@ private func loadBlits(_ spriteres: MacResource) throws {
 		
 		/* -- Load in the 3x multiplier */
 		
-		gMult.append(try Blit(largeSprite: (), resource: spriteres, baseID: 2003, frames: 1))
+		gMult.append(try Blit(largeSprite: (), resource: spriteres, baseID: 2002, frames: 1))
 		drawLoadBar(0);
 		
 		/* -- Load in the 4x multiplier */

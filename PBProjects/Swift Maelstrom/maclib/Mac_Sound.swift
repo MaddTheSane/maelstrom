@@ -18,13 +18,13 @@ let DSP_FREQUENCY:Int32 = 11025
 
 private var bogus_running = false
 
-private func fillAudio(_ selfPtr: UnsafeMutableRawPointer, bytes: UnsafeMutablePointer<Uint8>, length: Int32) -> Void {
+private func fillAudio(_ selfPtr: UnsafeMutableRawPointer?, bytes: UnsafeMutablePointer<Uint8>?, length: Int32) -> Void {
 	//ugly hack to get ourself back
 	let ourself: Sound = {
-		return Unmanaged<Sound>.fromOpaque(selfPtr).takeUnretainedValue()
+		return Unmanaged<Sound>.fromOpaque(selfPtr!).takeUnretainedValue()
 	}()
 	
-	ourself.fillAudioU8(bytes, length)
+	ourself.fillAudioU8(bytes!, length)
 }
 
 private func bogusAudioThread(_ data: UnsafeMutableRawPointer?) -> Int32 {
@@ -183,7 +183,7 @@ final class Sound {
 			throw Errors.noSoundResources
 		}
 		
-		let ids = try! soundres.resourceIDs(type: sndResType)
+		let ids = try soundres.resourceIDs(type: sndResType)
 		
 		var wave: Wave!
 		
@@ -205,7 +205,7 @@ final class Sound {
 		for _ in 0..<p {
 			spec.samples *= 2;
 		}
-		spec.callback = fillAudio as! SDL_AudioCallback;
+		spec.callback = fillAudio
 		//ugly hack to get to pass ourself as a parameter
 		let unMan = Unmanaged.passUnretained(self)
 		spec.userdata = unMan.toOpaque()

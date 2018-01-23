@@ -89,6 +89,7 @@ class FrameBuf {
 		var next: UnsafeMutablePointer<ImageList>?
 	};
 	var images = ImageList(image: nil, next: nil)
+	//var itail
 	//image_list images, *itail;
 
 	func lock() {
@@ -281,11 +282,92 @@ SDL_SetWindowGammaRamp(window, ramp, ramp, ramp);
 
 	/// Load and convert an 8-bit image with the given mask
 	func loadImage(w: UInt16, h: UInt16, pixels: UnsafeMutablePointer<UInt8>, mask: UnsafeMutablePointer<UInt8>? = nil) -> UnsafeMutablePointer<SDL_Surface>? {
-		return nil
+		
+		/* Assume 8-bit artwork using the current palette */
+		guard let artwork = SDL_CreateRGBSurface(SDL_SWSURFACE, Int32(w), Int32(h), Int32(screenfg!.pointee.format.pointee.BitsPerPixel), screenfg!.pointee.format.pointee.Rmask, screenfg!.pointee.format.pointee.Gmask, screenfg!.pointee.format.pointee.Bmask, 0) else {
+			print(String(format: "Couldn't create artwork: %s", SDL_GetError()));
+			return nil
+		}
+		
+		/* Set the palette and copy pixels, checking for colorkey */
+		if let palette = artwork.pointee.format.pointee.palette {
+			memcpy(palette.pointee.colors, screenfg!.pointee.format.pointee.palette.pointee.colors, Int(screenfg!.pointee.format.pointee.palette.pointee.ncolors) * MemoryLayout<SDL_Color>.size)
+		}
+		
+		let pad = Int((w % 4) != 0 ? (4-(w%4)) : 0)
+		if var mask = mask {
+			/* Set the palette and copy pixels, checking for colorkey */
+			var m = UInt8()
+			
+			let colorKey: UInt32 = {
+				var used = [Bool](repeating: false, count: 256)
+				/* Look for an unused palette entry */
+				var pix_mem = pixels
+				
+				for _ in 0 ..< w*h {
+					used[Int(pix_mem.pointee)] = true
+					pix_mem = pix_mem.advanced(by: 1)
+				}
+				
+				let i: Int = used.index(where: { (aBool) -> Bool in
+					return aBool == false
+				}) ?? 255
+
+				return image_map[i]
+			}()
+
+			/* Copy over the pixels */
+			var pix_mem = pixels
+			for i in 0..<h {
+				var artMem = artwork.pointee.pixels.assumingMemoryBound(to: UInt8.self).advanced(by: Int(i) * Int(artwork.pointee.pitch))
+				for j in 0..<w {
+					if (j%8) == 0 {
+						m = mask.pointee
+						mask = mask.advanced(by: 1)
+					}
+					if (m & 0x80) != 0 {
+						putPixel(artMem, screenfg, image_map[Int(pix_mem.pointee)])
+					} else {
+						putPixel(artMem, screenfg, colorKey)
+					}
+					m &<<= 1;
+					pix_mem = pix_mem.advanced(by: 1)
+					artMem = artMem.advanced(by: Int(artwork.pointee.format.pointee.BytesPerPixel))
+				}
+				pix_mem = pix_mem.advanced(by: pad)
+			}
+			
+			SDL_SetColorKey(artwork, 1 | Int32(SDL_RLEACCEL), colorKey)
+		} else {
+			/* Copy over the pixels */
+			var pix_mem = pixels
+			for i in 0..<h {
+				var artMem = artwork.pointee.pixels.assumingMemoryBound(to: UInt8.self).advanced(by: Int(i) * Int(artwork.pointee.pitch))
+				for _ in 0..<w {
+					putPixel(artMem, screenfg, image_map[Int(pix_mem.pointee)])
+					pix_mem = pix_mem.advanced(by: 1)
+					artMem = artMem.advanced(by: Int(artwork.pointee.format.pointee.BytesPerPixel))
+				}
+				pix_mem = pix_mem.advanced(by: pad)
+			}
+		}
+		/*
+	/* Add the image to the list of images */
+	itail->next = new image_list;
+	itail = itail->next;
+	itail->image = artwork;
+	itail->next = NULL;
+	return(artwork);
+*/
+		//var itail2 = ImageList()
+		//itail2.image = artwork
+		
+		return artwork
 	}
 	
 	@discardableResult
 	func screenDump(_ fileName: String, x: UInt16, y: UInt16, w: UInt16, h: UInt16) -> Bool {
+		//TODO: implement
 		return false
 	}
 	
@@ -546,21 +628,18 @@ AddDirtyRect(&dirty);
 		if screenfg?.pointee.format.pointee.palette != nil {
 			let palette = SDL_AllocPalette(Int32(colors.count))
 			SDL_SetPaletteColors(palette, colors.baseAddress, 0, Int32(colors.count))
-			SDL_SetSurfacePalette(screenfg, palette);
-			SDL_SetSurfacePalette(screenbg, screenfg?.pointee.format.pointee.palette);
-			SDL_FreePalette(palette);
+			SDL_SetSurfacePalette(screenfg, palette)
+			SDL_SetSurfacePalette(screenbg, screenfg?.pointee.format.pointee.palette)
+			SDL_FreePalette(palette)
 		}
 		for (i, color) in colors.enumerated() {
-			image_map[i] = SDL_MapRGB(screenfg?.pointee.format,
-				color.r, color.g, color.b);
+			image_map[i] = SDL_MapRGB(screenfg?.pointee.format, color.r, color.g, color.b)
 		}
-		setBackground(R: BGrgb.0, G: BGrgb.1, B: BGrgb.2);
+		setBackground(R: BGrgb.red, G: BGrgb.green, B: BGrgb.blue)
 	}
 	
 	func setBackground(R: UInt8, G: UInt8, B: UInt8) {
-		BGrgb.0 = R;
-		BGrgb.1 = G;
-		BGrgb.2 = B;
+		BGrgb = (R, G, B)
 		BGcolor = SDL_MapRGB(screenfg?.pointee.format, R, G, B);
 		focusBG();
 		clear();
