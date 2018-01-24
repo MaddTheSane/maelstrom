@@ -114,7 +114,7 @@ class MacButton : MacDialog {
 		case sdlError(String)
 	}
 	
-	init(x: Int32, y: Int32, width: Int32, height: Int32, text: String, font: FontServer.MFont, fontserv: FontServer, callback: buttonCallback?) throws {
+	init(x: Int32, y: Int32, width: Int32, height: Int32, text: String, font: FontServer.Font, fontserv: FontServer, callback: buttonCallback?) throws {
 		size = (width, height)
 		button = SDL_CreateRGBSurface(0, width, height,
 			8, 0, 0, 0, 0);
@@ -315,7 +315,7 @@ final class MacCheckBox : MacDialog {
 	fileprivate var sensitive = SDL_Rect()
 	fileprivate var checkval: UnsafeMutablePointer<Bool>
 	
-	init(toggle: UnsafeMutablePointer<Bool>, x: Int32, y: Int32, text: String, font: FontServer.MFont, fontserv: FontServer) {
+	init(toggle: UnsafeMutablePointer<Bool>, x: Int32, y: Int32, text: String, font: FontServer.Font, fontserv: FontServer) {
 		fontServ = fontserv
 		checkval = toggle
 		label = fontserv.newTextImage(text, font: font, style: [], foreground: (red: 0, green: 0, blue: 0))
@@ -381,7 +381,7 @@ final class MacCheckBox : MacDialog {
 final class MacRadioList : MacDialog {
 	fileprivate var radioList = [Radio]()
 	fileprivate let fontServ: FontServer
-	fileprivate let font: FontServer.MFont
+	fileprivate let font: FontServer.Font
 	fileprivate var fg: UInt32 = 0
 	fileprivate var bg: UInt32 = 0
 	fileprivate var radiovar: UnsafeMutablePointer<Int>
@@ -393,7 +393,7 @@ final class MacRadioList : MacDialog {
 		var sensitive: SDL_Rect
 	}
 	
-	init(variable: UnsafeMutablePointer<Int>, x: Int32, y: Int32, font: FontServer.MFont, fontserv: FontServer) {
+	init(variable: UnsafeMutablePointer<Int>, x: Int32, y: Int32, font: FontServer.Font, fontserv: FontServer) {
 		radiovar = variable
 		fontServ = fontserv
 		self.font = font
@@ -505,7 +505,7 @@ final class MacRadioList : MacDialog {
 /** Class of text entry boxes */
 final class MacTextEntry : MacDialog {
 	fileprivate let fontServ: FontServer
-	fileprivate let font: FontServer.MFont
+	fileprivate let font: FontServer.Font
 	fileprivate var fg: UInt32 = 0
 	fileprivate var bg: UInt32 = 0
 	fileprivate var cWidth: Int32
@@ -525,7 +525,7 @@ final class MacTextEntry : MacDialog {
 		var hilite: Bool = false
 	}
 	
-	init(x: Int32, y: Int32, font: FontServer.MFont, fontserv: FontServer) {
+	init(x: Int32, y: Int32, font: FontServer.Font, fontserv: FontServer) {
 		fontServ = fontserv
 		self.font = font
 		let tmpSize = fontserv.textSize("0", font: font, style: [])
@@ -677,7 +677,7 @@ final class MacTextEntry : MacDialog {
 final class MacNumericEntry: MacDialog {
 	fileprivate var entryList = [NumericEntry]()
 	fileprivate let fontServ: FontServer
-	fileprivate let font: FontServer.MFont
+	fileprivate let font: FontServer.Font
 	fileprivate var fg: UInt32 = 0
 	fileprivate var bg: UInt32 = 0
 	fileprivate var cWidth: Int32
@@ -699,7 +699,7 @@ final class MacNumericEntry: MacDialog {
 		var hilite: Bool = false
 	}
 
-	init(x: Int32, y: Int32, font: FontServer.MFont, fontserv: FontServer) {
+	init(x: Int32, y: Int32, font: FontServer.Font, fontserv: FontServer) {
 		fontServ = fontserv
 		self.font = font
 		let tmpSize = fontserv.textSize("0", font: font, style: [])

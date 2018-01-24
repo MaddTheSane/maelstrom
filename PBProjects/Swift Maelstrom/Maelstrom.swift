@@ -367,13 +367,13 @@ private func runSpeedTest() {
 }
 
 @discardableResult
-func drawText(x: UInt16, y: UInt16, text: String, font: FontServer.MFont, style: FontStyle,
+func drawText(x: UInt16, y: UInt16, text: String, font: FontServer.Font, style: FontServer.Style,
 	R: UInt8, G: UInt8, B: UInt8) -> Int32 {
 	return drawText(x: Int32(x), y: Int32(y), text: text, font: font, style: style, R: R, G: G, B: B)
 }
 
 @discardableResult
-func drawText(x: Int32, y: Int32, text: String, font: FontServer.MFont, style: FontStyle,
+func drawText(x: Int32, y: Int32, text: String, font: FontServer.Font, style: FontServer.Style,
 	R: UInt8, G: UInt8, B: UInt8) -> Int32
 {
 	guard let textimage = fontserv.newTextImage(text, font: font, style: style, foreground: (R, G, B)) else {
@@ -871,7 +871,7 @@ private func drawKey(_ pt: inout MPoint, key: String, text: String, callback: ((
 
 private let xOff = (SCREEN_WIDTH - 512) / 2;
 private let yOff = (SCREEN_HEIGHT - 384) / 2;
-private let geneva9: FontServer.MFont = {
+private let geneva9: FontServer.Font = {
 	guard let geneva = try? fontserv.newFont("Geneva", pointSize: 9) else {
 		fatalError("Can't use Geneva font! -- Exiting.");
 	}

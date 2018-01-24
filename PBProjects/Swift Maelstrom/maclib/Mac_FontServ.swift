@@ -17,29 +17,6 @@ private func LoByte(_ word: UInt16) -> UInt8 {
 	return UInt8(word & 0xFF)
 }
 
-///Different styles supported by the font server
-struct FontStyle: OptionSet {
-	let rawValue: UInt8
-	
-	init(rawValue rv: UInt8) {
-		rawValue = rv
-	}
-	
-	static var normal: FontStyle {
-		return FontStyle(rawValue: 0)
-	}
-	static var bold: FontStyle {
-		return FontStyle(rawValue: 0x01)
-	}
-	static var underline: FontStyle {
-		return FontStyle(rawValue: 0x02)
-	}
-	///Unimplemented
-	static var italic: FontStyle {
-		return FontStyle(rawValue: 0x04)
-	}
-}
-
 ///Lay-out of a Font Record header
 struct FontHdr {
 	///Macintosh font magic numbers
@@ -88,6 +65,26 @@ private func copy_int(_ S: UnsafeMutablePointer<UInt32>, _ D: inout UnsafePointe
 }
 
 class FontServer {
+	///Different styles supported by the font server
+	struct Style: OptionSet {
+		let rawValue: UInt8
+		
+		init(rawValue rv: UInt8) {
+			rawValue = rv
+		}
+		
+		static var bold: Style {
+			return Style(rawValue: 0x01)
+		}
+		static var underline: Style {
+			return Style(rawValue: 0x02)
+		}
+		///Unimplemented
+		static var italic: Style {
+			return Style(rawValue: 0x04)
+		}
+	}
+
 	fileprivate struct FontEntry {
 		var size: UInt16 = 0
 		var style: UInt16 = 0
@@ -134,9 +131,9 @@ class FontServer {
 		/* The Kerning Table */
 	};
 
-	final class MFont {
+	final class Font {
 		///The NFNT header!
-		var header: FontHdr = FontHdr()
+		fileprivate var header: FontHdr = FontHdr()
 		
 		//MARK: - Variable-length tables
 		/// bitImage[rowWords][fRectHeight];
@@ -159,7 +156,7 @@ class FontServer {
 		
 		/// The width of the specified text in pixels when displayed with the
 		/// specified font and style.
-		func textWidth(_ text: String, style: FontStyle) -> UInt16 {
+		func textWidth(_ text: String, style: Style) -> UInt16 {
 			//First, convert to MacRoman.
 			guard let macRomanStr = text.cString(using: String.Encoding.macOSRoman) else {
 				return 0
@@ -211,7 +208,7 @@ class FontServer {
 		}
 	}
 	
-	func newFont(_ fontName: String, pointSize ptsize: Int32) throws -> MFont {
+	func newFont(_ fontName: String, pointSize ptsize: Int32) throws -> Font {
 		var fond: Data!
 		var fondStruct = FOND()
 		var fent = FontEntry()
@@ -265,7 +262,7 @@ class FontServer {
 		}
 
 		/* Now, fent.ID is the ID of the correct NFNT resource */
-		var font = MFont()
+		var font = Font()
 		var fontData = try fontres.resource(type: MaelOSType(stringValue: "NFNT")!, id: fent.ID)
 		
 		/* Now that we have the resource, fiddle with the font structure
@@ -329,16 +326,16 @@ class FontServer {
 	}
 	
 	/// Determine the final width of a text block (in pixels)
-	func textWidth(_ text: String, font: MFont, style: FontStyle) -> UInt16 {
+	func textWidth(_ text: String, font: Font, style: Style) -> UInt16 {
 		return font.textWidth(text, style: style)
 	}
 	/// Determine the final height of a text block (in pixels)
-	func textHeight(font: MFont) -> UInt16 {
+	func textHeight(font: Font) -> UInt16 {
 		return font.textHeight
 	}
 
 	///Determine the final width and height of a text block (in pixels)
-	func textSize(_ text: String, font: MFont, style: FontStyle) -> (width: UInt16, height: UInt16) {
+	func textSize(_ text: String, font: Font, style: Style) -> (width: UInt16, height: UInt16) {
 		let width = textWidth(text, font: font, style: style)
 		let height = textHeight(font: font)
 		return (width, height)
@@ -346,7 +343,7 @@ class FontServer {
 	
 	/// Returns a bitmap image filled with the requested text.
 	/// The text should be freed with `freeText()` after it is used.
-	func newTextImage(_ text: String, font: MFont, style: FontStyle, foreground: SDL_Color, background: SDL_Color) -> UnsafeMutablePointer<SDL_Surface>? {
+	func newTextImage(_ text: String, font: Font, style: Style, foreground: SDL_Color, background: SDL_Color) -> UnsafeMutablePointer<SDL_Surface>? {
 		guard let aChars = text.cString(using: String.Encoding.macOSRoman) else {
 			error = "FontServ: Encoding error"
 			return nil
@@ -362,16 +359,18 @@ class FontServer {
 		
 		///Set bit `i` of a scan line
 		func SETBIT(_ scanline: UnsafeMutablePointer<UInt8>, _ i: Int, _ bit: UInt8) {
-			scanline[(i)/8] |= bit << (7 - UInt8((i)%8))
+			let bleh = (7 - UInt8((i)%8))
+			let bleh2 = bit << bleh
+			scanline[(i)/8] |= bleh2
 		}
 		
 		///Get bit `i` of a scan line
-		func GETBIT(_ scanline: UnsafeMutablePointer<UInt16>, _ i: Int) -> UInt8 {
+		func GETBIT(_ scanline: UnsafePointer<UInt16>, _ i: Int) -> UInt8 {
 			return UInt8((scanline[(i)/16] >> (15 - UInt16(i%16))) & 1)
 		}
 		
-		var image: UnsafeMutablePointer<SDL_Surface>? = nil
-		var bitmap: UnsafeMutablePointer<UInt8>? = nil
+		//var image: UnsafeMutablePointer<SDL_Surface>? = nil
+		//var bitmap: UnsafeMutablePointer<UInt8>? = nil
 		
 		var bold_offset = 0
 		
@@ -440,12 +439,11 @@ class FontServer {
 		let height = font.header.fRectHeight
 		
 		/* Allocate the text bitmap image */
-		image = SDL_CreateRGBSurface(UInt32(SDL_SWSURFACE), Int32(width), Int32(height), 1, 0,0,0,0);
-		if image == nil {
+		guard let image = SDL_CreateRGBSurface(SDL_SWSURFACE, Int32(width), Int32(height), 1, 0,0,0,0) else {
 			error = String(format: "Unable to allocate bitmap: %s", SDL_GetError());
 			return nil
 		}
-		bitmap = image?.pointee.pixels.assumingMemoryBound(to: UInt8.self)
+		let bitmap = image.pointee.pixels.assumingMemoryBound(to: UInt8.self)
 		
 		/* Print the individual characters */
 		/* Note: this could probably be optimized.. eh, who cares. :) */
@@ -459,26 +457,25 @@ class FontServer {
 				/* change seems to fix a SIGSEGV that would  */
 				/* otherwise occur in some cases.            */
 				if font.owTable[Int(aChar)] <= 0 {
-				continue;
+					continue;
 				}
 				
 				let space_width = LoByte(UInt16(font.owTable[Int(aChar)]));
 				let space_offset = HiByte(UInt16(font.owTable[Int(aChar)]));
 				let ascii = Int16(aChar) - font.header.firstChar
 				let glyph_line_offset = font.locTable[Int(ascii)]
-				let glyph_width = (font.locTable[Int(ascii)+1] -
-				font.locTable[Int(ascii)]);
+				let glyph_width = (font.locTable[Int(ascii)+1] - font.locTable[Int(ascii)]);
 				for y in 0..<height {
-					var dst_offset = 0
-					var src_scanline: UnsafeMutablePointer<UInt16>? = nil
-					
-					dst_offset = (Int(y)*Int((image?.pointee.pitch)!)*8 +
+					let dst_offset = (Int(y)*Int((image.pointee.pitch))*8 +
 						bit_offset+Int(space_offset))
-					src_scanline = UnsafeMutablePointer<UInt16>(mutating: font.bitImage).advanced(by: Int(y) * Int(font.header.rowWords))
-					for bit in 0..<glyph_width {
-						SETBIT(bitmap!, dst_offset+Int(bit)+boldness,
-							GETBIT(src_scanline!, Int(glyph_line_offset+bit)))
-					}
+					
+					font.bitImage.withUnsafeBufferPointer({ (bufPtr) -> Void in
+						let src_scanline = bufPtr.baseAddress!.advanced(by: Int(y) * Int(font.header.rowWords))
+						for bit in 0..<glyph_width {
+							SETBIT(bitmap, dst_offset+Int(bit)+boldness,
+								   GETBIT(src_scanline, Int(glyph_line_offset+bit)))
+						}
+					})
 				}
 				#if WIDE_BOLD
 				bit_offset += (Int(space_width)+Int(bold_offset));
@@ -489,23 +486,23 @@ class FontServer {
 		}
 		if style.contains(.underline) {
 			let y = height-(font.header).descent+1
-			bit_offset =  Int(y)*Int((image?.pointee.pitch)!)*8
+			bit_offset =  Int(y)*Int((image.pointee.pitch))*8
 			for bit in 0..<width {
-				SETBIT(bitmap!, bit_offset+Int(bit), 0x01);
+				SETBIT(bitmap, bit_offset+Int(bit), 0x01);
 			}
 		}
 		
 		/* Map the image and return */
 		SDL_SetColorKey(image, 1/*SDL_SRCCOLORKEY*/, 0);
-		image?.pointee.format.pointee.palette.pointee.colors[0] = background
-		image?.pointee.format.pointee.palette.pointee.colors[1] = foreground
+		image.pointee.format.pointee.palette.pointee.colors[0] = background
+		image.pointee.format.pointee.palette.pointee.colors[1] = foreground
 		text_allocated += 1;
-		return image!
+		return image
 	}
 	
 	/// Returns a bitmap image filled with the requested text.
 	/// The text should be freed with `freeText()` after it is used.
-	func newTextImage(_ text: String, font: MFont, style: FontStyle, foreground: (red: UInt8, green: UInt8, blue: UInt8)) -> UnsafeMutablePointer<SDL_Surface>? {
+	func newTextImage(_ text: String, font: Font, style: Style, foreground: (red: UInt8, green: UInt8, blue: UInt8)) -> UnsafeMutablePointer<SDL_Surface>? {
 		let background = SDL_Color(r: 0xFF, g: 0xFF, b: 0xFF, a: 0xFF)
 		let fgColor = SDL_Color(r: foreground.red, g: foreground.green, b: foreground.blue, a: 0xFF)
 		

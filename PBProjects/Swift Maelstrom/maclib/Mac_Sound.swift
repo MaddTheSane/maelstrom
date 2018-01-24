@@ -84,7 +84,7 @@ final class Sound {
 		var priority: Int16 = 0
 		///Signed, so race conditions can make it < 0
 		var len: Int = 0
-		var src: UnsafeMutablePointer<UInt8>? = nil
+		var src: UnsafePointer<UInt8>? = nil
 		var callback: ((_ channel: UInt8) -> Void)? = nil
 	} //channels[NUM_CHANNELS];
 	

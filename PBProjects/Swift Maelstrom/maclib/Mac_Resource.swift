@@ -514,13 +514,13 @@ final class MacResource {
 		var len: UInt32 = 0
 		fread(&len, 4, 1, filep);
 		len = len.bigEndian
-		guard let d = NSMutableData(length: Int(len)) else {
-			fatalError("Out of memory?")
+		var d = Data(count: Int(len))
+		try d.withUnsafeMutableBytes { (bytes: UnsafeMutablePointer<UInt8>) -> Void in
+			guard fread(bytes, Int(len), 1, filep) != 0 else {
+				throw Errors.couldNotReadData
+			}
 		}
-		guard fread(d.mutableBytes, Int(len), 1, filep) != 0 else {
-			throw Errors.couldNotReadData
-		}
-		resource.data = d as Data
+		resource.data = d
 	}
 	
 	/// Return a resource of a certain type and id.
