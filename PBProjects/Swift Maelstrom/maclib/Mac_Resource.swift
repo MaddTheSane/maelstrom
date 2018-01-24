@@ -146,7 +146,9 @@ private func openMacRes(_ original: inout URL, resbase: inout Int) -> UnsafeMuta
 		/* First look for Executor (tm) resource forks */
 		var newName = "%\(filename)"
 		newURL = urlByAddingPath(newName)
-		resfile = fopen((newURL! as NSURL).fileSystemRepresentation, "rb")
+		resfile = newURL!.withUnsafeFileSystemRepresentation({ (fName) -> UnsafeMutablePointer<FILE>? in
+			return fopen(fName, "rb")
+		})
 		guard resfile == nil else {
 			break
 		}
@@ -156,7 +158,9 @@ private func openMacRes(_ original: inout URL, resbase: inout Int) -> UnsafeMuta
 		/* Look for MacBinary files */
 		newName = (filename as NSString).appendingPathExtension("bin")!
 		newURL = urlByAddingPath(newName)
-		resfile = fopen((newURL! as NSURL).fileSystemRepresentation, "rb")
+		resfile = newURL!.withUnsafeFileSystemRepresentation({ (fName) -> UnsafeMutablePointer<FILE>? in
+			return fopen(fName, "rb")
+		})
 		guard resfile == nil else {
 			break
 		}
@@ -166,7 +170,9 @@ private func openMacRes(_ original: inout URL, resbase: inout Int) -> UnsafeMuta
 		/* Look for OS X-style metadata: it might have a resource fork */
 		newName = "._\(filename)"
 		newURL = urlByAddingPath(newName)
-		resfile = fopen((newURL! as NSURL).fileSystemRepresentation, "rb")
+		resfile = newURL!.withUnsafeFileSystemRepresentation({ (fName) -> UnsafeMutablePointer<FILE>? in
+			return fopen(fName, "rb")
+		})
 		if resfile != nil {
 			//Be a bit more strict when looking for resources in OS X metadata.
 			//Simply put, it might not have a resource fork.
@@ -190,7 +196,9 @@ private func openMacRes(_ original: inout URL, resbase: inout Int) -> UnsafeMuta
 		}
 
 		/* Look for raw resource fork.. */
-		resfile = fopen((newURL! as NSURL).fileSystemRepresentation, "rb")
+		resfile = newURL!.withUnsafeFileSystemRepresentation({ (fName) -> UnsafeMutablePointer<FILE>? in
+			return fopen(fName, "rb")
+		})
 		guard resfile == nil else {
 			break
 		}

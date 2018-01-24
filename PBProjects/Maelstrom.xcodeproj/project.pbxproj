@@ -86,8 +86,8 @@
 		55D4F8C81BE9738E00F31A0F /* SDLMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A6164F1BE55FEC00AD2049 /* SDLMain.swift */; };
 		55D4F8CB1BE9747500F31A0F /* Maelstrom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D4F8CA1BE9747500F31A0F /* Maelstrom.swift */; };
 		55D95E3B1C9B77C3008441E2 /* Make.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D95E3A1C9B77C3008441E2 /* Make.swift */; };
-		55EBAE1E17174CFB0029EB7B /* SDL2.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127EF0F09D54000E06E2A /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		55EBAE1F17174CFF0029EB7B /* SDL2_net.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127F00F09D54000E06E2A /* SDL2_net.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		55EBAE1E17174CFB0029EB7B /* SDL2.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127EF0F09D54000E06E2A /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		55EBAE1F17174CFF0029EB7B /* SDL2_net.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127F00F09D54000E06E2A /* SDL2_net.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		55FF319E1BF2C5A7001977AD /* Controls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FF319D1BF2C5A7001977AD /* Controls.swift */; };
 		55FF31A01BF2C627001977AD /* Logic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FF319F1BF2C627001977AD /* Logic.swift */; };
 		55FF31A21BF2D070001977AD /* Scores.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FF31A11BF2D070001977AD /* Scores.swift */; };
@@ -237,7 +237,7 @@
 		55A6164E1BE55FEA00AD2049 /* Maelstrom-UB-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Maelstrom-UB-Bridging-Header.h"; sourceTree = "<group>"; };
 		55A6164F1BE55FEC00AD2049 /* SDLMain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SDLMain.swift; sourceTree = "<group>"; };
 		55A616511BE5614600AD2049 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		55A616531BE575CA00AD2049 /* checksum-CC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "checksum-CC.cpp"; path = "PBProjects/checksum-CC.cpp"; sourceTree = "<group>"; };
+		55A616531BE575CA00AD2049 /* checksum-CC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "checksum-CC.cpp"; sourceTree = SOURCE_ROOT; };
 		55ADA3E91BFE684400D78509 /* XattrResFork.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XattrResFork.m; sourceTree = "<group>"; };
 		55ADA3EB1BFE68CD00D78509 /* XattrResFork.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XattrResFork.h; sourceTree = "<group>"; };
 		55D127EF0F09D54000E06E2A /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = /Library/Frameworks/SDL2.framework; sourceTree = "<absolute>"; };
@@ -447,7 +447,6 @@
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				1736716C00B03F027F000001 /* Maelstrom-netd.c */,
-				55D128260F09D57F00E06E2A /* Maelstrom-UB-Info.plist */,
 			);
 			name = "SDL Application";
 			sourceTree = "<group>";
@@ -473,6 +472,7 @@
 				557258B519E5CC730073CDF2 /* SDLMain.xib */,
 				55D128BE0F09DB1C00E06E2A /* icon.bmp */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
+				55D128260F09D57F00E06E2A /* Maelstrom-UB-Info.plist */,
 			);
 			name = Resources;
 			sourceTree = SOURCE_ROOT;

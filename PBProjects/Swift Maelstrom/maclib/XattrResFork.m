@@ -79,21 +79,19 @@ FILE *fileFromResourceFork(NSURL *url)
 	if (rsrcSize <= 0) {
 		return NULL;
 	}
-	NSMutableData *mutData = [[NSMutableData alloc] initWithLength:rsrcSize];
-	ssize_t gotBytes = getxattr(fsr, XATTR_RESOURCEFORK_NAME, mutData.mutableBytes, mutData.length, 0, 0);
+	char *bytes = malloc(rsrcSize);
+	ssize_t gotBytes = getxattr(fsr, XATTR_RESOURCEFORK_NAME, bytes, rsrcSize, 0, 0);
 	if (gotBytes == -1) {
+		free(bytes);
 		return NULL;
 	}
 	
 	NSCAssert(rsrcSize == gotBytes, @"Different sizes?");
 	
-	char *bytes = malloc(mutData.length);
-	[mutData getBytes:bytes length:mutData.length];
-	
 	fmem *aMem = malloc(sizeof(fmem));
 	
 	aMem->buffer = bytes;
-	aMem->size = mutData.length;
+	aMem->size = rsrcSize;
 	aMem->pos = 0;
 	
 	return funopen(aMem, readfn, NULL, seekfn, closefn);

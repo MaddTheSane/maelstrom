@@ -239,7 +239,7 @@ final class Wave {
 			switch sample_rate {
 			case rate11khz, rate11khz2:
 				/* Assuming 8-bit mono samples */
-				if ( desired_rate == 0 ) {
+				if desired_rate == 0 {
 					desired_rate = 11025;
 				}
 				num_samples =
@@ -248,7 +248,7 @@ final class Wave {
 				
 			case rate22khz:
 				/* Assuming 8-bit mono samples */
-				if ( desired_rate == 0 ) {
+				if desired_rate == 0 {
 					desired_rate = 22050;
 				}
 				num_samples =
@@ -347,12 +347,12 @@ final class Wave {
 		return spec.channels == 2
 	}
 	
-	fileprivate func Init() {
+	private func Init() {
 		soundData = nil;
 		soundDataLen = 0
 	}
 	
-	fileprivate func Free() {
+	private func Free() {
 		if soundData != nil {
 			free(soundData)
 			soundData = nil
@@ -371,30 +371,30 @@ final class Wave {
 
 ///Utility function
 private func convertRate(_ rate_in: UInt32, rateOut rate_out: Int32, samples: inout UnsafeMutablePointer<UInt8>, countOfSamples  n_samples: UInt32, sampleSize s_size: UInt8) -> UInt32 {
-		var iPos: Double = 0
-		var oPos: UInt32 = 0
-		
-		let nIn = UInt32(n_samples)*UInt32(s_size)
-		let input = samples
-		let nOut = UInt32((Double(rate_out)/Double(rate_in))*Double(n_samples))+1;
-		let output = malloc(Int(nOut) * Int(s_size)).assumingMemoryBound(to: UInt8.self)
-		let iSize = Double(rate_in)/Double(rate_out)*Double(s_size)
+        var iPos: Double = 0
+        var oPos: UInt32 = 0
+        
+        let nIn = UInt32(n_samples)*UInt32(s_size)
+        let input = samples
+        let nOut = UInt32((Double(rate_out)/Double(rate_in))*Double(n_samples))+1;
+        let output = malloc(Int(nOut) * Int(s_size)).assumingMemoryBound(to: UInt8.self)
+        let iSize = Double(rate_in)/Double(rate_out)*Double(s_size)
 		#if CONVERTRATE_DEBUG
-			print(String(format: "%g seconds of input", Double(n_samples) / Double(rate_in)))
-			print(String(format: "Input rate: %hu, Output rate: %hu, Input increment: %g", rate_in, rate_out, iSize/Double(s_size)))
-			print(String(format: "%g seconds of output", Double(nOut)/Double(rate_out)))
+            print(String(format: "%g seconds of input", Double(n_samples) / Double(rate_in)))
+            print(String(format: "Input rate: %hu, Output rate: %hu, Input increment: %g", rate_in, rate_out, iSize/Double(s_size)))
+            print(String(format: "%g seconds of output", Double(nOut)/Double(rate_out)))
 		#endif
-		repeat {
-			#if CONVERTRATE_DEBUG
-				if oPos >= nOut * UInt32(s_size) {
-					print("Warning: buffer output overflow!")
-				}
-			#endif
-			memcpy(output.advanced(by: Int(oPos)), input.advanced(by: Int(iPos)), Int(s_size));
-			iPos += iSize;
-			oPos += UInt32(s_size);
-		} while UInt32(iPos) < nIn
-		samples = output;
-		return oPos/UInt32(s_size)
+        repeat {
+            #if CONVERTRATE_DEBUG
+                if oPos >= nOut * UInt32(s_size) {
+                    print("Warning: buffer output overflow!")
+                }
+            #endif
+            memcpy(output.advanced(by: Int(oPos)), input.advanced(by: Int(iPos)), Int(s_size));
+            iPos += iSize;
+            oPos += UInt32(s_size);
+        } while UInt32(iPos) < nIn
+        samples = output;
+        return oPos/UInt32(s_size)
 }
 

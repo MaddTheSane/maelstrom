@@ -535,5 +535,5 @@ class FontServer {
 		return true
 	}
 
-	fileprivate(set) var error: String? = nil
+	private(set) var error: String? = nil
 }

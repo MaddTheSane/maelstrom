@@ -313,14 +313,12 @@ final class Sound {
 			/* clip */
 			if s > 0xFE {/* 0xFF causes static on some audio systems */
 				stream.pointee = 0xFE
-				stream = stream.successor()
 			} else if s < 0x00 {
 				stream.pointee = 0
-				stream = stream.successor()
 			} else {
 				stream.pointee = UInt8(s)
-				stream = stream.successor()
 			}
+			stream = stream.successor()
 		}
 	}
 
