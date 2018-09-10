@@ -60,7 +60,6 @@
 		55D128460F09D5C200E06E2A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		55D128480F09D5C200E06E2A /* Maelstrom.icns in Resources */ = {isa = PBXBuildFile; fileRef = F5709022010A768101000001 /* Maelstrom.icns */; };
 		55D1284E0F09D79100E06E2A /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		55D1284F0F09D79200E06E2A /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127EF0F09D54000E06E2A /* SDL2.framework */; };
 		55D128500F09D79200E06E2A /* SDL2_net.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127F00F09D54000E06E2A /* SDL2_net.framework */; };
 		55D128790F09D9EA00E06E2A /* Maelstrom-netd.c in Sources */ = {isa = PBXBuildFile; fileRef = 1736716C00B03F027F000001 /* Maelstrom-netd.c */; };
 		55D1287C0F09DA0A00E06E2A /* Maelstrom_Server in Resources */ = {isa = PBXBuildFile; fileRef = 55D128720F09D9BD00E06E2A /* Maelstrom_Server */; };
@@ -73,8 +72,6 @@
 		55D4F8B61BE7F3DB00F31A0F /* SwiftHelping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D4F8B51BE7F3DB00F31A0F /* SwiftHelping.swift */; };
 		55D4F8B81BE83ADB00F31A0F /* Mac_FontServ.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D4F8B71BE83ADB00F31A0F /* Mac_FontServ.swift */; };
 		55D4F8BA1BE83B0900F31A0F /* Mac_Sound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D4F8B91BE83B0900F31A0F /* Mac_Sound.swift */; };
-		55D4F8BB1BE96DEF00F31A0F /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127EF0F09D54000E06E2A /* SDL2.framework */; };
-		55D4F8BC1BE96DEF00F31A0F /* SDL2.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127EF0F09D54000E06E2A /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		55D4F8BD1BE96DEF00F31A0F /* SDL2_net.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127F00F09D54000E06E2A /* SDL2_net.framework */; };
 		55D4F8BE1BE96DEF00F31A0F /* SDL2_net.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127F00F09D54000E06E2A /* SDL2_net.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		55D4F8C01BE96FBF00F31A0F /* icon.bmp in Resources */ = {isa = PBXBuildFile; fileRef = 55D128BE0F09DB1C00E06E2A /* icon.bmp */; };
@@ -86,8 +83,11 @@
 		55D4F8C81BE9738E00F31A0F /* SDLMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A6164F1BE55FEC00AD2049 /* SDLMain.swift */; };
 		55D4F8CB1BE9747500F31A0F /* Maelstrom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D4F8CA1BE9747500F31A0F /* Maelstrom.swift */; };
 		55D95E3B1C9B77C3008441E2 /* Make.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55D95E3A1C9B77C3008441E2 /* Make.swift */; };
-		55EBAE1E17174CFB0029EB7B /* SDL2.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127EF0F09D54000E06E2A /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		55EBAE1F17174CFF0029EB7B /* SDL2_net.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 55D127F00F09D54000E06E2A /* SDL2_net.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		55FB5C142147096100247538 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55FB5C132147096100247538 /* SDL2.framework */; };
+		55FB5C152147097600247538 /* SDL2.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 55FB5C132147096100247538 /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		55FB5C162147097C00247538 /* SDL2.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 55FB5C132147096100247538 /* SDL2.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		55FB5C172147098300247538 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55FB5C132147096100247538 /* SDL2.framework */; };
 		55FF319E1BF2C5A7001977AD /* Controls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FF319D1BF2C5A7001977AD /* Controls.swift */; };
 		55FF31A01BF2C627001977AD /* Logic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FF319F1BF2C627001977AD /* Logic.swift */; };
 		55FF31A21BF2D070001977AD /* Scores.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FF31A11BF2D070001977AD /* Scores.swift */; };
@@ -123,8 +123,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				55D4F8BC1BE96DEF00F31A0F /* SDL2.framework in Embed Frameworks */,
 				55D4F8BE1BE96DEF00F31A0F /* SDL2_net.framework in Embed Frameworks */,
+				55FB5C152147097600247538 /* SDL2.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -135,8 +135,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				55EBAE1E17174CFB0029EB7B /* SDL2.framework in Copy Frameworks */,
 				55EBAE1F17174CFF0029EB7B /* SDL2_net.framework in Copy Frameworks */,
+				55FB5C162147097C00247538 /* SDL2.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -240,7 +240,6 @@
 		55A616531BE575CA00AD2049 /* checksum-CC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "checksum-CC.cpp"; sourceTree = SOURCE_ROOT; };
 		55ADA3E91BFE684400D78509 /* XattrResFork.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XattrResFork.m; sourceTree = "<group>"; };
 		55ADA3EB1BFE68CD00D78509 /* XattrResFork.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XattrResFork.h; sourceTree = "<group>"; };
-		55D127EF0F09D54000E06E2A /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = /Library/Frameworks/SDL2.framework; sourceTree = "<absolute>"; };
 		55D127F00F09D54000E06E2A /* SDL2_net.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_net.framework; path = /Library/Frameworks/SDL2_net.framework; sourceTree = "<absolute>"; };
 		55D128240F09D57F00E06E2A /* Maelstrom.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Maelstrom.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		55D128260F09D57F00E06E2A /* Maelstrom-UB-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Maelstrom-UB-Info.plist"; sourceTree = "<group>"; };
@@ -260,6 +259,7 @@
 		55D4F8B91BE83B0900F31A0F /* Mac_Sound.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mac_Sound.swift; sourceTree = "<group>"; };
 		55D4F8CA1BE9747500F31A0F /* Maelstrom.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Maelstrom.swift; sourceTree = "<group>"; };
 		55D95E3A1C9B77C3008441E2 /* Make.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Make.swift; sourceTree = "<group>"; };
+		55FB5C132147096100247538 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = Frameworks/SDL2.framework; sourceTree = "<group>"; };
 		55FF319D1BF2C5A7001977AD /* Controls.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Controls.swift; sourceTree = "<group>"; };
 		55FF319F1BF2C627001977AD /* Logic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logic.swift; sourceTree = "<group>"; };
 		55FF31A11BF2D070001977AD /* Scores.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scores.swift; sourceTree = "<group>"; };
@@ -277,8 +277,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				55D4F8BB1BE96DEF00F31A0F /* SDL2.framework in Frameworks */,
 				55D4F8BD1BE96DEF00F31A0F /* SDL2_net.framework in Frameworks */,
+				55FB5C142147096100247538 /* SDL2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -287,8 +287,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				55D1284E0F09D79100E06E2A /* Cocoa.framework in Frameworks */,
-				55D1284F0F09D79200E06E2A /* SDL2.framework in Frameworks */,
 				55D128500F09D79200E06E2A /* SDL2_net.framework in Frameworks */,
+				55FB5C172147098300247538 /* SDL2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -339,11 +339,11 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				55FB5C132147096100247538 /* SDL2.framework */,
 				55D128580F09D7DC00E06E2A /* AGL.framework */,
 				55D128590F09D7DC00E06E2A /* IOKit.framework */,
 				55D1285A0F09D7DC00E06E2A /* OpenGL.framework */,
 				55D128510F09D7B200E06E2A /* Carbon.framework */,
-				55D127EF0F09D54000E06E2A /* SDL2.framework */,
 				55D127F00F09D54000E06E2A /* SDL2_net.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
 			);
@@ -850,6 +850,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				FRAMEWORK_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/Frameworks",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 					"$(inherited)",
 				);
@@ -901,6 +902,7 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				FRAMEWORK_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/Frameworks",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 					"$(inherited)",
 				);
@@ -1016,7 +1018,10 @@
 				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = /Library/Frameworks;
+				FRAMEWORK_SEARCH_PATHS = (
+					/Library/Frameworks,
+					"$(PROJECT_DIR)/Frameworks",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1042,7 +1047,10 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				FRAMEWORK_SEARCH_PATHS = /Library/Frameworks;
+				FRAMEWORK_SEARCH_PATHS = (
+					/Library/Frameworks,
+					"$(PROJECT_DIR)/Frameworks",
+				);
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				HEADER_SEARCH_PATHS = (

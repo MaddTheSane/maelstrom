@@ -49,7 +49,7 @@ private func bogusAudioThread(_ data: UnsafeMutableRawPointer?) -> Int32 {
 	let fill: SDL_AudioCallback? = spec.pointee.callback
 	playticks = (UInt32(spec.pointee.samples) * 1000) / UInt32(spec.pointee.freq)
 	/* Fill in the spec */
-	spec.pointee.size = UInt32(spec.pointee.format&0xFF) / 8;
+	spec.pointee.size = UInt32(spec.pointee.format.rawValue&0xFF) / 8;
 	spec.pointee.size *= UInt32(spec.pointee.channels)
 	spec.pointee.size *= UInt32(spec.pointee.samples)
 	stream = [UInt8](repeating: 0, count: Int(spec.pointee.size))

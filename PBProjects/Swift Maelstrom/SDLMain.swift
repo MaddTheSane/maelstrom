@@ -38,7 +38,7 @@ class SDLMain : NSObject, NSApplicationDelegate {
 	
 	@IBAction func quit(_ sender: AnyObject?) {
 		var event = SDL_Event()
-		event.type = SDL_QUIT.rawValue;
+		event.type = .QUIT;
 		SDL_PushEvent(&event);
 	}
 	

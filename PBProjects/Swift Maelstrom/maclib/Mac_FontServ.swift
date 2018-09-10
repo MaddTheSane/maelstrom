@@ -439,7 +439,7 @@ class FontServer {
 		let height = font.header.fRectHeight
 		
 		/* Allocate the text bitmap image */
-		guard let image = SDL_CreateRGBSurface(SDL_SWSURFACE, Int32(width), Int32(height), 1, 0,0,0,0) else {
+		guard let image = SDL_CreateRGBSurface([], Int32(width), Int32(height), 1, 0,0,0,0) else {
 			error = String(format: "Unable to allocate bitmap: %s", SDL_GetError());
 			return nil
 		}

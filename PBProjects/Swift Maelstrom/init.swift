@@ -747,12 +747,12 @@ func doInitializations(_ video_flags: SDL_WindowFlags) -> Bool {
 	//var icon: UnsafeMutablePointer<SDL_Surface>?
 	
 	/* Make sure we clean up properly at exit */
-	var init_flags = (SDL_INIT_VIDEO|SDL_INIT_AUDIO);
+	var init_flags: SDL_InitFlags = [.video, .audio]
 	//#ifdef SDL_INIT_JOYSTICK
-	init_flags |= SDL_INIT_JOYSTICK;
+	init_flags.insert(.joystick)
 	//#endif
 	if SDL_Init(init_flags) < 0 {
-		init_flags &= ~SDL_INIT_JOYSTICK;
+		init_flags.remove(.joystick)
 		if SDL_Init(init_flags) < 0 {
 			error("Couldn't initialize SDL: \(String(cString: SDL_GetError()))");
 			return false;
@@ -804,7 +804,7 @@ func doInitializations(_ video_flags: SDL_WindowFlags) -> Bool {
 	
 	/* Initialize the screen */
 	do {
-		screen = try FrameBuf(width: Int32(SCREEN_WIDTH), height: Int32(SCREEN_HEIGHT), videoFlags: video_flags.rawValue, colors: colorsAtGamma(gGammaCorrect), icon: icon)
+		screen = try FrameBuf(width: Int32(SCREEN_WIDTH), height: Int32(SCREEN_HEIGHT), videoFlags: video_flags, colors: colorsAtGamma(gGammaCorrect), icon: icon)
 	} catch {
 		fatalError("\(error)")
 	}

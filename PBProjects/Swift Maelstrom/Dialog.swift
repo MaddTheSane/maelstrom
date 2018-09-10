@@ -116,7 +116,7 @@ class MacButton : MacDialog {
 	
 	init(x: Int32, y: Int32, width: Int32, height: Int32, text: String, font: FontServer.Font, fontserv: FontServer, callback: buttonCallback?) throws {
 		size = (width, height)
-		button = SDL_CreateRGBSurface(0, width, height,
+		button = SDL_CreateRGBSurface([], width, height,
 			8, 0, 0, 0, 0);
 
 		super.init(x: x, y: y)
@@ -558,7 +558,7 @@ final class MacTextEntry : MacDialog {
 	}
 	
 	override func handleKeyPress(_ key: SDL_Keysym, done doneflag: inout Bool) {
-		switch Int(key.sym) {
+		switch key.sym {
 		case SDLK_TAB:
 			entryList[currentEntry].hilite = false;
 			updateEntry(entryList[currentEntry]);
@@ -728,7 +728,7 @@ final class MacNumericEntry: MacDialog {
 	}
 	
 	override func handleKeyPress(_ key: SDL_Keysym, done doneflag: inout Bool) {
-		switch Int(key.sym) {
+		switch key.sym {
 		case SDLK_TAB:
 			current.hilite = false
 			updateEntry(current);
@@ -753,16 +753,16 @@ final class MacNumericEntry: MacDialog {
 			break;
 			
 		case SDLK_0...SDLK_9:
-			let n = Int(key.sym) - SDLK_0
+			let n = key.sym - SDLK_0
 			guard current.end + cWidth <= current.size.width else {
 				return
 			}
 			if current.hilite {
-				current.variable?.pointee = n
+				current.variable?.pointee = Int(n)
 				current.hilite = false
 			} else {
 				current.variable?.pointee *= 10;
-				current.variable?.pointee += n;
+				current.variable?.pointee += Int(n);
 			}
 			updateEntry(current);
 			drawCursor(current);
@@ -970,14 +970,14 @@ final class MaclikeDialog {
 			
 			switch (event.type) {
 				/* -- Handle mouse clicks */
-			case SDL_MOUSEBUTTONDOWN.rawValue:
+			case .MOUSEBUTTONDOWN:
 				
 				for dialog in dialogList {
 					dialog.handleButtonPress(x: event.button.x,
 						y: event.button.y, button: event.button.button, done: &done)
 				}
 				/* -- Handle key presses */
-			case SDL_KEYDOWN.rawValue:
+			case .KEYDOWN:
 				for dialog in dialogList {
 					dialog.handleKeyPress(event.key.keysym, done: &done)
 				}

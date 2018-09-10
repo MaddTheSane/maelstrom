@@ -43,7 +43,7 @@ final class LibPath {
 			
 			let tmpRet = toRet.map({ (aName) -> String in
 				var tmpName = aName
-				tmpName.replaceAllInstancesOfCharacter(" ", withCharacter: "_")
+				tmpName.replaceAllInstances(of: " ", with: "_")
 				return tmpName
 			})
 			

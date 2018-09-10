@@ -23,94 +23,80 @@ public var SDL_AUDIO_MASK_SIGNED: Int32 { get }
 //	}
 //}
 
-//MARK: log
+//MARK: - log
 
 /// Log a message with `SDL_LOG_PRIORITY_ERROR`
 func SDL_LogError(_ category: Int32, _ fmt: String, _ args: CVarArg...) {
-	let blankVA = getVaList([])
-	let aStr = NSString(format: fmt, arguments: getVaList(args)) as String
-	SDL_LogMessageV(category, SDL_LOG_PRIORITY_ERROR, aStr, blankVA)
+	let blankVAList = getVaList([])
+	let outStr = String(format: fmt, arguments: args)
+	SDL_LogMessageV(category, .error, outStr, blankVAList)
 }
 
 func SDL_Log(_ fmt: String, _ args: CVarArg...) {
-	let blankVA = getVaList([])
-	let aStr = NSString(format: fmt, arguments: getVaList(args)) as String
-	SDL_LogMessageV(Int32(SDL_LOG_CATEGORY_APPLICATION), SDL_LOG_PRIORITY_INFO, aStr, blankVA)
+	let blankVAList = getVaList([])
+	let outStr = String(format: fmt, arguments: args)
+	SDL_LogMessageV(SDL_LOG_CATEGORY_APPLICATION, .info, outStr, blankVAList)
 }
 
 /// Log a message with `SDL_LOG_PRIORITY_VERBOSE`
 func SDL_LogVerbose(_ category: Int32, _ fmt: String, _ args: CVarArg...) {
-	let blankVA = getVaList([])
-	let aStr = NSString(format: fmt, arguments: getVaList(args)) as String
-	SDL_LogMessageV(Int32(SDL_LOG_CATEGORY_APPLICATION), SDL_LOG_PRIORITY_VERBOSE, aStr, blankVA)
+	let blankVAList = getVaList([])
+	let outStr = String(format: fmt, arguments: args)
+	SDL_LogMessageV(SDL_LOG_CATEGORY_APPLICATION, .verbose, outStr, blankVAList)
 }
 
 /// Log a message with `SDL_LOG_PRIORITY_DEBUG`
 func SDL_LogDebug(_ category: Int32, _ fmt: String, _ args: CVarArg...) {
-	let blankVA = getVaList([])
-	let aStr = NSString(format: fmt, arguments: getVaList(args)) as String
-	SDL_LogMessageV(Int32(SDL_LOG_CATEGORY_APPLICATION), SDL_LOG_PRIORITY_DEBUG, aStr, blankVA)
+	let blankVAList = getVaList([])
+	let outStr = String(format: fmt, arguments: args)
+	SDL_LogMessageV(SDL_LOG_CATEGORY_APPLICATION, .debug, outStr, blankVAList)
 }
 
 /// Log a message with `SDL_LOG_PRIORITY_INFO`
 func SDL_LogInfo(_ category: Int32, _ fmt: String, _ args: CVarArg...) {
-	let blankVA = getVaList([])
-	let aStr = NSString(format: fmt, arguments: getVaList(args)) as String
-	SDL_LogMessageV(Int32(SDL_LOG_CATEGORY_APPLICATION), SDL_LOG_PRIORITY_INFO, aStr, blankVA)
+	let blankVAList = getVaList([])
+	let outStr = String(format: fmt, arguments: args)
+	SDL_LogMessageV(SDL_LOG_CATEGORY_APPLICATION, .info, outStr, blankVAList)
 }
 
 /// Log a message with `SDL_LOG_PRIORITY_WARN`
 func SDL_LogWarn(_ category: Int32, _ fmt: String, _ args: CVarArg...) {
-	let blankVA = getVaList([])
-	let aStr = NSString(format: fmt, arguments: getVaList(args)) as String
-	SDL_LogMessageV(Int32(SDL_LOG_CATEGORY_APPLICATION), SDL_LOG_PRIORITY_WARN, aStr, blankVA)
+	let blankVAList = getVaList([])
+	let outStr = String(format: fmt, arguments: args)
+	SDL_LogMessageV(SDL_LOG_CATEGORY_APPLICATION, .warn, outStr, blankVAList)
 }
 
 /// Log a message with SDL_LOG_PRIORITY_CRITICAL
 func SDL_LogCritical(_ category: Int32, _ fmt: String, _ args: CVarArg...) {
-	let blankVA = getVaList([])
-	let aStr = NSString(format: fmt, arguments: getVaList(args)) as String
-	SDL_LogMessageV(Int32(SDL_LOG_CATEGORY_APPLICATION), SDL_LOG_PRIORITY_CRITICAL, aStr, blankVA)
+	let blankVAList = getVaList([])
+	let outStr = String(format: fmt, arguments: args)
+	SDL_LogMessageV(SDL_LOG_CATEGORY_APPLICATION, .critical, outStr, blankVAList)
 }
 
 // MARK: -
 
-public func SDL_LoadWAV(_ file: UnsafePointer<CChar>, _ spec: UnsafeMutablePointer<SDL_AudioSpec>, _ audio_buf: UnsafeMutablePointer<UnsafeMutablePointer<Uint8>?>?, _ audio_len: UnsafeMutablePointer<Uint32>) -> UnsafeMutablePointer<SDL_AudioSpec>? {
+public func SDL_LoadWAV(_ file: UnsafePointer<CChar>, _ spec: UnsafeMutablePointer<SDL_AudioSpec>, _ audio_buf: UnsafeMutablePointer<UnsafeMutablePointer<Uint8>?>, _ audio_len: UnsafeMutablePointer<Uint32>) -> UnsafeMutablePointer<SDL_AudioSpec>? {
 	return SDL_LoadWAV_RW(SDL_RWFromFile(file, "rb"), 1, spec, audio_buf, audio_len)
 }
 
+@discardableResult
 public func SDL_GameControllerAddMappingsFromFile(_ file: UnsafePointer<CChar>) -> Int32 {
 	return SDL_GameControllerAddMappingsFromRW(SDL_RWFromFile(file, "rb"), 1)
 }
 
 typealias SDL_TexturePtr = OpaquePointer
 typealias SDL_RendererPtr = OpaquePointer
+typealias SDL_GameControllerPtr = OpaquePointer
+typealias SDL_WindowPtr = OpaquePointer
+typealias SDL_ThreadPtr = OpaquePointer
 
 //MARK: - rect
 
-public func ==(a: SDL_Rect, b: SDL_Rect) -> Bool {
-	return ((a.x == b.x) && (a.y == b.y) &&
-		(a.w == b.w) && (a.h == b.h)) ? true : false
-}
-
 extension SDL_Rect: Equatable {
 	/// Returns `true` if point resides inside a rectangle.
-	@available(*, deprecated, renamed: "contains(_:)")
-	public func pointIsInRect(_ p: SDL_Point) -> Bool {
+	public func pointInRect(_ p: SDL_Point) -> Bool {
 		return ( (p.x >= x) && (p.x < (x + w)) &&
 			(p.y >= y) && (p.y < (y + h)) ) ? true : false
-	}
-
-	/// Returns `true` if point resides inside a rectangle.
-	public func contains(_ p: SDL_Point) -> Bool {
-		return ( (p.x >= x) && (p.x < (x + w)) &&
-			(p.y >= y) && (p.y < (y + h)) ) ? true : false
-	}
-
-	/// Returns `true` if the rectangle has no area.
-	@available(*, deprecated, renamed: "isEmpty")
-	public var empty: Bool {
-		return isEmpty
 	}
 	
 	/// Returns `true` if the rectangle has no area.
@@ -118,10 +104,6 @@ extension SDL_Rect: Equatable {
 		return ((self.w <= 0) || (self.h <= 0)) ? true : false;
 	}
 	
-	@available(*, deprecated, renamed: "intersects(_:)")
-	public func intersectsRect(_ B: SDL_Rect) -> Bool {
-		return intersects(B)
-	}
 	
 	/// Determine whether two rectangles intersect.
 	///
@@ -141,15 +123,15 @@ extension SDL_Rect: Equatable {
 		return result
 	}
 	
-	@available(*, deprecated, renamed: "formUnion(_:)")
-	public mutating func unionInPlace(_ B: SDL_Rect) {
-		formUnion(B)
-	}
-	
 	public mutating func formUnion(_ B: SDL_Rect) {
 		var ap = self
 		var bp = B
 		SDL_UnionRect(&ap, &bp, &self)
+	}
+	
+	public static func ==(a: SDL_Rect, b: SDL_Rect) -> Bool {
+		return ((a.x == b.x) && (a.y == b.y) &&
+			(a.w == b.w) && (a.h == b.h)) ? true : false
 	}
 }
 
@@ -171,16 +153,15 @@ public typealias SDL_Colour = SDL_Color
 
 public func SDL_QuitRequested() -> Bool {
 	SDL_PumpEvents()
-	return SDL_PeepEvents(nil, 0, SDL_PEEKEVENT, SDL_QUIT.rawValue, SDL_QUIT.rawValue) > 0
+	return SDL_PeepEvents(nil, 0, .peek, .QUIT, .QUIT) > 0
 }
 
 //MARK: rwops
 
-public func SDL_RWsize(_ ctx: UnsafeMutablePointer<SDL_RWops>) -> Sint64 {
+public func SDL_RWsize(_ ctx: UnsafeMutablePointer<SDL_RWops>) -> Int64 {
 	return ctx.pointee.size(ctx)
 }
 
-@discardableResult
 public func SDL_RWseek(_ ctx: UnsafeMutablePointer<SDL_RWops>, _ offset: Int64, _ whence: Int32) -> Int64 {
 	return ctx.pointee.seek(ctx, offset, whence)
 }
@@ -189,7 +170,6 @@ public func SDL_RWtell(_ ctx: UnsafeMutablePointer<SDL_RWops>) -> Int64 {
 	return ctx.pointee.seek(ctx, 0, RW_SEEK_CUR)
 }
 
-@discardableResult
 public func SDL_RWread(_ ctx: UnsafeMutablePointer<SDL_RWops>, _ ptr: UnsafeMutableRawPointer, _ size: Int, _ n: Int) -> Int {
 	return ctx.pointee.read(ctx, ptr, size, n)
 }
@@ -198,7 +178,6 @@ public func SDL_RWwrite(_ ctx: UnsafeMutablePointer<SDL_RWops>, _ ptr: UnsafeRaw
 	return ctx.pointee.write(ctx, ptr, size, n)
 }
 
-@discardableResult
 public func SDL_RWclose(_ ctx: UnsafeMutablePointer<SDL_RWops>) -> Int32 {
 	return ctx.pointee.close(ctx)
 }
@@ -208,7 +187,7 @@ public func SDL_RWclose(_ ctx: UnsafeMutablePointer<SDL_RWops>) -> Int32 {
 
 extension WindowShapeMode {
 	public var alpha: Bool {
-		return (self == ShapeModeDefault || self == ShapeModeBinarizeAlpha || self == ShapeModeReverseBinarizeAlpha)
+		return (self == .default || self == .binarizeAlpha || self == .reverseBinarizeAlpha)
 	}
 }
 
@@ -221,14 +200,14 @@ public func SDL_SHAPEMODEALPHA(_ mode: WindowShapeMode) -> Bool {
 extension SDL_bool: ExpressibleByBooleanLiteral {
 	public init(booleanLiteral value: Bool) {
 		if value == true {
-			self = SDL_TRUE
+			self = .TRUE
 		} else {
-			self = SDL_FALSE
+			self = .FALSE
 		}
 	}
 	
 	public var boolValue: Bool {
-		if self == SDL_FALSE {
+		if self == .FALSE {
 			return false
 		} else {
 			return true
@@ -240,7 +219,7 @@ extension SDL_bool: ExpressibleByBooleanLiteral {
 
 extension SDL_Surface {
 	public var mustLock: Bool {
-		return (flags & SDL_RLEACCEL) != 0
+		return flags.contains(.RLEACCEL)
 	}
 }
 
@@ -252,7 +231,6 @@ public func SDL_LoadBMP(_ file: UnsafePointer<Int8>) -> UnsafeMutablePointer<SDL
 	return SDL_LoadBMP_RW(SDL_RWFromFile(file, "rb"), 1)
 }
 
-@discardableResult
 public func SDL_SaveBMP(_ surface: UnsafeMutablePointer<SDL_Surface>, _ file: UnsafePointer<CChar>) -> Int32 {
 	return SDL_SaveBMP_RW(surface, SDL_RWFromFile(file, "wb"), 1)
 }
@@ -304,8 +282,8 @@ public func SDL_WINDOWPOS_ISUNDEFINED(_ X: UInt32) -> Bool {
 }
 
 
-public func SDL_WINDOWPOS_CENTERED_DISPLAY(_ X: UInt32) -> Int32 {
-	return Int32(SDL_WINDOWPOS_CENTERED_MASK | X)
+public func SDL_WINDOWPOS_CENTERED_DISPLAY(_ X: UInt32) -> UInt32 {
+	return SDL_WINDOWPOS_CENTERED_MASK | X
 }
 
 public let SDL_WINDOWPOS_CENTERED = SDL_WINDOWPOS_CENTERED_DISPLAY(0)

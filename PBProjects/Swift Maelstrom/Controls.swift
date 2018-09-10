@@ -33,7 +33,7 @@ func dropEvents() -> Int32 {
 	var keys: Int32 = 0;
 	
 	while SDL_PollEvent(&event) != 0 {
-		if event.type == SDL_KEYDOWN.rawValue {
+		if event.type == .KEYDOWN {
 			keys += 1;
 		}
 	}

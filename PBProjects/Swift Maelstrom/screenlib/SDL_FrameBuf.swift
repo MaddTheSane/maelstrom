@@ -8,6 +8,7 @@
 
 import Foundation
 import SDL2
+import SDL2.SDL_surface
 
 //static void PrintSurface(const char *title, SDL_Surface *surface)
 private func printSurface(_ title: String, surface: UnsafeMutablePointer<SDL_Surface>) {
@@ -148,8 +149,8 @@ class FrameBuf {
 		}
 	}
 	
-	init(width: Int32, height: Int32, videoFlags: UInt32, colors: UnsafeBufferPointer<SDL_Color>? = nil, icon: UnsafeMutablePointer<SDL_Surface>? = nil) throws {
-		window = SDL_CreateWindow("title", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, videoFlags);
+	init(width: Int32, height: Int32, videoFlags: SDL_WindowFlags, colors: UnsafeBufferPointer<SDL_Color>? = nil, icon: UnsafeMutablePointer<SDL_Surface>? = nil) throws {
+		window = SDL_CreateWindow("title", Int32(SDL_WINDOWPOS_CENTERED), Int32(SDL_WINDOWPOS_CENTERED), width, height, videoFlags);
 		if window == nil {
 			error = String(format: "Couldn't create window: %s", SDL_GetError())
 			throw Errors.couldNotCreateWindow(SDLError: String(cString: SDL_GetError()))
@@ -284,7 +285,7 @@ SDL_SetWindowGammaRamp(window, ramp, ramp, ramp);
 	func loadImage(w: UInt16, h: UInt16, pixels: UnsafeMutablePointer<UInt8>, mask: UnsafeMutablePointer<UInt8>? = nil) -> UnsafeMutablePointer<SDL_Surface>? {
 		
 		/* Assume 8-bit artwork using the current palette */
-		guard let artwork = SDL_CreateRGBSurface(SDL_SWSURFACE, Int32(w), Int32(h), Int32(screenfg!.pointee.format.pointee.BitsPerPixel), screenfg!.pointee.format.pointee.Rmask, screenfg!.pointee.format.pointee.Gmask, screenfg!.pointee.format.pointee.Bmask, 0) else {
+		guard let artwork = SDL_CreateRGBSurface([], Int32(w), Int32(h), Int32(screenfg!.pointee.format.pointee.BitsPerPixel), screenfg!.pointee.format.pointee.Rmask, screenfg!.pointee.format.pointee.Gmask, screenfg!.pointee.format.pointee.Bmask, 0) else {
 			print(String(format: "Couldn't create artwork: %s", SDL_GetError()));
 			return nil
 		}
@@ -337,7 +338,7 @@ SDL_SetWindowGammaRamp(window, ramp, ramp, ramp);
 				pix_mem = pix_mem.advanced(by: pad)
 			}
 			
-			SDL_SetColorKey(artwork, 1 | Int32(SDL_RLEACCEL), colorKey)
+			SDL_SetColorKey(artwork, Int32(1 | SDL_SurfaceFlag.RLEACCEL.rawValue), colorKey)
 		} else {
 			/* Copy over the pixels */
 			var pix_mem = pixels

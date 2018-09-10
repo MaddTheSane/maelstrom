@@ -278,7 +278,7 @@ final class Wave {
 			
 			/* Fill in the audio spec */
 			spec.freq = desired_rate;
-			spec.format = SDL_AudioFormat(AUDIO_U8)		/* The only format? */
+			spec.format = SDL_AudioFormat.AUDIO_U8		/* The only format? */
 			spec.channels = UInt8(snd_channels);
 			spec.samples = 4096;
 			spec.callback = nil;
@@ -332,11 +332,11 @@ final class Wave {
 	}
 	
 	var sampleSize: UInt16 {
-		return (spec.format & UInt16(SDL_AUDIO_MASK_BITSIZE) / 8) * UInt16(spec.channels)
+		return UInt16(bitsPerSample / 8) * UInt16(spec.channels)
 	}
 	
 	var bitsPerSample: Int {
-		return Int(spec.format & UInt16(SDL_AUDIO_MASK_BITSIZE))
+		return Int(spec.format.intersection(.SDL_AUDIO_MASK_BITSIZE).rawValue)
 	}
 	
 	var stereo: Bool {

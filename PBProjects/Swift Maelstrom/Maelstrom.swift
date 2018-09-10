@@ -8,6 +8,7 @@
 
 import Foundation
 import SDL2
+import SDL2.SDL_keycode
 
 private let Version = "Maelstrom v1.4.3 (GPL version 3.0.6) -- 10/19/2002 by Sam Lantinga\n"
 
@@ -619,13 +620,13 @@ private func runPlayGame()
 }
 
 
-let KMOD_ALT = KMOD_LALT.rawValue | KMOD_RALT.rawValue
+let KMOD_ALT: SDL_Keymod = [SDL_Keymod.KMOD_LALT, SDL_Keymod.KMOD_RALT]
 
 @discardableResult
 func SDL_main(_ argc2: Int32, _ argv2: UnsafeMutablePointer<UnsafeMutablePointer<Int8>?>) -> Int32 {
 	var argc = argc2
 	var argv = argv2
-	var video_flags = SDL_WindowFlags(0)
+	var video_flags = SDL_WindowFlags()
 	var event = SDL_Event()
 	
 	var doprinthigh = false
@@ -650,7 +651,7 @@ func SDL_main(_ argc2: Int32, _ argv2: UnsafeMutablePointer<UnsafeMutablePointer
 			argc -= 1
 		}
 		if ( strcmp(argv[1], "-fullscreen") == 0 ) {
-			video_flags = SDL_WINDOW_FULLSCREEN | video_flags
+			video_flags.insert(.fullscreen)
 		} else if ( strcmp(argv[1], "-gamma") == 0 ) {
 			var gammacorrect: Int32 = 0
 			
@@ -758,12 +759,12 @@ func SDL_main(_ argc2: Int32, _ argv2: UnsafeMutablePointer<UnsafeMutablePointer
 		/* -- Get an event */
 		screen.waitEvent(&event)
 		
-		if event.type == SDL_KEYDOWN.rawValue {
-			switch Int(event.key.keysym.sym) {
+		if event.type == .KEYDOWN {
+			switch event.key.keysym.sym {
 				
 				/* -- Toggle fullscreen */
 			case SDLK_RETURN:
-				if ( event.key.keysym.mod & Uint16(KMOD_ALT) == Uint16(KMOD_ALT)) {
+				if event.key.keysym.mod.isSubset(of: KMOD_ALT) {
 					screen.toggleFullScreen()
 				}
 				break;
@@ -799,8 +800,8 @@ func SDL_main(_ argc2: Int32, _ argv2: UnsafeMutablePointer<UnsafeMutablePointer
 				/* -- Set the volume */
 				/* (SDLK_0 - SDLK_8 are contiguous) */
 			case SDLK_0, SDLK_1, SDLK_2, SDLK_3, SDLK_4, SDLK_5, SDLK_6, SDLK_7, SDLK_8:
-				setSoundLevel(Int(event.key.keysym.sym)
-					- SDLK_0);
+				setSoundLevel(Int(event.key.keysym.sym
+					- SDLK_0));
 				
 				/* -- Give 'em a little taste of the peppers */
 			case SDLK_x:
@@ -828,12 +829,12 @@ func SDL_main(_ argc2: Int32, _ argv2: UnsafeMutablePointer<UnsafeMutablePointer
 			}
 		} else
 			/* -- Handle mouse clicks */
-			if event.type == SDL_MOUSEBUTTONDOWN.rawValue {
+			if event.type == .MOUSEBUTTONDOWN {
 				buttons.activateButton(x: UInt16(event.button.x),
 				                       y: UInt16(event.button.y))
 			} else
 				/* -- Handle window close requests */
-				if event.type == SDL_QUIT.rawValue {
+				if event.type == .QUIT {
 					runQuitGame();
 		}
 		

@@ -9,15 +9,15 @@
 import Foundation
 import SDL2
 
-//MARK: SDL macros
-
-typealias SDL_WindowPtr = OpaquePointer
-typealias SDL_ThreadPtr = OpaquePointer
-
 //MARK: -
 
 extension String {
+	@available(*, deprecated, renamed: "replaceAllInstances(of:with:)")
 	mutating func replaceAllInstancesOfCharacter(_ aChar: Character, withCharacter bChar: Character) {
+		
+	}
+	
+	mutating func replaceAllInstances(of aChar: Character, with bChar: Character) {
 		if aChar == bChar {
 			return
 		}
@@ -112,8 +112,4 @@ struct MaelOSType: Hashable, CustomStringConvertible {
 	var description: String {
 		return stringValue
 	}
-}
-
-func |(lhs: SDL_WindowFlags, rhs: SDL_WindowFlags) -> SDL_WindowFlags {
-	return SDL_WindowFlags(lhs.rawValue | rhs.rawValue)
 }
