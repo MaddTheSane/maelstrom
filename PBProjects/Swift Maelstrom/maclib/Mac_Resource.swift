@@ -16,14 +16,6 @@ private let MACBINARY_MASK: UInt16 = 0xFCFF
 private let MACBINARY_MAGIC: UInt16 = 0x8081
 
 
-private func ==(lhs: MacResource.Resource, rhs: MacResource.Resource) -> Bool {
-	return lhs.id == rhs.id
-}
-
-private func <(lhs: MacResource.Resource, rhs: MacResource.Resource) -> Bool {
-	return lhs.id < rhs.id
-}
-
 @discardableResult
 @inline(__always) internal func bytesex32(_ x: inout UInt32) -> UInt32 {
 	x = x.bigEndian
@@ -340,6 +332,14 @@ final class MacResource {
 					UInt32(ref_ent.Res_offset.2));
 			id = ref_ent.Res_id;
 			self.name = name
+		}
+		
+		static func ==(lhs: Resource, rhs: Resource) -> Bool {
+			return lhs.id == rhs.id
+		}
+		
+		static func <(lhs: Resource, rhs: Resource) -> Bool {
+			return lhs.id < rhs.id
 		}
 	}
 

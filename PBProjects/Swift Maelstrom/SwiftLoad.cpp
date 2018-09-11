@@ -11,7 +11,7 @@
 
 #include "SwiftLoad.h"
 
-SDL_Surface *loadIcon(char **xpm)
+SDL_Surface *loadXPMIcon(char **xpm)
 {
 	SDL_Surface *icon;
 	int width, height, num_colors, chars_per_pixel;

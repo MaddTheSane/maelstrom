@@ -12,11 +12,6 @@ import SDL2
 //MARK: -
 
 extension String {
-	@available(*, deprecated, renamed: "replaceAllInstances(of:with:)")
-	mutating func replaceAllInstancesOfCharacter(_ aChar: Character, withCharacter bChar: Character) {
-		
-	}
-	
 	mutating func replaceAllInstances(of aChar: Character, with bChar: Character) {
 		if aChar == bChar {
 			return
@@ -27,10 +22,6 @@ extension String {
 			replaceSubrange(charRange, with: bStr)
 		}
 	}
-}
-
-func ==(lhs: MaelOSType, rhs: MaelOSType) -> Bool {
-	return lhs.a == rhs.a && lhs.b == rhs.b && lhs.c == rhs.c && lhs.d == rhs.d
 }
 
 struct MaelOSType: Hashable, CustomStringConvertible {
@@ -111,5 +102,9 @@ struct MaelOSType: Hashable, CustomStringConvertible {
 	
 	var description: String {
 		return stringValue
+	}
+	
+	static func ==(lhs: MaelOSType, rhs: MaelOSType) -> Bool {
+		return lhs.a == rhs.a && lhs.b == rhs.b && lhs.c == rhs.c && lhs.d == rhs.d
 	}
 }

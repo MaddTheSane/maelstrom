@@ -252,7 +252,7 @@ OBJ_KILL(shots, index, numshots, Shot);
 
 final class BigShinobi : Shinobi {
 	init(x: Int32, y: Int32) {
-		super.init(x: x, y: y, blit: gEnemyShip2, shotOdds: 30)
+		super.init(x: x, y: y, blit: gEnemyShip, shotOdds: 30)
 	}
 }
 

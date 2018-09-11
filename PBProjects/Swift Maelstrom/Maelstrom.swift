@@ -620,8 +620,6 @@ private func runPlayGame()
 }
 
 
-let KMOD_ALT: SDL_Keymod = [SDL_Keymod.KMOD_LALT, SDL_Keymod.KMOD_RALT]
-
 @discardableResult
 func SDL_main(_ argc2: Int32, _ argv2: UnsafeMutablePointer<UnsafeMutablePointer<Int8>?>) -> Int32 {
 	var argc = argc2
@@ -764,7 +762,7 @@ func SDL_main(_ argc2: Int32, _ argv2: UnsafeMutablePointer<UnsafeMutablePointer
 				
 				/* -- Toggle fullscreen */
 			case SDLK_RETURN:
-				if event.key.keysym.mod.isSubset(of: KMOD_ALT) {
+				if event.key.keysym.mod.isSubset(of: .KMOD_ALT) {
 					screen.toggleFullScreen()
 				}
 				break;

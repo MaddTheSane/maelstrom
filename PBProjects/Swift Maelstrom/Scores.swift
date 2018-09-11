@@ -61,20 +61,12 @@ private struct OldScores {
 	var score: Uint32 = 0
 }
 
-func ==(lhs: HighScores.Score, rhs: HighScores.Score) -> Bool {
-	return lhs.score == rhs.score
-}
-
-func <(lhs: HighScores.Score, rhs: HighScores.Score) -> Bool {
-	return lhs.score < rhs.score
-}
-
 final class HighScores {
 	static var netScores = false
 	fileprivate var scoreList = [Score](repeating: Score(), count: NUM_SCORES)
 	
 	/** The high scores structure */
-	struct Score: Comparable, Hashable, CustomStringConvertible {
+	struct Score: Comparable, Hashable, CustomStringConvertible, Codable {
 		///The name of the player
 		var name = ""
 		///The wave, or level, that the player reached
@@ -89,6 +81,14 @@ final class HighScores {
 		var description: String {
 			return name + ": wave: \(wave), score: \(score)"
 		}
+		
+		static func ==(lhs: Score, rhs: Score) -> Bool {
+			return lhs.score == rhs.score
+		}
+		
+		static func <(lhs: Score, rhs: Score) -> Bool {
+			return lhs.score < rhs.score
+		}
 	}
 	
 	func clearScores() {
@@ -99,22 +99,11 @@ final class HighScores {
 		//TODO: implement
 	}
 	
-	func saveScores() {
+	func saveScores() throws {
 		assert(scoreList.count == NUM_SCORES)
-		var saveScoreArray = [[String: AnyObject]]()
-		for score in scoreList {
-			var scoreDict = [String: NSObject]()
-			scoreDict["name"] = score.name as NSObject
-			scoreDict["wave"] = Int(score.wave) as NSObject
-			scoreDict["score"] = Int(score.score) as NSObject
-
-			saveScoreArray.append(scoreDict)
-		}
-		let mutData = NSMutableData()
-		let archiver = NSKeyedArchiver(forWritingWith: mutData)
-		archiver.encode(saveScoreArray as NSArray, forKey: "Scores")
-		archiver.finishEncoding()
-		mutData.write(to: scoreLocation, atomically: true)
+		let encoder = JSONEncoder()
+		let scoreData = try encoder.encode(scoreList)
+		try scoreData.write(to: scoreLocation, options: [])
 	}
 	
 	func beginCustomLevel() -> Int32 {
@@ -168,7 +157,9 @@ final class HighScores {
 		screen.freeImage(splash);
 		if doClear {
 			clearScores()
-			saveScores()
+			do {
+			try saveScores()
+			} catch _ {}
 			gLastHigh = -1;
 		}
 		return doClear;
@@ -184,7 +175,7 @@ final class HighScores {
 		do {
 			var ourDir = try fm.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
 			for pathComp in ["Maelstrom", "Scores"] {
-				ourDir = ourDir.appendingPathComponent(pathComp)
+				ourDir.appendPathComponent(pathComp)
 			}
 			scoreLocation = ourDir
 			
@@ -200,7 +191,9 @@ final class HighScores {
 				
 				defer {
 					//save new scores
-					saveScores()
+					do {
+					try saveScores()
+					} catch _ {}
 				}
 				
 				guard let oldScorePath = Bundle.main.url(forResource: MAELSTROM_SCORES, withExtension: nil) else {
@@ -239,25 +232,16 @@ final class HighScores {
 			//Load new scores
 			do {
 				let fileData = try Data(contentsOf: scoreLocation, options: [])
-				let keyedUnarchiver = NSKeyedUnarchiver(forReadingWith: fileData)
-				guard let preScores = keyedUnarchiver.decodeObject(forKey: "Scores") as? [[String: NSObject]] else {
-					saveScores()
-					return
-				}
+				let unarchiver = JSONDecoder()
 				
+				let preScores = try unarchiver.decode([Score].self, from: fileData)
 				assert(preScores.count == NUM_SCORES)
-				for (i,aDict) in preScores.enumerated() {
-					var aScore = Score()
-					aScore.name = aDict["name"] as! String
-					aScore.wave = UInt32(aDict["wave"] as! Int)
-					aScore.score = UInt32(aDict["score"] as! Int)
-					scoreList[i] = aScore
-				}
-				
+				scoreList = preScores
+
 				sortScores()
 			} catch {
 				print("Unable to load scores, error: \(error)")
-				saveScores()
+				try saveScores()
 				return
 			}
 		} catch {

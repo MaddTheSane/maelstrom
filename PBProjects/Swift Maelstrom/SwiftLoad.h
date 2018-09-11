@@ -14,7 +14,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-	SDL_Surface *_Nullable loadIcon(char *_Nullable* _Nullable xpm);
+	SDL_Surface *_Nullable loadXPMIcon(char *_Nullable* _Nullable xpm);
 #ifdef __cplusplus
 }
 #endif
