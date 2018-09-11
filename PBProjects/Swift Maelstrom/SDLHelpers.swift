@@ -162,6 +162,7 @@ public func SDL_RWsize(_ ctx: UnsafeMutablePointer<SDL_RWops>) -> Int64 {
 	return ctx.pointee.size(ctx)
 }
 
+@discardableResult
 public func SDL_RWseek(_ ctx: UnsafeMutablePointer<SDL_RWops>, _ offset: Int64, _ whence: Int32) -> Int64 {
 	return ctx.pointee.seek(ctx, offset, whence)
 }
@@ -170,14 +171,17 @@ public func SDL_RWtell(_ ctx: UnsafeMutablePointer<SDL_RWops>) -> Int64 {
 	return ctx.pointee.seek(ctx, 0, RW_SEEK_CUR)
 }
 
+@discardableResult
 public func SDL_RWread(_ ctx: UnsafeMutablePointer<SDL_RWops>, _ ptr: UnsafeMutableRawPointer, _ size: Int, _ n: Int) -> Int {
 	return ctx.pointee.read(ctx, ptr, size, n)
 }
 
+@discardableResult
 public func SDL_RWwrite(_ ctx: UnsafeMutablePointer<SDL_RWops>, _ ptr: UnsafeRawPointer, _ size: Int, _ n: Int) -> Int {
 	return ctx.pointee.write(ctx, ptr, size, n)
 }
 
+@discardableResult
 public func SDL_RWclose(_ ctx: UnsafeMutablePointer<SDL_RWops>) -> Int32 {
 	return ctx.pointee.close(ctx)
 }

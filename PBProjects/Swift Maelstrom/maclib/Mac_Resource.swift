@@ -141,7 +141,7 @@ private func openMacRes(_ original: inout URL, resbase: inout Int) -> UnsafeMuta
 	for iterations in 0 ..< snr.count {
 		/* Translate ' ' into '_', etc */
 		/* Note that this translation is irreversible */
-		filename.replaceAllInstancesOfCharacter(snr[iterations].search, withCharacter: snr[iterations].replace)
+		filename.replaceAllInstances(of: snr[iterations].search, with: snr[iterations].replace)
 		
 		/* First look for Executor (tm) resource forks */
 		var newName = "%\(filename)"
