@@ -242,7 +242,7 @@ public func SDL_SaveBMP(_ surface: UnsafeMutablePointer<SDL_Surface>, _ file: Un
 //MARK: - timer
 
 public func SDL_TICKS_PASSED(_ A: Uint32, _ B: Uint32) -> Bool {
-	return (Int32(B) - Int32(A)) <= 0
+	return (Int64(B) - Int64(A)) <= 0
 }
 
 #if false
