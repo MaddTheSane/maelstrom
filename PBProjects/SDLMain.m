@@ -21,7 +21,7 @@ static int      pid = -1;
         gArgc++;                                  \
     }
         
-void cleanup () {
+void cleanup (void) {
     if (pid != -1)
         kill (pid, SIGTERM);
 }

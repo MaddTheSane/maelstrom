@@ -23,6 +23,7 @@
 
 #include <SDL_mixer.h>
 
+#include <string>
 #include <vector>
 #include <stdexcept>
 
@@ -48,7 +49,7 @@ private:
                  */
         };
 
-	std::vector<std::string> filenames {
+	std::vector<std::string> filenames {{
 		"ShotSound",
 		"Multiplier",
 		"ExplosionSound",
@@ -84,7 +85,7 @@ private:
 		"FreezeSound",
 		"IdiotSound",
 		"PauseSound",
-	};
+	}};
 
 	std::vector<Mix_Chunk*> chunks;
 	std::vector<unsigned short int> priorities;

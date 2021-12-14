@@ -6,8 +6,7 @@
 #include <string>
 
 class DataDir {
-  /* TODO:
-   * Build a list of directories to look in.
+  /* TODO: Build a list of directories to look in.
    * In this way gamecontent can be overlayed.
    */
 private:

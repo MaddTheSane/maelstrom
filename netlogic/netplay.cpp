@@ -107,9 +107,10 @@ int AddPlayer(const char *playerstr)
 	char *host=NULL, *port=NULL;
 
 	/* Extract host and port information */
-	if ( (port=strchr(playerstr, ':')) != NULL )
+	// FIXME: UGLY HACK!
+	if ( (port=(char*)strchr(playerstr, ':')) != NULL )
 		*(port++) = '\0';
-	if ( (host=strchr(playerstr, '@')) != NULL )
+	if ( (host=(char*)strchr(playerstr, '@')) != NULL )
 		*(host++) = '\0';
 
 	/* Find out which player we are referring to */
