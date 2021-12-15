@@ -58,12 +58,12 @@ public:
 
 	static void EnableText(void) {
 		if ( text_enabled++ == 0 ) {
-			//SDL_EnableUNICODE(1);
+			SDL_StartTextInput();
 		}
 	}
 	static void DisableText(void) {
 		if ( --text_enabled == 0 ) {
-			//SDL_EnableUNICODE(0);
+			SDL_StopTextInput();
 		}
 	}
 

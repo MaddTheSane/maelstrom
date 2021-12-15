@@ -450,6 +450,9 @@ mesg("Movie is %s...\n", gMovie ? "started" : "stopped");
 					Maelstrom::SetControl(THRUST_KEY, 0);
 			}
 			break;
+			
+		case SDL_TEXTINPUT:
+			break;
 
 		case SDL_QUIT:
 			Maelstrom::SetControl(ABORT_KEY, 1);
