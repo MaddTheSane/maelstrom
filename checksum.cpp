@@ -254,14 +254,20 @@ char *get_checksum(unsigned char *key, int keylen)
 }
 
 #else  /* Don't use checksumming */
+
+#include <string.h>
+
 static inline void Unused(...) { }	/* For eliminating compiler warnings */
 
 void checksum(void) { return; }
 
-const char *get_checksum(unsigned char *key, int keylen)
+char *get_checksum(unsigned char *key, int keylen)
 {
 	Unused(key); Unused(keylen);
-	static const char *foo = "Checksum Not Enabled";
+	const char *err = "Checksum Not Enabled";
+	size_t errlen = strlen(err);
+	char *foo = new char[errlen+1];
+	memcpy(foo, err, errlen+1);
 	return(foo);
 }
 #endif /* USE_CHECKSUM */

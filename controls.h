@@ -1,9 +1,4 @@
 
-#ifndef __MAELSTROM_CONTROLS__
-#define __MAELSTROM_CONTROLS__
-
-#include <SDL_keycode.h>
-
 // Functions from controls.cc
 #ifdef USE_JOYSTICK
 extern void	CalibrateJoystick(char *joystick);
@@ -36,4 +31,4 @@ typedef struct {
 	SDL_Keycode gQuitControl;
 } Controls;
 
-#endif
+extern SDL_Keymod gToggleFullscreenMod;

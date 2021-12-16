@@ -4,7 +4,7 @@
 */
 #include <ctype.h>
 
-#include <SDL_net.h>
+#include "SDL_net.h"
 
 #include "Maelstrom_Globals.h"
 #include "netscore.h"
@@ -22,8 +22,7 @@ void RegisterHighScore(Scores high)
 	int i, n;
 	unsigned char key[KEY_LEN];
 	unsigned int  keynums[KEY_LEN];
-	char netbuf[1024];
-	const char *crc;
+	char netbuf[1024], *crc;
 
 	remote = Goto_ScoreServer(SCORE_HOST, SCORE_PORT);
 	if ( remote == NULL ) {
@@ -37,7 +36,7 @@ void RegisterHighScore(Scores high)
 	SDLNet_TCP_Recv(remote, netbuf, 1024);
 
 	/* Get the key... */
-	strcpy(netbuf, "SHOWKEY\n");
+	SDL_strlcpy(netbuf, "SHOWKEY\n", sizeof(netbuf));
 	SDLNet_TCP_Send(remote, netbuf, strlen(netbuf));
 	if ( SDLNet_TCP_Recv(remote, netbuf, 1024) <= 0 ) {
 		error("Warning: Score Server protocol error.\r\n");
@@ -47,7 +46,7 @@ void RegisterHighScore(Scores high)
 	for ( i=0, n=0, crc=netbuf; i < KEY_LEN; ++i, ++n ) {
 		key[i] = 0xFF;
 		if ( ! (crc=strchr(++crc, ':')) ||
-				(sscanf(crc, ": 0x%x", &keynums[i]) <= 0) )
+				(SDL_sscanf(crc, ": 0x%x", &keynums[i]) <= 0) )
 			break;
 	}
 /*error("%d items read:\n", n);*/
@@ -60,7 +59,7 @@ void RegisterHighScore(Scores high)
 
 	/* Send the scores */
 	crc = get_checksum(key, KEY_LEN);
-	snprintf(netbuf, sizeof(netbuf), SCOREFMT, crc, high.name, high.score, high.wave);
+	SDL_snprintf(netbuf, sizeof(netbuf), SCOREFMT, crc, high.name, high.score, high.wave);
 	SDLNet_TCP_Send(remote, netbuf, strlen(netbuf));
 	n = SDLNet_TCP_Recv(remote, netbuf, 1024);
 	if ( n > 0 ) {
@@ -133,7 +132,7 @@ int NetLoadScores(void)
 	SDLNet_TCP_Recv(remote, netbuf, 1024);
 
 	/* Send our request */
-	strcpy(netbuf, "SHOWSCORES\n");
+	SDL_strlcpy(netbuf, "SHOWSCORES\n", sizeof(netbuf));
 	SDLNet_TCP_Send(remote, netbuf, strlen(netbuf));
 
 	/* Read the response */
@@ -145,7 +144,7 @@ int NetLoadScores(void)
 			perror("Read error on socket stream");
 			break;
 		}
-		strcpy(hScores[i].name, "Invalid Name");
+		SDL_strlcpy(hScores[i].name, "Invalid Name", sizeof(hScores[i].name));
 		for ( ptr = netbuf; *ptr; ++ptr ) {
 			if ( *ptr == '\t' ) {
 				/* This is just to remove trailing whitespace
@@ -156,8 +155,8 @@ int NetLoadScores(void)
 
 				while ( (tail >= netbuf) && isspace(*tail) )
 					*(tail--) = '\0';
-				strncpy(hScores[i].name, netbuf,
-						sizeof(hScores[i].name)-1);
+				SDL_strlcpy(hScores[i].name, netbuf,
+						sizeof(hScores[i].name));
 				if ( (len=strlen(netbuf)) >
 					(int)(sizeof(hScores[i].name)-1) )
 					len = (sizeof(hScores[i].name)-1);
@@ -166,7 +165,7 @@ int NetLoadScores(void)
 				break;
 			}
 		}
-		if ( sscanf(ptr, "%u %u", &hScores[i].score,
+		if ( SDL_sscanf(ptr, "%u %u", &hScores[i].score,
 						&hScores[i].wave) != 2 ) {
 			error(
 			"Warning: Couldn't read complete score list!\r\n");

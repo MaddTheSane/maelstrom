@@ -1,10 +1,15 @@
+
+#ifndef _myerror_h
+#define _myerror_h
+
 /* Generic error message routines */
 
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
 #include <errno.h>
-#include "myerror.h"
+
+#include "SDL.h"
 
 
 void error(const char *fmt, ...)
@@ -13,7 +18,7 @@ void error(const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-	vsnprintf(mesg, sizeof(mesg), fmt, ap);
+	SDL_vsnprintf(mesg, sizeof(mesg), fmt, ap);
 	fputs(mesg, stderr);
 	va_end(ap);
 }
@@ -24,7 +29,7 @@ void mesg(const char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-	vsnprintf(mesg, sizeof(mesg), fmt, ap);
+	SDL_vsnprintf(mesg, sizeof(mesg), fmt, ap);
 	fputs(mesg, stdout);
 	va_end(ap);
 }
@@ -34,8 +39,11 @@ void myperror(const char *msg)
 	char buffer[BUFSIZ];
 
 	if ( *msg ) {
-		snprintf(buffer, sizeof(buffer), "%s: %s\n", msg, strerror(errno));
-		error("%s", buffer);
+		SDL_snprintf(buffer, sizeof(buffer), "%s: %s\n", msg, strerror(errno));
+		error(buffer);
 	} else
-		error("%s", strerror(errno));
+		error((char *)strerror(errno));
 }
+
+#endif /* _myerror_h */
+

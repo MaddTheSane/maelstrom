@@ -15,7 +15,7 @@ Mac_Dialog::Mac_Dialog(int x, int y)
 }
 
 Mac_Button::Mac_Button(int x, int y, int width, int height,
-				const char *text, MFont *font, FontServ *fontserv,
+				const char *text, MFont *font, FontServ *fontserv, 
 				int (*callback)(void)) : Mac_Dialog(x, y)
 {
 	SDL_Surface *textb;
@@ -58,7 +58,7 @@ Mac_Button::Mac_Button(int x, int y, int width, int height,
 }
 
 Mac_DefaultButton::Mac_DefaultButton(int x, int y, int width, int height,
-				const char *text, MFont *font, FontServ *fontserv,
+				const char *text, MFont *font, FontServ *fontserv, 
 						int (*callback)(void)) : 
 	Mac_Button(x, y, width, height, text, font, fontserv, callback)
 {

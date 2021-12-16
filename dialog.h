@@ -58,12 +58,12 @@ public:
 
 	static void EnableText(void) {
 		if ( text_enabled++ == 0 ) {
-			//SDL_EnableUNICODE(1);
+			SDL_StartTextInput();
 		}
 	}
 	static void DisableText(void) {
 		if ( --text_enabled == 0 ) {
-			//SDL_EnableUNICODE(0);
+			SDL_StopTextInput();
 		}
 	}
 
@@ -92,7 +92,7 @@ protected:
 		va_list ap;
 
 		va_start(ap, fmt);
-		vsnprintf(errbuf, sizeof(errbuf), fmt, ap);
+		SDL_vsnprintf(errbuf, sizeof(errbuf), fmt, ap);
 		va_end(ap);
 		errstr = errbuf;
         }
@@ -109,7 +109,7 @@ class Mac_Button : public Mac_Dialog {
 
 public:
 	Mac_Button(int x, int y, int width, int height,
-		const char *text, MFont *font, FontServ *fontserv,
+		const char *text, MFont *font, FontServ *fontserv, 
 				int (*callback)(void));
 	virtual ~Mac_Button() {
 		SDL_FreeSurface(button);
@@ -217,7 +217,7 @@ class Mac_DefaultButton : public Mac_Button {
 
 public:
 	Mac_DefaultButton(int x, int y, int width, int height,
-				const char *text, MFont *font, FontServ *fontserv,
+				const char *text, MFont *font, FontServ *fontserv, 
 						int (*callback)(void));
 	virtual ~Mac_DefaultButton() { }
 
@@ -358,6 +358,14 @@ private:
 
 class Mac_RadioList : public Mac_Dialog {
 
+private:
+	struct radio {
+		SDL_Surface *label;
+		int x, y;
+		SDL_Rect sensitive;
+		struct radio *next;
+	};
+
 public:
 	Mac_RadioList(int *variable, int x, int y,
 			MFont *font, FontServ *fontserv);
@@ -400,12 +408,7 @@ public:
 
 		for ( radio=&radio_list; radio->next; radio=radio->next )
 			/* Loop to end of radio box list */;
-/* Which is ANSI C++? */
-#ifdef linux
-		radio->next = new struct Mac_RadioList::radio;
-#else
 		radio->next = new struct radio;
-#endif
 		radio = radio->next;
 		radio->label = Fontserv->TextImage(text, Font,
 							STYLE_NORM, 0, 0, 0);
@@ -463,12 +466,7 @@ private:
 	MFont *Font;
 	Uint32 Fg, Bg;
 	int *radiovar;
-	struct radio {
-		SDL_Surface *label;
-		int x, y;
-		SDL_Rect sensitive;
-		struct radio *next;
-	} radio_list;
+	radio radio_list;
 
 	void Circle(int x, int y) {
 		x += 5;
@@ -569,14 +567,15 @@ public:
 			default:
 				if ( (current->end+Cwidth) > current->width )
 					return;
-				//if ( key.unicode ) {
+				// FIXME: We should use SDL_TEXTINPUT, but this class isn't used, so...
+				if ( key.sym <= 0x7F ) {
 					current->hilite = 0;
 					n = strlen(current->variable);
 					current->variable[n] = (char)key.sym;
 					current->variable[n+1] = '\0';
 					Update_Entry(current);
 					DrawCursor(current);
-				//}
+				}
 				break;
 		}
 		Screen->Update();
@@ -878,7 +877,7 @@ private:
 		if ( entry->text ) {
 			Fontserv->FreeText(entry->text);
 		}
-		snprintf(buf, sizeof(buf), "%d", *entry->variable);
+		SDL_snprintf(buf, sizeof(buf), "%d", *entry->variable);
 
 		if ( entry->hilite ) {
 			clear = Fg;

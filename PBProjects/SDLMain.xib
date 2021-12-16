@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9059" systemVersion="15B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="19529" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9059"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19529"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -79,6 +80,7 @@
                     </menu>
                 </menuItem>
             </items>
+            <point key="canvasLocation" x="139" y="135"/>
         </menu>
         <customObject id="194" userLabel="SDLMain" customClass="SDLMain">
             <connections>
@@ -98,54 +100,49 @@
             <windowStyleMask key="styleMask" titled="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="22" y="49" width="451" height="507"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1058"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="875"/>
             <value key="minSize" type="size" width="213" height="107"/>
             <view key="contentView" id="292">
                 <rect key="frame" x="0.0" y="0.0" width="451" height="507"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button id="293">
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="293">
                         <rect key="frame" x="18" y="488" width="155" height="18"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                         <buttonCell key="cell" type="check" title="Run Game Fullscreen" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="376">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
-                    <textField verticalHuggingPriority="750" id="294">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="294">
                         <rect key="frame" x="29" y="466" width="285" height="16"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Running in fullscreen may not work on all systems." id="377">
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button id="295">
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="295">
                         <rect key="frame" x="18" y="399" width="191" height="18"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                         <buttonCell key="cell" type="check" title="Use World High Scores List" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="378">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
-                    <textField verticalHuggingPriority="750" id="296">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="296">
                         <rect key="frame" x="29" y="379" width="307" height="14"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="You must be connected to the internet for this to work!" id="379">
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button verticalHuggingPriority="750" id="297">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="297">
                         <rect key="frame" x="161" y="64" width="136" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                         <buttonCell key="cell" type="push" title="Start Server" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="380">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -154,22 +151,20 @@
                             <action selector="startServer:" target="194" id="352"/>
                         </connections>
                     </button>
-                    <textField verticalHuggingPriority="750" id="313">
+                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="313">
                         <rect key="frame" x="187" y="318" width="192" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="left" drawsBackground="YES" id="381">
                             <font key="font" metaFont="system"/>
                             <string key="title">192.168.0.2
 </string>
-                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="314">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="314">
                         <rect key="frame" x="65" y="320" width="123" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="382">
                             <font key="font" metaFont="system"/>
                             <string key="title">Server Address:
@@ -178,19 +173,17 @@
                             <color key="backgroundColor" red="1" green="0.32487106319999998" blue="0.34788626430000003" alpha="1" colorSpace="calibratedRGB"/>
                         </textFieldCell>
                     </textField>
-                    <button id="319">
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="319">
                         <rect key="frame" x="18" y="355" width="154" height="18"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                         <buttonCell key="cell" type="check" title="Join a Network Game" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="383">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
-                    <button verticalHuggingPriority="750" id="326">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="326">
                         <rect key="frame" x="347" y="4" width="84" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                         <buttonCell key="cell" type="push" title="Go!" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="384">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -199,10 +192,9 @@
                             <action selector="startGame:" target="194" id="353"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" id="327">
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="327">
                         <rect key="frame" x="263" y="4" width="84" height="32"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                         <buttonCell key="cell" type="push" title="Quit" bezelStyle="rounded" alignment="center" borderStyle="border" inset="2" id="385">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -211,30 +203,27 @@
                             <action selector="cancel:" target="194" id="354"/>
                         </connections>
                     </button>
-                    <textField verticalHuggingPriority="750" id="330">
+                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="330">
                         <rect key="frame" x="209" y="266" width="32" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="2" drawsBackground="YES" id="386">
                             <font key="font" metaFont="system"/>
-                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="331">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="331">
                         <rect key="frame" x="65" y="265" width="131" height="20"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Number of Players:" id="387">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="333">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="333">
                         <rect key="frame" x="77" y="234" width="231" height="24"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="388">
                             <font key="font" metaFont="smallSystem"/>
                             <string key="title">All players should use the same number.
@@ -243,75 +232,61 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="336">
+                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="336">
                         <rect key="frame" x="209" y="137" width="32" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="8" drawsBackground="YES" id="389">
                             <font key="font" metaFont="system"/>
-                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="337">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="337">
                         <rect key="frame" x="83" y="139" width="76" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Frag Limit:" id="390">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="338">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="338">
                         <rect key="frame" x="95" y="117" width="215" height="14"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="All players should use the same value." id="391">
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="356">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="356">
                         <rect key="frame" x="119" y="52" width="225" height="14"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Server will quit when quitting Maelstrom." id="392">
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <box verticalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" id="357">
+                    <box verticalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="357">
                         <rect key="frame" x="20" y="100" width="412" height="5"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
-                        <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                        <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                        <font key="titleFont" metaFont="system"/>
                     </box>
-                    <box verticalHuggingPriority="750" title="Box" boxType="separator" titlePosition="noTitle" id="359">
+                    <box verticalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="359">
                         <rect key="frame" x="20" y="39" width="412" height="5"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
-                        <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>
-                        <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                        <font key="titleFont" metaFont="system"/>
                     </box>
-                    <button id="361">
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="361">
                         <rect key="frame" x="66" y="160" width="98" height="18"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                         <buttonCell key="cell" type="check" title="Deathmatch" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="393">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
-                    <textField verticalHuggingPriority="750" id="363">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="363">
                         <rect key="frame" x="77" y="296" width="226" height="16"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="394">
                             <font key="font" metaFont="smallSystem"/>
                             <string key="title">All players should use the same address.
@@ -321,49 +296,44 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="364">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="364">
                         <rect key="frame" x="65" y="209" width="139" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Your Player Number:" id="395">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="365">
+                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="365">
                         <rect key="frame" x="209" y="207" width="32" height="22"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="right" title="1" drawsBackground="YES" id="396">
                             <font key="font" metaFont="system"/>
-                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <textField verticalHuggingPriority="750" id="367">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="367">
                         <rect key="frame" x="77" y="184" width="238" height="17"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="All players should have a unique number." id="397">
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button id="372">
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="372">
                         <rect key="frame" x="18" y="442" width="187" height="18"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                         <buttonCell key="cell" type="check" title="Use Real-Time Scheduling" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="398">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
-                    <textField verticalHuggingPriority="750" id="373">
+                    <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="373">
                         <rect key="frame" x="29" y="423" width="353" height="14"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                         <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Animation is smoother but other running apps might not like it." id="399">
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -371,8 +341,8 @@
                         </textFieldCell>
                     </textField>
                 </subviews>
-                <animations/>
             </view>
+            <point key="canvasLocation" x="139" y="-216"/>
         </window>
     </objects>
 </document>

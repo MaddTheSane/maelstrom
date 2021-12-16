@@ -6,7 +6,7 @@
 /* Ported to Linux  (Spring 1995)				 */
 /* Ported to Win95  (Fall   1996) -- not releasable		 */
 /* Ported to SDL    (Fall   1997)                                */
-/* By Sam Lantinga  (slouken@devolution.com)			 */
+/* By Sam Lantinga  (slouken@libsdl.org)			 */
 /* 								 */
 /* ------------------------------------------------------------- */
 
@@ -20,7 +20,7 @@
 extern int DoInitializations(Uint32 video_flags);		/* init.cc */
 
 static const char *Version =
-"Maelstrom v1.4.3 (GPL version 3.0.6) -- 10/19/2002 by Sam Lantinga\n";
+"Maelstrom v1.4.3 (GPL version 3.0.7) -- 02/01/2021 by Sam Lantinga\n";
 
 // Global variables set in this file...
 int	gStartLives;
@@ -165,12 +165,12 @@ void PrintUsage(void)
 
 /* ----------------------------------------------------------------- */
 /* -- Blitter main program */
-int SDL_main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 	/* Command line flags */
 	int doprinthigh = 0;
 	int speedtest = 0;
-	Uint32 video_flags = 0;
+	Uint32 video_flags = SDL_WINDOW_FULLSCREEN_DESKTOP;
 
 	/* Normal variables */
 	SDL_Event event;
@@ -193,8 +193,8 @@ int SDL_main(int argc, char *argv[])
 
 	/* Parse command line arguments */
 	for ( progname=argv[0]; --argc; ++argv ) {
-		if ( strcmp(argv[1], "-fullscreen") == 0 ) {
-			video_flags |= SDL_WINDOW_FULLSCREEN;
+		if ( strcmp(argv[1], "-windowed") == 0 ) {
+			video_flags &= ~SDL_WINDOW_FULLSCREEN_DESKTOP;
 		} else
 		if ( strcmp(argv[1], "-gamma") == 0 ) {
 			int gammacorrect;
@@ -255,6 +255,8 @@ int SDL_main(int argc, char *argv[])
 		} else if ( strcmp(argv[1], "-version") == 0 ) {
 			error("%s", Version);
 			exit(0);
+		} else if ( strncmp(argv[1], "-psn_", 5) == 0 ) {
+			/* Running from the Finder on Mac OSX */
 		} else {
 			PrintUsage();
 		}
@@ -304,7 +306,7 @@ int SDL_main(int argc, char *argv[])
 
 				/* -- Toggle fullscreen */
 				case SDLK_RETURN:
-					if ( event.key.keysym.mod & KMOD_ALT )
+					if ( event.key.keysym.mod & gToggleFullscreenMod )
 						screen->ToggleFullScreen();
 					break;
 
@@ -445,7 +447,7 @@ static void DrawSoundLevel(void)
 		DrawText(xOff+309-7, yOff+240-6, text, geneva, STYLE_BOLD,
 							0x00, 0x00, 0x00);
 	}
-	snprintf(text, sizeof(text), "%d", gSoundLevel);
+	SDL_snprintf(text, sizeof(text), "%d", gSoundLevel);
 	DrawText(xOff+309-7, yOff+240-6, text, geneva, STYLE_BOLD,
 						30000>>8, 30000>>8, 0xFF);
 	screen->Update();
@@ -547,11 +549,11 @@ void DrawMainScreen(void)
 		}
 		DrawText(xOff+5, botDiv+42+(index*18), hScores[index].name,
 						font, STYLE_BOLD, R, G, B);
-		snprintf(buffer, sizeof(buffer), "%u", hScores[index].score);
+		SDL_snprintf(buffer, sizeof(buffer), "%u", hScores[index].score);
 		sw = fontserv->TextWidth(buffer, font, STYLE_BOLD);
 		DrawText(sRt-sw, botDiv+42+(index*18), buffer, 
 						font, STYLE_BOLD, R, G, B);
-		snprintf(buffer, sizeof(buffer), "%u", hScores[index].wave);
+		SDL_snprintf(buffer, sizeof(buffer), "%u", hScores[index].wave);
 		sw = fontserv->TextWidth(buffer, font, STYLE_BOLD);
 		DrawText(wRt-sw, botDiv+42+(index*18), buffer, 
 						font, STYLE_BOLD, R, G, B);
@@ -560,7 +562,7 @@ void DrawMainScreen(void)
 
 	DrawText(xOff+5, botDiv+46+(10*18)+3, "Last Score: ", 
 					bigfont, STYLE_NORM, 0xFF, 0xFF, 0xFF);
-	snprintf(buffer, sizeof(buffer), "%d", GetScore());
+	SDL_snprintf(buffer, sizeof(buffer), "%d", GetScore());
 	sw = fontserv->TextWidth("Last Score: ", bigfont, STYLE_NORM);
 	DrawText(xOff+5+sw, botDiv+46+(index*18)+3, buffer, 
 					bigfont, STYLE_NORM, 0xFF, 0xFF, 0xFF);
@@ -609,7 +611,7 @@ void DrawMainScreen(void)
 
 	DrawText(xOff+5+68, yOff+5+127, "Port to Linux by Sam Lantinga",
 				font, STYLE_BOLD, 0xFF, 0xFF, 0x00);
-	DrawText(rightDiv+10, yOff+259, "\2511992-4 Ambrosia Software, Inc.",
+	DrawText(rightDiv+10, yOff+259, "(C) 1992-4 Ambrosia Software, Inc.",
 				font, STYLE_BOLD, 0xFF, 0xFF, 0xFF);
 
 /* -- Draw the version number */
@@ -671,8 +673,9 @@ void Message(const char *message)
 	}
 	if ( message ) {
 		DrawText(xOff, 25, message, font, STYLE_BOLD, 0xCC,0xCC,0xCC);
-		last_message = new char[strlen(message)+1];
-		strcpy(last_message, message);
+		size_t len = strlen(message)+1;
+		last_message = new char[len];
+		SDL_strlcpy(last_message, message, len);
 	} else {
 		last_message = new char[1];
 		last_message[0] = '\0';
